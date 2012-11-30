@@ -4,7 +4,10 @@
     "description": "FE Toolkit",
     "version": "0.1.3",
     "bin": "./bin/fekit",
-    "repository": {},
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/rinh/fekit.git"
+    },
     "dependencies": {
         "coffee-script" : "1.4.x" , 
         "underscore" : "1.4.x" , 
