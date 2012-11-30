@@ -1,0 +1,74 @@
+FEKIT
+=====================
+
+## 安装 ##
+
+#### 安装前提
+
+##### nodejs & npm
+* 版本需大于 0.6
+* windows: [http://nodejs.org/dist/v0.8.15/node-v0.8.15-x86.msi](http://nodejs.org/dist/v0.8.15/node-v0.8.15-x86.msi)
+* mac: [http://nodejs.org/dist/v0.8.15/node-v0.8.15.pkg](http://nodejs.org/dist/v0.8.15/node-v0.8.15.pkg)
+* linux: 自行使用 apt-get(ubuntu) 或 yum(centos) 安装
+
+##### svn
+* windows: 使用Slik SVN, [http://www.sliksvn.com/en/download](http://www.sliksvn.com/pub/Slik-Subversion-1.7.7-win32.msi)
+* mac: 自带 或使用 port 安装
+* linux: 自行使用 apt-get(ubuntu) 或 yum(centos) 安装
+
+##### rsync(可选) #####
+* 如不安装, 可能会影响 sync 命令的使用 
+* windows: [http://optics.ph.unimelb.edu.au/help/rsync/rsync_pc1.html#install](http://optics.ph.unimelb.edu.au/help/rsync/rsync_pc1.html#install)
+* mac: 自带
+* linux: 自带
+* 请自行配置免密码ssh登录
+
+#### 安装
+    
+    npm install coffee-script -g
+    npm install fekit -g
+
+## 使用
+
+    fekit {命令名} --help 
+
+## 为fekit贡献代码
+
+fekit是一个插件化, 易于扩展的工具集, 如果你愿意为它增加功能, 请看下面的内容
+
+fekit所有源码全部使用coffeescript开发
+
+* bin - 放置可执行文件
+* lib - 执行代码(编译结果,请不要修改)
+* src - 源码
+* test - 单元测试
+* testcase - 测试用例, 模拟了一个真实项目
+* Cakefile - 部署文件
+
+#### 如何增加一个命令  ####
+
+请在`src/commands`增加文件 {命令名}.coffee
+
+一个命令请包含如下内容
+
+    # 命令的使用说明
+    exports.usage = "使用说明"
+    
+    # 命令的参数定义, 请参考optimist的使用方法
+    exports.set_options = (optimist) ->
+    
+    # 命令入口
+    exports.run = (options) ->
+
+#### 如何增加一个编译处理类型 ####
+
+请在`src/compiler/plugins`增加文件 {编译处理后缀名}.coffee
+
+其中必须存在的方法是
+
+    # 处理方法
+    # @source 待处理文件的内容
+    # @path 待处理文件的路径
+    # 返回结果应该编译结果 
+    exports.process = ( source , path ) ->
+
