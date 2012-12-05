@@ -77,7 +77,7 @@ listenPort = ( server, port ) ->
     server.on "error", (e) ->
         if e.code is 'EADDRINUSE' then console.log "[ERROR]: 端口 #{port} 已经被占用, 请关闭占用该端口的程序或者使用其它端口."
         if e.code is 'EACCES' then console.log "[ERROR]: 权限不足, 请使用sudo执行."
-        process.exit(0)
+        process.exit 1
 
     server.on "listening", (e) ->
         console.log "[LOG]: fekit server 运行成功, 端口为 #{port}."

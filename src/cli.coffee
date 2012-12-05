@@ -95,6 +95,7 @@ exports.run = ( cmd ) ->
             throw err 
         else
             utils.logger.error( err )
+            return 1
 
 
 
