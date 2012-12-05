@@ -2,7 +2,7 @@
     "author": "hao.lin <hao.lin@qunar.com>",
     "name": "fekit",
     "description": "FE Toolkit",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "bin": "./bin/fekit",
     "repository": {
         "type": "git",
@@ -33,8 +33,7 @@
     "devDependencies": {},
     "optionalDependencies": {},
     "engines": {
-        "node": "0.8.*", 
-        "npm": "1.1.*" 
+        "node": ">=0.8"
     },
     "scripts": {
         "pretest": "cake build",
