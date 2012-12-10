@@ -54,7 +54,7 @@ setupServer = ( options ) ->
 
                 res.writeHead( 200, { 'Content-Type': mime_config[urlconvert.extname] });
 
-                if sysfs.existsSync( srcpath ) 
+                if utils.path.exists( srcpath ) 
                     res.end( compiler.compile( srcpath) )
                 else
                     res.end( "文件不存在 #{srcpath}" )

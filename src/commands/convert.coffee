@@ -19,8 +19,8 @@ FILE = ( name ) ->
 
 # 检查当前目录是否可以转换
 check = () ->
-    if !sysfs.existsSync( FILE(".ver") ) then return false
-    if sysfs.existsSync( FILE("fekit.config") ) then return false
+    if !utils.path.exists( FILE(".ver") ) then return false
+    if utils.path.exists( FILE("fekit.config") ) then return false
     return true
     
 

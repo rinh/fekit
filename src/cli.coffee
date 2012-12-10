@@ -74,7 +74,7 @@ exports.run = ( cmd ) ->
     lib = syspath.dirname( __filename )
     path = syspath.join( lib , "./commands/#{cmd}.js" )
 
-    if !sysfs.existsSync( path ) 
+    if !utils.path.exists( path ) 
         utils.logger.error("请确认是否有 #{cmd} 这个命令")
         return 1
 

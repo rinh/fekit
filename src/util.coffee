@@ -5,6 +5,7 @@ mkdirp = require 'mkdirp'
 yaml = require 'yaml'
 cjson = require 'cjson'
 
+
 #----------------------------
 
 exports.array = utilarray =
@@ -22,6 +23,14 @@ exports.path = utilpath =
         return _closest( path , findfilename )
 
     SEPARATOR : syspath.join('a','a').replace(/a/g,'')
+
+    exists: ( path ) ->
+        if fs.existsSync
+            return fs.existsSync( path )
+        # 为了0.6版以前的node兼容
+        if syspath.existsSync
+            return syspath.existsSync( path )
+
 
     # 分割路径为数组 
     # path的输入有可能以 . 或 / 或 \ 分割
@@ -99,7 +108,7 @@ class Reader
         return @read(filepath).toString().split( utilfile.NEWLINE )
 
     read:( filepath ) ->
-        if !fs.existsSync( filepath ) 
+        if !utilpath.exists( filepath ) 
             throw "找不到文件 #{filepath}"
         return fs.readFileSync( filepath ).toString().replace( /\r\n/g , '\n' )
 
@@ -127,7 +136,7 @@ class Reader
 
 class Writer
     write:( filepath , content ) ->
-        if !fs.existsSync( syspath.dirname( filepath ) )
+        if !utilpath.exists( syspath.dirname( filepath ) )
             mkdirp.sync( syspath.dirname( filepath ) )
         fs.writeFileSync( filepath , content )
 
@@ -156,7 +165,7 @@ utilfile.findify = ( path_without_extname , ext_list ) ->
     list = [ "" ].concat( ext_list )
     for ext in list
         path = path_without_extname + ext 
-        if fs.existsSync( path )
+        if utilpath.exists( path )
             return path
     throw "找不到文件或对应的编译方案 [#{path_without_extname}] 后缀检查列表为[#{ext_list}]"
 
@@ -200,7 +209,7 @@ class FekitConfig
         list = @root["export"] || []
         for file in list
             path = syspath.join( @fekit_root_dirname , "src" , file )
-            if fs.existsSync( path ) 
+            if utilpath.exists( path ) 
                 cb( path )
             else
                 utillogger.error("找不到文件 #{path}")

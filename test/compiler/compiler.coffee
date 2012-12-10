@@ -1,14 +1,11 @@
 compiler = require('../../lib/compiler/compiler')
-should = require('chai').should()
-except = require('chai').except
+assert = require('chai').assert
 
-
-describe 'ModuleChecker', ->
+describe 'Module', ->
     describe '#reg', ->
         it 'should be right', ->
-            c = new compiler.ModuleChecker()
             lines = [
-                {  str : "  import('a.js'); " , except : "a.js"  }
+                {  str : "//  import('a.js'); " , except : null  }
                 {  str : '  import("b.js"); ' , except : "b.js"  }
                 {  str : "  require('a.js'); " , except : "a.js"  }
                 {  str : '  require("b.js"); ' , except : "b.js"  }
@@ -17,4 +14,8 @@ describe 'ModuleChecker', ->
             ]
 
             for line in lines 
-                line.str.match( c.reg )[2].should.equal( line.except )
+                m = line.str.match( compiler.MODULE_LINE_REGEXP )
+                if !m 
+                    assert.equal( m , line.except )
+                else 
+                    assert.equal( m[3] , line.except )
