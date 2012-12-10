@@ -2,7 +2,7 @@
     "author": "hao.lin <hao.lin@qunar.com>",
     "name": "fekit",
     "description": "FE Toolkit",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "bin": "./bin/fekit",
     "repository": {
         "type": "git",
