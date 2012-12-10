@@ -146,6 +146,12 @@ ModulePath.EXTLIST = []
 class ModuleConfig
     constructor:(@uri) ->
         @config = utils.config.parse( @uri )
+
+    isCompileTypeNormal:() ->
+        return !@config.root.compiler
+
+    isCompileTypeModule:() ->
+        return @config.root.compiler is "SMD"
         
     isUseLibrary:(libname) ->
         return !!@config.root.lib[libname]

@@ -9,9 +9,11 @@ exports.usage = "转换 [qzz项目] 为 [fekit项目] "
 exports.set_options = ( optimist ) ->
 
 CURR = null
-CONFIG = 
+CONFIG =
+        "compiler" : false 
         "lib" : {} 
         "export" : []
+
 FILE = ( name ) ->
     return syspath.join( CURR , name )
 
