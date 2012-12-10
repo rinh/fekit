@@ -1,2 +1,2 @@
-@import('core.dom.helper')
+import('core.dom.helper')
 // this is core.widget.widget

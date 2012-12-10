@@ -168,8 +168,8 @@ class ModuleChecker
         @module_reference_list = {}
         @reg = ///^
                     \s*
-                    @
-                    (?:import|require)
+                    \b
+                    (import|require)
                     \s*
                     \(
                         \s*
@@ -183,7 +183,7 @@ class ModuleChecker
 
     # 从一行代码中解析出模块引用的路径
     parseImportURL: ( line ) ->
-        return line.match( @reg )[1]
+        return line.match( @reg )[2]
 
     # 检查单行是否是一个模块引用
     check:( line ) ->
