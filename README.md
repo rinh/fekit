@@ -73,6 +73,9 @@ fekit所有源码全部使用coffeescript开发
 
 其中必须存在的方法是
 
+    # 决定该编译方式是用于哪类处理
+    exports.contentType = "javascript 或 css"
+    
     # 处理方法
     # @source 待处理文件的内容
     # @path 待处理文件的路径

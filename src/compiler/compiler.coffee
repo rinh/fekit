@@ -97,7 +97,7 @@ class JSModule extends Module
             return ""
         if @config.isCompileTypeSMD()
             return line.replace MODULE_LINE_REGEXP , ( match , prefix , keyword , path ) =>
-                return "#{prefix}__context.__MODULES['#{@guid}'];"
+                return "#{prefix}__context.____MODULES['#{@guid}'];"
         throw "找不到正确的编译方式, 请修改fekit.config中的 compiler [目前值:#{@config.compileType()}]"
 
     _wrap: () ->
@@ -105,14 +105,14 @@ class JSModule extends Module
 
             ;(function(__context){
                 var module_exports = {};
-                if( !__context.__MODULES ) { __context.__MODULES = {}; }
+                if( !__context.____MODULES ) { __context.____MODULES = {}; }
                 var r = (function( exports ){
 
                 #{@sources.join( utils.file.NEWLINE )}
 
                 })( module_exports );
                 if ( r ) { module_exports = r; } 
-                __context.__MODULES[ "#{@guid}" ] = module_exports;
+                __context.____MODULES[ "#{@guid}" ] = module_exports;
             })(this);
 
         """

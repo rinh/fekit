@@ -225,6 +225,24 @@ class FekitConfig
             else
                 utillogger.error("找不到文件 #{path}")
 
+    findExportFile : ( filepath , cb ) ->
+    
+        list = @root["export"] || []
+
+        for file in list
+            if _.isObject( file )
+                path = syspath.join( @fekit_root_dirname , "src" , file.path )
+                parents = _.map file.parents or [] , ( ppath ) =>
+                                syspath.join( @fekit_root_dirname , "src" , ppath )
+            else
+                path = syspath.join( @fekit_root_dirname , "src" , file )
+                parents = []
+
+            if filepath is path
+                cb( filepath , parents )
+
+        cb( filepath , [] )
+
 exports.config = utilconfig = 
     parse : ( baseUri ) ->
         return new FekitConfig( baseUri )

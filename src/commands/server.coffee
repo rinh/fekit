@@ -43,7 +43,7 @@ setupServer = ( options ) ->
 
                 p = syspath.join( ROOT , sysurl.parse( req.url ).pathname )
 
-                if utils.path.is_directory(p)
+                if utils.path.exists(p) and utils.path.is_directory(p)
                     next()
                     return
 
@@ -55,7 +55,9 @@ setupServer = ( options ) ->
                 res.writeHead( 200, { 'Content-Type': mime_config[urlconvert.extname] });
 
                 if utils.path.exists( srcpath ) 
-                    res.end( compiler.compile( srcpath) )
+                    config = new utils.config.parse( srcpath )
+                    config.findExportFile srcpath , ( path , parents ) =>
+                        res.end( compiler.compile( path , parents  ) )
                 else
                     res.end( "文件不存在 #{srcpath}" )
 
