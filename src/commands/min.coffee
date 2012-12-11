@@ -20,11 +20,11 @@ process_directory = ( options ) ->
 
     conf = utils.config.parse( options.cwd )
 
-    conf.each_export_files (srcpath) =>
+    conf.each_export_files (srcpath, parents) =>
         utils.logger.log( "正在处理 #{srcpath}" )
         urlconvert = new utils.UrlConvert( srcpath )
         writer = new utils.file.writer()
-        source = compiler.compile( srcpath )
+        source = compiler.compile( srcpath, parents )
 
         switch urlconvert.extname
             when ".css"

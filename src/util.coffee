@@ -4,6 +4,7 @@ fs = require 'fs'
 mkdirp = require 'mkdirp'
 yaml = require 'yaml'
 cjson = require 'cjson'
+_ = require 'underscore'
 
 
 #----------------------------
@@ -198,19 +199,29 @@ class FekitConfig
     constructor: ( @baseUri ) ->
         @fekit_config_filename = "fekit.config"
         @fekit_root_dirname = utilpath.closest( @baseUri , @fekit_config_filename )
+        @fekit_config_path = syspath.join( @fekit_root_dirname , @fekit_config_filename )
         try 
-            @root = new utilfile.reader().readJSON( syspath.join( @fekit_root_dirname , @fekit_config_filename ) )
+            @root = new utilfile.reader().readJSON( @fekit_config_path )
         catch err
-            @root = { "lib" : {} }
-        #if !@root 
-        #    throw "没有找到对应的#{@fekit_config_filename} 路径为#{@fekit_root_dirname}"
+            if utilpath.exists( @fekit_config_path )
+                throw "@fekit_config_filename 解析失败, 请确认该文件格式是否符合正确的JSON格式"
+            else
+                # 如果没有fekit, 有可能是使用单独文件编译模式, 则使用默认配置
+                @root = { "lib" : {} }
 
     each_export_files : ( cb ) ->
         list = @root["export"] || []
         for file in list
-            path = syspath.join( @fekit_root_dirname , "src" , file )
+            if _.isObject( file )
+                path = syspath.join( @fekit_root_dirname , "src" , file.path )
+                parents = _.map file.parents or [] , ( ppath ) =>
+                                syspath.join( @fekit_root_dirname , "src" , ppath )
+            else
+                path = syspath.join( @fekit_root_dirname , "src" , file )
+                parents = []
+
             if utilpath.exists( path ) 
-                cb( path )
+                cb( path , parents )
             else
                 utillogger.error("找不到文件 #{path}")
 
