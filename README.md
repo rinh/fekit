@@ -32,7 +32,6 @@ FEKIT
 
 #### 安装
     
-    npm install coffee-script -g
     npm install fekit -g
 
 ### 使用

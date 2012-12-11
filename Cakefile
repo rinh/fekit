@@ -18,7 +18,7 @@ test = () ->
     process_stdio mocha
 
 
-coffee = "./node_modules/coffee-script/bin/coffee"
+coffee = "./node_modules/.bin/coffee"
 
 echo = (child) ->
   child.stdout.on "data", (data) -> print data.toString()
