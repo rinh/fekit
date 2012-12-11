@@ -35,9 +35,36 @@ FEKIT
     npm install coffee-script -g
     npm install fekit -g
 
-## 使用
+### 使用
 
     fekit {命令名} --help 
+
+### fekit.config
+
+    {
+        // 编译方案, 参考 [issue #1](https://github.com/rinh/fekit/issues/1)
+        "compiler" : `false` 或 `SMD` ,
+
+        // 库的配置, 该库作为编译时, import 和 require 使用
+        "lib" : {
+            "core" : "./src/core"  /* 该路径相对于当前fekit.config文件 */
+        } ,
+
+        // 将要导出至 `prd` 和 `dev` 目录的文件列表
+        // 其中所有路径, 均相对于 `src` 目录
+        "export" : [
+
+            // 第一种配置方式, 直接写出要导出的文件相对路径
+            "./scripts/page-a.js" ,   
+
+            // 第二种配置方式, 当要导出的文件, 在实际使用时有上级依赖, 则可以将上级依赖的文件加入`parents`节点
+            { 
+                "path" : "./scripts/page-b.js" ,
+                "parents" : [ "./scripts/page-a.js" ]
+            }
+            
+        ]
+    }
 
 ## 为fekit贡献代码
 
