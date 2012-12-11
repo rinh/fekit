@@ -1,5 +1,4 @@
 .git
-lib
 node_modules
 .npm-debug.log
 testcase/**/prd/*
