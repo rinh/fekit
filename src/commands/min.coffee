@@ -28,7 +28,7 @@ process_directory = ( options ) ->
 
         switch urlconvert.extname
             when ".css"
-                final_code = uglifycss.processString(source)
+                final_code = uglifycss.processString(source).replace( /}/g , "}\n" )
             when ".js"
                 ast = jsp.parse(source)
                 ast = pro.ast_mangle(ast)
