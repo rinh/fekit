@@ -42,7 +42,7 @@ FEKIT
 
     {
         // 编译方案, 参考 [issue #1](https://github.com/rinh/fekit/issues/1)
-        "compiler" : `false` 或 `SMD` ,
+        "compiler" : `false` 或 `modular` ,
 
         // 库的配置, 该库作为编译时, import 和 require 使用
         "lib" : {

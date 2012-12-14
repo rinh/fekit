@@ -95,7 +95,7 @@ class JSModule extends Module
     _getPlaceHolder: ( line ) ->
         if @config.isCompileTypeNormal()
             return ""
-        if @config.isCompileTypeSMD()
+        if @config.isCompileTypeModular()
             return line.replace MODULE_LINE_REGEXP , ( match , prefix , keyword , path ) =>
                 return "#{prefix}__context.____MODULES['#{@guid}'];"
         throw "找不到正确的编译方式, 请修改fekit.config中的 compiler [目前值:#{@config.compileType()}]"
@@ -120,7 +120,7 @@ class JSModule extends Module
     getSourceWithoutDependencies:() ->
         if @config.isCompileTypeNormal()
             return @sources.join( utils.file.NEWLINE )
-        if @config.isCompileTypeSMD()
+        if @config.isCompileTypeModular()
             return @_wrap()
         throw "找不到正确的编译方式, 请修改fekit.config中的 compiler [目前值:#{@config.compileType()}]"
 
@@ -251,8 +251,8 @@ class ModuleConfig
     isCompileTypeNormal:() ->
         return !@config.root.compiler
 
-    isCompileTypeSMD:() ->
-        return @config.root.compiler is "SMD"
+    isCompileTypeModular:() ->
+        return @config.root.compiler is "modular"
         
     isUseLibrary:(libname) ->
         return !!@config.root.lib[libname]
