@@ -11,7 +11,9 @@ exports.run = ( options ) ->
     conf.each_export_files (srcpath, parents) =>
         utils.logger.log( "正在处理 #{srcpath}" )
         urlconvert = new utils.UrlConvert( srcpath )
-        source = compiler.compile( srcpath, parents )
+        source = compiler.compile( srcpath, {
+            dependencies_filepath_list : parents
+        })
         dest = urlconvert.to_dev()
         new utils.file.writer().write( dest , source )
         utils.logger.log( "已经处理 #{srcpath}  ==> #{dest}" )

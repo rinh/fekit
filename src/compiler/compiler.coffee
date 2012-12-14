@@ -126,7 +126,6 @@ class JSModule extends Module
 
 
 
-
 class CSSModule extends Module
     constructor:( uri ) ->
         super(uri)
@@ -136,7 +135,6 @@ class CSSModule extends Module
 
     getSourceWithoutDependencies: () ->
         return @sources.join( utils.file.NEWLINE )
-
 
 
 
@@ -179,6 +177,8 @@ class ModulePath
     getFullPath:()->
         return @uri
 
+    getContentType:()->
+        return Compiler.getContentType( @extname() )
 
 ###
     解析子模块真实路径
@@ -325,13 +325,18 @@ utils.path.each_directory pluginsDir , ( filepath ) =>
 ###
 
 # 递归处理所有模块
-getSource = ( module , USED_MODULES ) ->
+getSource = ( module , options ) ->
     arr = []
+    USED_MODULES = options.use_modules
 
-    for sub_module in module.depends
-        if USED_MODULES[ sub_module.guid ]
-            continue
-        arr.push( getSource( sub_module , USED_MODULES ) )
+    if options.render_dependencies 
+        module.getSourceWithoutDependencies = options.render_dependencies
+ 
+    if options.no_dependencies isnt true
+        for sub_module in module.depends
+            if USED_MODULES[ sub_module.guid ] then continue
+            arr.push( getSource( sub_module , options ) )
+
 
     arr.push( module.getSourceWithoutDependencies() )
     USED_MODULES[ module.guid ] = 1
@@ -342,13 +347,29 @@ getSource = ( module , USED_MODULES ) ->
 
 exports.Module = Module
 exports.MODULE_LINE_REGEXP = MODULE_LINE_REGEXP
-exports.compile = ( filepath , depend_filepath_list ) ->
+
+###
+ options {
+    // 依赖的文件列表(fullpath)
+    dependencies_filepath_list : []
+    // 使用非依赖模式
+    no_dependencies : false , 
+    // 非依赖模式的生成方案
+    render_dependencies : function
+ }
+###
+exports.compile = ( filepath , options ) ->
+    options = options or {}
     use_modules = {}
     module = Module.parse( filepath ) 
 
-    for dep_path in ( depend_filepath_list or [] )
+    for dep_path in ( options.dependencies_filepath_list or [] )
         parent_module = new Module( dep_path )
         _.extend( use_modules , parent_module.getDependenciesURI() )
 
-    return getSource( module , use_modules )
+    return getSource( module , {
+                use_modules : use_modules 
+                no_dependencies : !!options.no_dependencies
+                render_dependencies : options.render_dependencies
+            })
 

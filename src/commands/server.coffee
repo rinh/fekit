@@ -15,10 +15,13 @@ exports.usage = "创建本地服务器, 可以基于其进行本地开发"
 exports.set_options = ( optimist ) ->
 
     optimist.alias 'p' , 'port'
-    optimist.describe 'p' , '启动端口号, 一般无法使用 80 时设置, 并且需要自己做端口转发'
+    optimist.describe 'p' , '服务端口号, 一般无法使用 80 时设置, 并且需要自己做端口转发'
 
     optimist.alias 'r' , 'route'
     optimist.describe 'r' , '路由,将指定路径路由到其它地址, 物理地址需要均在当前执行目录下. 格式为 项目名:路由后的物理目录名'
+
+    optimist.alias 'c' , 'combine'
+    optimist.describe 'c' , '指定所有文件以合并方式进行加载, 启动该参数则请求文件不会将依赖展开'
 
 mime_config = 
     ".js" : "application/javascript"
@@ -36,12 +39,47 @@ setupServer = ( options ) ->
 
     ROOT = options.cwd
 
+    no_combine = ( path , parents , host , params ) ->
+        # 根据是否非依赖模式, 生成不同的结果
+        if params["no_dependencies"] is "true"
+            str = compiler.compile( path , {
+                dependencies_filepath_list : parents  
+                no_dependencies : true
+            })
+
+        else
+            str = compiler.compile( path , {
+                dependencies_filepath_list : parents  
+                render_dependencies : () ->
+                    host = host.replace(/:\d+/,"")
+                    port = if options.port and options.port != "80" then ":#{options.port}" else ""
+                    path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
+                    partial = "http://#{host}#{port}#{path}?no_dependencies=true"
+                    switch @path.getContentType()
+                        when "javascript"
+                            return "document.write('<script src=\"#{partial}\"></script>');"
+                        when "css"
+                            return "@import url('#{partial}');"
+            })
+        return str 
+
+
+    combine = ( path , parents ) ->
+        str = compiler.compile( path , {
+            dependencies_filepath_list : parents  
+        })
+        return str
+
+
     fekitRouter = urlrouter (app) =>
 
             # PRD地址
             app.get utils.UrlConvert.PRODUCTION_REGEX , ( req , res , next ) =>
 
-                p = syspath.join( ROOT , sysurl.parse( req.url ).pathname )
+                host = req.headers['host']
+                url = sysurl.parse( req.url )
+                p = syspath.join( ROOT , url.pathname )
+                params = qs.parse( url.query )
 
                 if utils.path.exists(p) and utils.path.is_directory(p)
                     next()
@@ -57,7 +95,11 @@ setupServer = ( options ) ->
                 if utils.path.exists( srcpath ) 
                     config = new utils.config.parse( srcpath )
                     config.findExportFile srcpath , ( path , parents ) =>
-                        res.end( compiler.compile( path , parents  ) )
+                        if options.combine 
+                            str = combine( path , parents )
+                        else 
+                            str = no_combine( path , parents , host , params )
+                        res.end( str )
                 else
                     res.end( "文件不存在 #{srcpath}" )
 

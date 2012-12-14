@@ -24,7 +24,9 @@ process_directory = ( options ) ->
         utils.logger.log( "正在处理 #{srcpath}" )
         urlconvert = new utils.UrlConvert( srcpath )
         writer = new utils.file.writer()
-        source = compiler.compile( srcpath, parents )
+        source = compiler.compile( srcpath , {
+            dependencies_filepath_list : parents 
+        })
 
         switch urlconvert.extname
             when ".css"
