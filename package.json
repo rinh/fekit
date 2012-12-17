@@ -1,5 +1,6 @@
 {
     "author": "hao.lin <hao.lin@qunar.com>",
+    "preferGlobal": "true",
     "name": "fekit",
     "description": "FE Toolkit",
     "version": "0.1.8",
@@ -35,6 +36,7 @@
     "engines": {
         "node": ">=0.8"
     },
+    "license": "MIT",
     "scripts": {
         "pretest": "./node_modules/.bin/cake build",
         "prepublish": "./node_modules/.bin/cake build",
