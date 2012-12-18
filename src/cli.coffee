@@ -27,12 +27,15 @@ help_title = () ->
 
 init_options = ( command ) ->
 
-    command.set_options && command.set_options( optimist )
+    if command.set_options 
+        opt = command.set_options( optimist )
+    else 
+        opt = optimist
 
-    optimist.alias 'h', 'help'
-    optimist.describe 'h', '查看帮助'
+    opt.alias 'h', 'help'
+    opt.describe 'h', '查看帮助'
 
-    options = optimist.argv
+    options = opt.argv
 
     utils.logger.setup( options )
     cwd = process.cwd()
