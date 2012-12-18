@@ -365,3 +365,17 @@ exports.exit = exit = (exitCode) ->
     else
         process.exit(exitCode)
 
+
+#---------------------------
+
+exports.async = utilasync = 
+    series : ( list , iter , done ) ->
+        _list = []
+        for item in list 
+            _tmp = ( item ) ->
+                return ( seriesCallback ) ->
+                    iter( item , seriesCallback )
+            _list.push( _tmp(item) )
+        async.series _list , done
+
+

@@ -105,6 +105,7 @@ fekit所有源码全部使用coffeescript开发
     # 处理方法
     # @source 待处理文件的内容
     # @path 待处理文件的路径
+    # @callback( err , result ) 处理完成的回调
     # 返回结果应该编译结果 
-    exports.process = ( source , path ) ->
+    exports.process = ( source , path , callback ) ->
 

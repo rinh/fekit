@@ -392,23 +392,27 @@ exports.compile = ( filepath , options , doneCallback ) ->
     use_modules = {}
     module = Module.parse( filepath )
 
-    depsSeriesFuncs = []
-    for dep_path in ( options.dependencies_filepath_list or [] )
-        depsSeriesFuncs.push ( seriesCallback ) ->
+    _list = ( options.dependencies_filepath_list or [] )
+    _iter = ( dep_path , seriesCallback ) ->
             parent_module = new Module( dep_path )
             parent_module.analyze ( err ) ->
                 _.extend( use_modules , parent_module.getDependenciesURI() )
                 seriesCallback( err )
+    _done = ( err ) ->
+            if err 
+                doneCallback( err )
+                return
+            getSource( module , {
+                use_modules : use_modules 
+                no_dependencies : !!options.no_dependencies
+                render_dependencies : options.render_dependencies
+            } , ( err , result ) ->
+                doneCallback( err , result )
+            ) 
 
-    async.series depsSeriesFuncs , ( err ) ->
-        if err 
-            doneCallback( err )
-            return
-        getSource( module , {
-            use_modules : use_modules 
-            no_dependencies : !!options.no_dependencies
-            render_dependencies : options.render_dependencies
-        } , ( err , result ) ->
-            doneCallback( err , result )
-        )
+    utils.async.series _list , _iter , _done
+
+        
+
+
 
