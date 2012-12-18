@@ -91,6 +91,7 @@ exports.run = ( cmd ) ->
             command_run( command , options )
 
     catch err
+
         if utils.logger.debug is true
             throw err 
         else

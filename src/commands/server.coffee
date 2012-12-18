@@ -39,16 +39,16 @@ setupServer = ( options ) ->
 
     ROOT = options.cwd
 
-    no_combine = ( path , parents , host , params ) ->
+    no_combine = ( path , parents , host , params , doneCallback ) ->
         # 根据是否非依赖模式, 生成不同的结果
         if params["no_dependencies"] is "true"
-            str = compiler.compile( path , {
+            compiler.compile( path , {
                 dependencies_filepath_list : parents  
                 no_dependencies : true
-            })
+            }, doneCallback )
 
         else
-            str = compiler.compile( path , {
+            compiler.compile( path , {
                 dependencies_filepath_list : parents  
                 render_dependencies : () ->
                     host = host.replace(/:\d+/,"")
@@ -60,15 +60,13 @@ setupServer = ( options ) ->
                             return "document.write('<script src=\"#{partial}\"></script>');"
                         when "css"
                             return "@import url('#{partial}');"
-            })
-        return str 
+            }, doneCallback)
 
 
-    combine = ( path , parents ) ->
-        str = compiler.compile( path , {
+    combine = ( path , parents , doneCallback ) ->
+        compiler.compile( path , {
             dependencies_filepath_list : parents  
-        })
-        return str
+        } , doneCallback)
 
 
     fekitRouter = urlrouter (app) =>
@@ -92,14 +90,21 @@ setupServer = ( options ) ->
 
                 res.writeHead( 200, { 'Content-Type': mime_config[urlconvert.extname] });
 
+                _render = ( err , txt ) ->
+                    if err 
+                        res.writeHead( 500 )
+                        res.end( err )
+                    else
+                        res.end( txt ) 
+
                 if utils.path.exists( srcpath ) 
                     config = new utils.config.parse( srcpath )
                     config.findExportFile srcpath , ( path , parents ) =>
                         if options.combine 
-                            str = combine( path , parents )
+                            combine path , parents , _render
                         else 
-                            str = no_combine( path , parents , host , params )
-                        res.end( str )
+                            no_combine path , parents , host , params , _render
+
                 else
                     res.end( "文件不存在 #{srcpath}" )
 

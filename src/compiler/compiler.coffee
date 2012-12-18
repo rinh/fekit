@@ -39,7 +39,7 @@ class Module
         @guid = md5( @path.getFullPath() )
         @depends = []
         @sources = []
-        @analyze()
+        
 
 
     # 得到源码中, 引用模块位置的占位符
@@ -59,17 +59,19 @@ class Module
         return @depends.length > 0
 
     # 分析模块的依赖关系
-    analyze:() ->
+    analyze:( doneCallback ) ->
+        self = this
         @sources = []
-        lines = @compiler.readlines(@path.getFullPath())
-        for line in lines
-            switch @_check(line)
-                when MODULE_LINETYPE.NORMAL_LINE
-                    @sources.push( line )
-                when MODULE_LINETYPE.IMPORT_LINE
-                    module = Module.parse( line , this )
-                    @depends.push( module )
-                    @sources.push( module._getPlaceHolder( line ) )
+        @compiler.readlines @path.getFullPath() , ( err , lines ) =>
+            for line in lines
+                switch @_check(line)
+                    when MODULE_LINETYPE.NORMAL_LINE
+                        @sources.push( line )
+                    when MODULE_LINETYPE.IMPORT_LINE
+                        module = Module.parse( line , this )
+                        @depends.push( module )
+                        @sources.push( module._getPlaceHolder( line ) )
+            doneCallback.call( self , err )
 
     # 该方法会跟据编译模式进行不同的编译
     # override
@@ -284,13 +286,17 @@ MODULE_CONTENT_TYPE =
 class Compiler
     constructor:() ->
 
-    readlines:( path ) ->
+    readlines:( path , cb ) ->
         txt = new utils.file.reader().read( path )
         ext = syspath.extname( path )
         if Compiler.TYPES[ext]
-            return Compiler.TYPES[ext].process( txt , path ).split( utils.file.NEWLINE )
+            Compiler.TYPES[ext].process txt , path , ( err , result ) ->
+                if err 
+                    cb( "文件编译错误 #{path} , #{err.toString()}" , [] ) 
+                else 
+                    cb( err , result.split( utils.file.NEWLINE ) )
         else
-            throw "找不到对应后缀名(#{ext})的编译方案 #{path}"
+            cb( "找不到对应后缀名(#{ext})的编译方案 #{path}" )
 
 Compiler.TYPES = {}
 
@@ -325,23 +331,40 @@ utils.path.each_directory pluginsDir , ( filepath ) =>
 ###
 
 # 递归处理所有模块
-getSource = ( module , options ) ->
-    arr = []
-    USED_MODULES = options.use_modules
+getSource = ( module , options , callback ) ->
+    module.analyze ( err )->
 
-    if options.render_dependencies 
-        module.getSourceWithoutDependencies = options.render_dependencies
- 
-    if options.no_dependencies isnt true
-        for sub_module in module.depends
-            if USED_MODULES[ sub_module.guid ] then continue
-            arr.push( getSource( sub_module , options ) )
+        if err 
+            callback( err )
+            return
 
+        arr = []
+        USED_MODULES = options.use_modules
 
-    arr.push( module.getSourceWithoutDependencies() )
-    USED_MODULES[ module.guid ] = 1
+        if options.render_dependencies 
+            module.getSourceWithoutDependencies = options.render_dependencies
+     
+        deps = []
 
-    return arr.join( utils.file.NEWLINE )
+        if options.no_dependencies isnt true
+            for sub_module in module.depends
+                if USED_MODULES[ sub_module.guid ] then continue
+                _tmp = (sub_module) -> 
+                    ( seriesCallback ) =>
+                        getSource sub_module , options , ( e , txt ) ->
+                            arr.push( txt )
+                            seriesCallback( e )
+                deps.push _tmp(sub_module)
+
+        async.series deps , ( err ) ->
+            if err 
+                callback( err )
+                return
+
+            arr.push( module.getSourceWithoutDependencies() )
+            USED_MODULES[ module.guid ] = 1
+
+            callback( null , arr.join( utils.file.NEWLINE ) )
 
 
 
@@ -358,18 +381,34 @@ exports.MODULE_LINE_REGEXP = MODULE_LINE_REGEXP
     render_dependencies : function
  }
 ###
-exports.compile = ( filepath , options ) ->
-    options = options or {}
+exports.compile = ( filepath , options , doneCallback ) ->
+    if arguments.length is 3 
+        options = options or {}
+        doneCallback = doneCallback
+    else if arguments.length is 2
+        doneCallback = options
+        options = {}
+
     use_modules = {}
-    module = Module.parse( filepath ) 
+    module = Module.parse( filepath )
 
+    depsSeriesFuncs = []
     for dep_path in ( options.dependencies_filepath_list or [] )
-        parent_module = new Module( dep_path )
-        _.extend( use_modules , parent_module.getDependenciesURI() )
+        depsSeriesFuncs.push ( seriesCallback ) ->
+            parent_module = new Module( dep_path )
+            parent_module.analyze ( err ) ->
+                _.extend( use_modules , parent_module.getDependenciesURI() )
+                seriesCallback( err )
 
-    return getSource( module , {
-                use_modules : use_modules 
-                no_dependencies : !!options.no_dependencies
-                render_dependencies : options.render_dependencies
-            })
+    async.series depsSeriesFuncs , ( err ) ->
+        if err 
+            doneCallback( err )
+            return
+        getSource( module , {
+            use_modules : use_modules 
+            no_dependencies : !!options.no_dependencies
+            render_dependencies : options.render_dependencies
+        } , ( err , result ) ->
+            doneCallback( err , result )
+        )
 

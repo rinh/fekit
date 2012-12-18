@@ -20,34 +20,46 @@ process_directory = ( options ) ->
 
     conf = utils.config.parse( options.cwd )
 
-    conf.each_export_files (srcpath, parents) =>
-        utils.logger.log( "正在处理 #{srcpath}" )
-        urlconvert = new utils.UrlConvert( srcpath )
-        writer = new utils.file.writer()
-        source = compiler.compile( srcpath , {
-            dependencies_filepath_list : parents 
-        })
+    conf.each_export_files_async(
+        (srcpath, parents, seriesCallback) ->
+            utils.logger.log( "正在处理 #{srcpath}" )
+            urlconvert = new utils.UrlConvert( srcpath )
+            writer = new utils.file.writer()
 
-        switch urlconvert.extname
-            when ".css"
-                final_code = uglifycss.processString(source).replace( /}/g , "}\n" )
-            when ".js"
-                ast = jsp.parse(source)
-                ast = pro.ast_mangle(ast)
-                ast = pro.ast_squeeze(ast)
-                final_code = pro.gen_code( ast )
+            _done = (  err , source ) ->
+                if err 
+                    utils.logger.error( err.toString() )
+                    utils.exit(1)
+                    return
 
-        md5code = md5(final_code)
-        dest = urlconvert.to_prd( md5code )
+                switch urlconvert.extname
+                    when ".css"
+                        final_code = uglifycss.processString(source).replace( /}/g , "}\n" )
+                    when ".js"
+                        ast = jsp.parse(source)
+                        ast = pro.ast_mangle(ast)
+                        ast = pro.ast_squeeze(ast)
+                        final_code = pro.gen_code( ast )
 
-        # 生成真正的压缩后的文件
-        writer.write( dest , final_code )
-        # 生成对应的 ver 文件
-        writer.write( urlconvert.to_ver() , md5code )   
+                md5code = md5(final_code)
+                dest = urlconvert.to_prd( md5code )
 
-        utils.logger.log( "已经处理 #{srcpath}  ==> #{dest}" )
+                # 生成真正的压缩后的文件
+                writer.write( dest , final_code )
+                # 生成对应的 ver 文件
+                writer.write( urlconvert.to_ver() , md5code ) 
 
-    utils.logger.log("DONE.")
+                utils.logger.log( "已经处理 #{srcpath}  ==> #{dest}" )
+                seriesCallback()
+
+            compiler.compile( srcpath , {
+                dependencies_filepath_list : parents 
+            }, _done )
+ 
+
+        () ->
+            utils.logger.log("DONE.")
+    )
 
 
 process_single_file = ( options ) ->
@@ -57,26 +69,26 @@ process_single_file = ( options ) ->
     else
         srcpath = syspath.join( options.cwd , options.filename )
 
-    source = compiler.compile( srcpath )
+    compiler.compile srcpath , ( source ) ->
 
-    extname = syspath.extname( srcpath )
+        extname = syspath.extname( srcpath )
 
-    switch extname
-        when ".css"
-            final_code = uglifycss.processString(source)
-        when ".js"
-            ast = jsp.parse(source)
-            ast = pro.ast_mangle(ast)
-            ast = pro.ast_squeeze(ast)
-            final_code = pro.gen_code( ast )
+        switch extname
+            when ".css"
+                final_code = uglifycss.processString(source)
+            when ".js"
+                ast = jsp.parse(source)
+                ast = pro.ast_mangle(ast)
+                ast = pro.ast_squeeze(ast)
+                final_code = pro.gen_code( ast )
 
-    dest = srcpath.replace( extname , ".min" + extname )
+        dest = srcpath.replace( extname , ".min" + extname )
 
-    new utils.file.writer().write( dest , final_code )
+        new utils.file.writer().write( dest , final_code )
 
-    utils.logger.log( "已经处理 #{srcpath}  ==> #{dest}" )
+        utils.logger.log( "已经处理 #{srcpath}  ==> #{dest}" )
 
-    utils.logger.log("DONE.")
+        utils.logger.log("DONE.")
 
 
 exports.run = ( options ) ->

@@ -1,3 +1,4 @@
+async = require 'async'
 child_process = require 'child_process'
 syspath = require 'path'
 fs = require 'fs'
@@ -5,6 +6,7 @@ mkdirp = require 'mkdirp'
 yaml = require 'yaml'
 cjson = require 'cjson'
 _ = require 'underscore'
+
 
 
 #----------------------------
@@ -226,6 +228,32 @@ class FekitConfig
             else
                 utillogger.error("找不到文件 #{path}")
 
+    each_export_files_async : ( cb , doneCallback ) ->
+        tasks = []
+        list = @root["export"] || []
+        for file in list
+            _tmp = (file) =>
+                ( seriesCallback ) =>
+                    if _.isObject( file )
+                        path = syspath.join( @fekit_root_dirname , "src" , file.path )
+                        parents = _.map file.parents or [] , ( ppath ) =>
+                                        syspath.join( @fekit_root_dirname , "src" , ppath )
+                    else
+                        path = syspath.join( @fekit_root_dirname , "src" , file )
+                        parents = []
+                        
+                    if utilpath.exists( path ) 
+                        cb( path , parents , seriesCallback )
+                    else
+                        utillogger.error("找不到文件 #{path}")
+                        seriesCallback()
+
+            tasks.push _tmp(file)
+
+        async.series tasks , ( err ) ->
+            if err then throw err 
+            doneCallback()
+
     findExportFile : ( filepath , cb ) ->
     
         list = @root["export"] || []
@@ -327,4 +355,13 @@ exports.logger = utillogger =
     log : () ->
         console.info("[LOG] " , Array.prototype.join.call( arguments , " " ) )
 
+
+#---------------------------
+
+exports.exit = exit = (exitCode) ->
+    if process.stdout._pendingWriteReqs or process.stderr._pendingWriteReqs
+        process.nextTick () ->
+            exit(exitCode)
+    else
+        process.exit(exitCode)
 
