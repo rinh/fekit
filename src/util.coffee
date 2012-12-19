@@ -286,10 +286,16 @@ class UrlConvert
     # dev版本: http://qunarzz.com/home/dev/a@dev.js
     # src版本: http://qunarzz.com/home/src/a.js
     # prd版本: http://qunarzz.com/home/prd/a@(md5值).js
-    constructor: ( @uri ) ->
+    constructor: ( @uri , @root ) ->
         @REPLACE_STRING = "##REPLACE##"
-        baseuri = @uri.replace /[\/\\](dev|prd|src)[\/\\]/ , ($0,$1) =>
+        if !@root 
+            baseuri = @uri.replace /[\/\\](dev|prd|src)[\/\\]/ , ($0,$1) =>
                         return "/#{@REPLACE_STRING}/"
+        else
+            _tmp = ( @uri.replace @root , "" ).replace /[\/\\](dev|prd|src)[\/\\]/ , ($0,$1) =>
+                        return "/#{@REPLACE_STRING}/"
+            baseuri = syspath.join( @root , _tmp )
+
         extname = syspath.extname( baseuri )
         filename = syspath.basename( baseuri , extname )
         baseuri = baseuri.replace( filename + extname , "" )

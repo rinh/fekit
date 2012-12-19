@@ -23,7 +23,7 @@ process_directory = ( options ) ->
     conf.each_export_files_async(
         (srcpath, parents, seriesCallback) ->
             utils.logger.log( "正在处理 #{srcpath}" )
-            urlconvert = new utils.UrlConvert( srcpath )
+            urlconvert = new utils.UrlConvert( srcpath , options.cwd )
             writer = new utils.file.writer()
 
             _done = (  err , source ) ->

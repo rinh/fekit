@@ -83,7 +83,7 @@ setupServer = ( options ) ->
                     next()
                     return
 
-                urlconvert = new utils.UrlConvert(p)
+                urlconvert = new utils.UrlConvert(p,ROOT)
                 srcpath = urlconvert.to_src()
 
                 utils.logger.info("由 PRD #{req.url} 解析至 SRC #{srcpath}")

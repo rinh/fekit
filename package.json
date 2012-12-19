@@ -3,7 +3,7 @@
     "preferGlobal": "true",
     "name": "fekit",
     "description": "FE Toolkit",
-    "version": "0.1.10",
+    "version": "0.1.11",
     "bin": "./bin/fekit",
     "repository": {
         "type": "git",

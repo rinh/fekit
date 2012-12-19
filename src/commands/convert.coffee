@@ -54,7 +54,7 @@ JS_REG = /!!document\.write.*src=['"]([^'"]*)['"].*/g
 CSS_REG = /@import\s+url\s*\(\s*['"]?([^'"\)]*)['"]?\s*\)/g
 
 _replaceSrclist = ( filepath ) ->
-    url = new utils.UrlConvert( filepath )
+    url = new utils.UrlConvert( filepath , CURR )
     dest = url.to_src().replace('-srclist','')
 
     # 修改引用 

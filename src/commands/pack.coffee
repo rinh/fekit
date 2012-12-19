@@ -12,7 +12,7 @@ exports.run = ( options ) ->
 
     iter = (srcpath, parents, doneCallback) ->
             utils.logger.log( "正在处理 #{srcpath}" )
-            urlconvert = new utils.UrlConvert( srcpath )
+            urlconvert = new utils.UrlConvert( srcpath , options.cwd )
             dest = urlconvert.to_dev()
             _done = ( err , source ) -> 
                     if err 
