@@ -45,7 +45,7 @@ init_options = ( command ) ->
 
 
 
-command_run = ( cmd , options ) ->
+command_run = ( cmdname , cmd , options ) ->
 
     cmd.run( options )
 
@@ -91,7 +91,7 @@ exports.run = ( cmd ) ->
         if options.help
             command_help( cmd , command , options )
         else
-            command_run( command , options )
+            command_run( cmd , command , options )
 
     catch err
 

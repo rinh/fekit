@@ -13,7 +13,7 @@ exports.set_options = ( optimist ) ->
 
     optimist.alias 'f' , 'filename'
     optimist.describe 'f' , '指定编译某个文件, 而不是当前目录. 处理后默认将文件放在同名目录下并加后缀 min'
-
+    
 
 process_directory = ( options ) ->
 

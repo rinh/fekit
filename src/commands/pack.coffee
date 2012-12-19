@@ -3,6 +3,8 @@ utils = require "../util"
 
 exports.usage = "合并项目文件"
 
+exports.set_options = ( optimist ) ->
+    optimist
 
 exports.run = ( options ) ->
 
