@@ -1,9 +1,8 @@
 {
     "author": "hao.lin <hao.lin@qunar.com>",
-    "preferGlobal": "true",
     "name": "fekit",
     "description": "FE Toolkit",
-    "version": "0.1.11",
+    "version": "0.1.13",
     "bin": "./bin/fekit",
     "repository": {
         "type": "git",
@@ -34,7 +33,7 @@
     "devDependencies": {},
     "optionalDependencies": {},
     "engines": {
-        "node": ">=0.8"
+        "node": "*"
     },
     "license": "MIT",
     "scripts": {
