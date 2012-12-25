@@ -1,5 +1,5 @@
-import("./b")
+@import url("./b");
 
-import("./d")
+@import url("./d");
 
 a { border : 1px solid #fff;}

@@ -5,12 +5,12 @@ describe 'Module', ->
     describe '#reg', ->
         it 'should be right', ->
             lines = [
-                {  str : "//  import('a.js'); " , except : null  }
-                {  str : '  import("b.js"); ' , except : "b.js"  }
+                {  str : "//  @import url('a.js'); " , except : null  }
+                {  str : '  @import url("b.js"); ' , except : "b.js"  }
                 {  str : "  require('a.js'); " , except : "a.js"  }
                 {  str : '  require("b.js"); ' , except : "b.js"  }
-                {  str : "  import  (  'a.js' )   ; " , except : "a.js"  }
-                {  str : '  import("b.js"); ' , except : "b.js"  }
+                {  str : "  @import  url(  'a.js' )   ;; " , except : "a.js"  }
+                {  str : '  @import url("b.js"); ' , except : "b.js"  }
             ]
 
             for line in lines 

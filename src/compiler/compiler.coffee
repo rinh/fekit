@@ -11,9 +11,8 @@ md5 = require "MD5"
 MODULE_LINE_REGEXP = ///^
                         (
                         [^\/]*
-                        \b
                         )
-                        (import|require)
+                        (@import\s+url|require)
                         \s*
                         \(
                             \s*
@@ -22,7 +21,7 @@ MODULE_LINE_REGEXP = ///^
                             (?:["'])
                             \s*
                         \)
-                        \s*[;]?\s*
+                        [\s;]+
                    $///
 
 
