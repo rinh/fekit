@@ -33,7 +33,7 @@ check = () ->
 ###
 1. 处理 srclist
             a. 文件名变为普通
-            b. 修改引用方式 document.write 变为 import , js/css的
+            b. 修改引用方式 document.write 变为 require , js/css的
 ###
 process_srclist = () ->
     files = findit.sync( CURR )

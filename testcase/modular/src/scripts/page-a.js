@@ -1,4 +1,4 @@
-import('core/template/hogan-2.0.0-fixed')
+require('core/template/hogan-2.0.0-fixed')
 
 var helper = require('core.dom.helper');
 var dialog = require('core.widget.dialog.dialog');

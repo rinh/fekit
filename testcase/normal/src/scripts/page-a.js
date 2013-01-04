@@ -1,4 +1,4 @@
-import('core.dom.helper')
-import('core.widget.dialog.dialog')
-import('./page-a-part1.coffee')
+require('core.dom.helper')
+require('core.widget.dialog.dialog')
+require('./page-a-part1.coffee')
 // this is page-b.js

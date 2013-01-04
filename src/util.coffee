@@ -272,6 +272,8 @@ class FekitConfig
 
         cb( filepath , [] )
 
+    
+
 exports.config = utilconfig = 
     parse : ( baseUri ) ->
         return new FekitConfig( baseUri )
