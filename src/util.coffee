@@ -7,7 +7,7 @@ yaml = require 'yaml'
 cjson = require 'cjson'
 _ = require 'underscore'
 vm = require 'vm'
-
+coffee = require 'coffee-script'
 
 
 #----------------------------
@@ -23,6 +23,8 @@ exports.array = utilarray =
 #----------------------------
 
 exports.path = utilpath =
+    join : syspath.join 
+    
     closest : ( path , findfilename ) ->
         return _closest( path , findfilename )
 
@@ -222,10 +224,12 @@ class FekitConfig
                 parents = _.map file.parents or [] , ( ppath ) =>
                                 syspath.join( @fekit_root_dirname , "src" , ppath )
                 opts = file
+                opts.partial_path = file.path
             else
                 path = syspath.join( @fekit_root_dirname , "src" , file )
                 parents = []
-                opts.path = file
+                opts.path = path
+                opts.partial_path = file
 
             if utilpath.exists( path ) 
                 cb( path , parents , opts )
@@ -244,11 +248,13 @@ class FekitConfig
                         parents = _.map file.parents or [] , ( ppath ) =>
                                         syspath.join( @fekit_root_dirname , "src" , ppath )
                         opts = file
+                        opts.partial_path = file.path
                     else
                         path = syspath.join( @fekit_root_dirname , "src" , file )
                         parents = []
                         opts.path = file
-                        
+                        opts.partial_path = file
+
                     if utilpath.exists( path ) 
                         cb( path , parents , opts , seriesCallback )
                     else
@@ -279,20 +285,33 @@ class FekitConfig
 
         cb( filepath , [] )
 
-    doScript : ( type , global ) ->
+    doScript : ( type , context ) ->
 
-        global = global || {}
-        global.console = console
-
+        ctx = _.extend( context || {} , global )
+        ctx.path = utilpath
+        ctx.io = 
+            reader : new Reader()
+            writer : new Writer()
+        
         path = @root?.scripts?[type]
         return unless path
         path = syspath.join( @fekit_root_dirname , path )
         return unless utilpath.exists(path)
 
+        ctx.__dirname = syspath.dirname(path)
+        ctx.__filename = path
+
         utillogger.log("检测到自动脚本 #{type} , 开始执行.")
 
         code = new Reader().read( path )
-        vm.runInNewContext code , global
+        switch syspath.extname( path ) 
+            when ".js"
+                vm.runInNewContext code , ctx , path 
+            when ".coffee"
+                code = coffee.compile code 
+                vm.runInNewContext code , ctx , path 
+            else
+                throw "没有正确的自动化脚本解析器 #{path}"
 
         utillogger.log("自动脚本 #{type} , 执行完毕.")
 

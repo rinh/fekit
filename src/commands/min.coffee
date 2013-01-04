@@ -20,16 +20,15 @@ process_directory = ( options ) ->
     script_global =
         EXPORT_LIST : []
         EXPORT_MAP : {}
-        util : utils 
 
     conf = utils.config.parse( options.cwd )
 
-    conf.each_export_files ( srcpath ) ->
+    conf.each_export_files ( srcpath , parents , opts ) ->
         iter = 
             url : srcpath 
-            path : srcpath.replace( options.cwd , "" )
+            path : syspath.join( "src" , opts.partial_path )
         script_global.EXPORT_LIST.push( iter )
-        script_global.EXPORT_MAP[ srcpath ] = iter
+        script_global.EXPORT_MAP[ opts.partial_path ] = iter
 
     conf.doScript "premin" , script_global 
 
@@ -63,8 +62,8 @@ process_directory = ( options ) ->
                 # 生成对应的 ver 文件
                 writer.write( urlconvert.to_ver() , md5code ) 
 
-                script_global.EXPORT_MAP[srcpath]?.ver = md5code
-                script_global.EXPORT_MAP[srcpath]?.minpath = dest.replace( options.cwd , "" )
+                script_global.EXPORT_MAP[ opts.partial_path ]?.ver = md5code
+                script_global.EXPORT_MAP[ opts.partial_path ]?.minpath = dest.replace( options.cwd , "" )
 
                 utils.logger.log( "已经处理 #{srcpath}  ==> #{dest}" )
                 seriesCallback()
