@@ -24,7 +24,7 @@ exports.array = utilarray =
 
 exports.path = utilpath =
     join : syspath.join 
-    
+
     closest : ( path , findfilename ) ->
         return _closest( path , findfilename )
 
@@ -287,7 +287,7 @@ class FekitConfig
 
     doScript : ( type , context ) ->
 
-        ctx = _.extend( context || {} , global )
+        ctx = context || {} 
         ctx.path = utilpath
         ctx.io = 
             reader : new Reader()
@@ -298,23 +298,32 @@ class FekitConfig
         path = syspath.join( @fekit_root_dirname , path )
         return unless utilpath.exists(path)
 
-        ctx.__dirname = syspath.dirname(path)
-        ctx.__filename = path
-
         utillogger.log("检测到自动脚本 #{type} , 开始执行.")
-
-        code = new Reader().read( path )
-        switch syspath.extname( path ) 
-            when ".js"
-                vm.runInNewContext code , ctx , path 
-            when ".coffee"
-                code = coffee.compile code 
-                vm.runInNewContext code , ctx , path 
-            else
-                throw "没有正确的自动化脚本解析器 #{path}"
-
+        _runCode( path , ctx )
         utillogger.log("自动脚本 #{type} , 执行完毕.")
 
+
+_runCode = ( path , ctx ) ->
+    Module = require('module')
+    mod = new Module( path )
+    context = _.extend( {} , ctx )
+    context.module = mod
+    context.__filename = path
+    context.__dirname = syspath.dirname( path )
+    context.require = ( path ) ->
+        return mod.require( path )
+
+    code = new Reader().read( path )
+    switch syspath.extname( path ) 
+        when ".js"
+            code = code
+        when ".coffee"
+            code = coffee.compile code
+        else
+            throw "没有正确的自动化脚本解析器 #{path}"
+
+    m = vm .createScript( code )
+    m.runInNewContext( context )
 
 
 exports.config = utilconfig = 
