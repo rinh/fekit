@@ -16,9 +16,23 @@ exports.set_options = ( optimist ) ->
     
 
 process_directory = ( options ) ->
+    
+    script_global =
+        EXPORT_LIST : []
+        util : utils
 
+    EXPORT_LIST_KEY = {}
 
     conf = utils.config.parse( options.cwd )
+
+    conf.each_export_files ( srcpath ) ->
+        iter = 
+            url : srcpath 
+            path : srcpath.replace( options.cwd , "" )
+        script_global.EXPORT_LIST.push( iter )
+        EXPORT_LIST_KEY[ srcpath ] = iter
+
+    conf.doScript "premin" , script_global 
 
     conf.each_export_files_async(
         (srcpath, parents, seriesCallback) ->
@@ -49,6 +63,9 @@ process_directory = ( options ) ->
                 # 生成对应的 ver 文件
                 writer.write( urlconvert.to_ver() , md5code ) 
 
+                EXPORT_LIST_KEY[srcpath]?.ver = md5code
+                EXPORT_LIST_KEY[srcpath]?.minpath = dest.replace( options.cwd , "" )
+
                 utils.logger.log( "已经处理 #{srcpath}  ==> #{dest}" )
                 seriesCallback()
 
@@ -58,6 +75,7 @@ process_directory = ( options ) ->
  
 
         () ->
+            conf.doScript "postmin" , script_global 
             utils.logger.log("DONE.")
     )
 

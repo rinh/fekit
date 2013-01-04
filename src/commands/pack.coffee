@@ -8,6 +8,11 @@ exports.set_options = ( optimist ) ->
 
 exports.run = ( options ) ->
 
+
+    script_global =
+        EXPORT_LIST : []
+        util : utils
+
     conf = utils.config.parse( options.cwd )
 
     iter = (srcpath, parents, doneCallback) ->
@@ -27,6 +32,15 @@ exports.run = ( options ) ->
             compiler.compile srcpath , { dependencies_filepath_list : parents } , _done
                 
     done = () -> 
+            conf.doScript "postpack" , script_global
             utils.logger.log("DONE.")
+
+    conf.each_export_files ( srcpath ) ->
+        script_global.EXPORT_LIST.push {
+            url : srcpath , 
+            path : srcpath.replace( options.cwd , "" )
+        }
+
+    conf.doScript "prepack" , script_global 
 
     conf.each_export_files_async iter , done

@@ -6,6 +6,7 @@ mkdirp = require 'mkdirp'
 yaml = require 'yaml'
 cjson = require 'cjson'
 _ = require 'underscore'
+vm = require 'vm'
 
 
 
@@ -272,7 +273,24 @@ class FekitConfig
 
         cb( filepath , [] )
 
-    
+    doScript : ( type , global ) ->
+
+        global = global || {}
+        global.console = console
+
+        path = @root?.scripts?[type]
+        return unless path
+        path = syspath.join( @fekit_root_dirname , path )
+        return unless utilpath.exists(path)
+
+        utillogger.log("检测到自动脚本 #{type} , 开始执行.")
+
+        code = new Reader().read( path )
+        vm.runInNewContext code , global
+
+        utillogger.log("自动脚本 #{type} , 执行完毕.")
+
+
 
 exports.config = utilconfig = 
     parse : ( baseUri ) ->

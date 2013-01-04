@@ -42,7 +42,7 @@ FEKIT
 
     {
         // 编译方案, 参考 [issue #1](https://github.com/rinh/fekit/issues/1)
-        "compiler" : `false` 或 `modular` ,
+        "compiler" : false 或 "modular" ,
 
         // 库的配置, 该库作为编译时, @import url 和 require 使用
         "lib" : {
@@ -62,7 +62,15 @@ FEKIT
                 "parents" : [ "./scripts/page-a.js" ]
             }
             
-        ]
+        ] ,
+
+        // 自动化hook脚本, 请参考 https://github.com/rinh/fekit/issues/10
+        "scripts" : {
+            "premin" : "./build/premin.js" ,
+            "postmin" : "./build/premin.js" ,
+            "prepack" : "./build/premin.js" ,
+            "postpack" : "./build/premin.js"
+        }
     }
 
 ## 为fekit贡献代码
