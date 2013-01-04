@@ -60,6 +60,13 @@ FEKIT
             { 
                 "path" : "./scripts/page-b.js" ,
                 "parents" : [ "./scripts/page-a.js" ]
+            } , 
+
+            // 允许某个文件不含版本号信息 
+            // 参考: https://github.com/rinh/fekit/issues/11
+            {
+                "path" : "./scripts/page-c.js" , 
+                "no_version" : true
             }
             
         ] ,

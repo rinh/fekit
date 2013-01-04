@@ -35,9 +35,10 @@ process_directory = ( options ) ->
     conf.doScript "premin" , script_global 
 
     conf.each_export_files_async(
-        (srcpath, parents, seriesCallback) ->
+        (srcpath, parents, opts, seriesCallback) ->
             utils.logger.log( "正在处理 #{srcpath}" )
             urlconvert = new utils.UrlConvert( srcpath , options.cwd )
+            urlconvert.set_no_version() if opts.no_version 
             writer = new utils.file.writer()
 
             _done = (  err , source ) ->

@@ -216,16 +216,19 @@ class FekitConfig
     each_export_files : ( cb ) ->
         list = @root["export"] || []
         for file in list
+            opts = {}
             if _.isObject( file )
                 path = syspath.join( @fekit_root_dirname , "src" , file.path )
                 parents = _.map file.parents or [] , ( ppath ) =>
                                 syspath.join( @fekit_root_dirname , "src" , ppath )
+                opts = file
             else
                 path = syspath.join( @fekit_root_dirname , "src" , file )
                 parents = []
+                opts.path = file
 
             if utilpath.exists( path ) 
-                cb( path , parents )
+                cb( path , parents , opts )
             else
                 utillogger.error("找不到文件 #{path}")
 
@@ -235,16 +238,19 @@ class FekitConfig
         for file in list
             _tmp = (file) =>
                 ( seriesCallback ) =>
+                    opts = {}
                     if _.isObject( file )
                         path = syspath.join( @fekit_root_dirname , "src" , file.path )
                         parents = _.map file.parents or [] , ( ppath ) =>
                                         syspath.join( @fekit_root_dirname , "src" , ppath )
+                        opts = file
                     else
                         path = syspath.join( @fekit_root_dirname , "src" , file )
                         parents = []
+                        opts.path = file
                         
                     if utilpath.exists( path ) 
-                        cb( path , parents , seriesCallback )
+                        cb( path , parents , opts , seriesCallback )
                     else
                         utillogger.error("找不到文件 #{path}")
                         seriesCallback()
@@ -326,14 +332,28 @@ class UrlConvert
         @filename = filename
         @fnames = fnames
 
+        @has_version = true
+
+    set_no_version : () ->
+        @has_version = false
+
+    set_has_version : () ->
+        @has_version = true
+
     to_prd: ( md5 ) ->
         prefix = @baseuri.replace( @REPLACE_STRING , "prd" )
-        name = @fnames[0] + "@" + md5 + @extname
+        if @has_version
+            name = @fnames[0] + "@" + md5 + @extname
+        else
+            name = @fnames[0] + @extname
         return syspath.join( prefix , name )
 
     to_dev: () ->
         prefix = @baseuri.replace( @REPLACE_STRING , "dev" )
-        name = @fnames[0] + "@dev" + @extname
+        if @has_version
+            name = @fnames[0] + "@dev" + @extname
+        else 
+            name = @fnames[0] + @extname
         return syspath.join( prefix , name )
 
     to_src: () ->

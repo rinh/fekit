@@ -15,9 +15,10 @@ exports.run = ( options ) ->
 
     conf = utils.config.parse( options.cwd )
 
-    iter = (srcpath, parents, doneCallback) ->
+    iter = (srcpath, parents, opts, doneCallback) ->
             utils.logger.log( "正在处理 #{srcpath}" )
             urlconvert = new utils.UrlConvert( srcpath , options.cwd )
+            urlconvert.set_no_version() if opts.no_version 
             dest = urlconvert.to_dev()
             _done = ( err , source ) -> 
                     if err 
