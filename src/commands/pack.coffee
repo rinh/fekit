@@ -11,6 +11,7 @@ exports.run = ( options ) ->
 
     script_global =
         EXPORT_LIST : []
+        EXPORT_MAP : {}
         util : utils
 
     conf = utils.config.parse( options.cwd )
@@ -37,10 +38,12 @@ exports.run = ( options ) ->
             utils.logger.log("DONE.")
 
     conf.each_export_files ( srcpath ) ->
-        script_global.EXPORT_LIST.push {
-            url : srcpath , 
+        iter = 
+            url : srcpath 
             path : srcpath.replace( options.cwd , "" )
-        }
+            
+        script_global.EXPORT_MAP[ srcpath ] = iter
+        script_global.EXPORT_LIST.push iter
 
     conf.doScript "prepack" , script_global 
 

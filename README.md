@@ -71,7 +71,7 @@ FEKIT
             
         ] ,
 
-        // 自动化hook脚本, 请参考 https://github.com/rinh/fekit/issues/10
+        // 自动化hook脚本, 请参考 https://github.com/rinh/fekit/issues/10 , https://github.com/rinh/fekit/issues/12
         "scripts" : {
             "premin" : "./build/premin.js" ,
             "postmin" : "./build/premin.js" ,
