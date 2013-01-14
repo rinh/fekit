@@ -347,9 +347,10 @@ getSource = ( module , options , callback ) ->
 
         if options.no_dependencies isnt true
             for sub_module in module.depends
-                if USED_MODULES[ sub_module.guid ] then continue
                 _tmp = (sub_module) -> 
                     ( seriesCallback ) =>
+                        if USED_MODULES[ sub_module.guid ]
+                            seriesCallback()
                         getSource sub_module , options , ( e , txt ) ->
                             arr.push( txt )
                             seriesCallback( e )
