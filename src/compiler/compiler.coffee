@@ -351,6 +351,7 @@ getSource = ( module , options , callback ) ->
                     ( seriesCallback ) =>
                         if USED_MODULES[ sub_module.guid ]
                             seriesCallback()
+                            return
                         getSource sub_module , options , ( e , txt ) ->
                             arr.push( txt )
                             seriesCallback( e )
