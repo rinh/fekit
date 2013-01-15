@@ -51,7 +51,7 @@ process_directory = ( options ) ->
                     when ".js"
                         ast = jsp.parse(source)
                         ast = pro.ast_mangle(ast)
-                        ast = pro.ast_squeeze(ast)
+                        #ast = pro.ast_squeeze(ast)
                         final_code = pro.gen_code( ast )
 
                 md5code = md5(final_code)
@@ -96,7 +96,7 @@ process_single_file = ( options ) ->
             when ".js"
                 ast = jsp.parse(source)
                 ast = pro.ast_mangle(ast)
-                ast = pro.ast_squeeze(ast)
+                #ast = pro.ast_squeeze(ast)
                 final_code = pro.gen_code( ast )
 
         dest = srcpath.replace( extname , ".min" + extname )
