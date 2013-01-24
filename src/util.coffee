@@ -82,7 +82,7 @@ exports.path = utilpath =
 
         for name in filenames
             p = syspath.join( root , name )
-            if fs.existsSync( p ) 
+            if utilpath.exists( p ) 
                 return p
         throw "找不到文件列表中的任一文件 #{root} 下的 [#{filenames.join()}]"
 
