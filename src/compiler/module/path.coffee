@@ -74,6 +74,11 @@ ModulePath.resolvePath = ( path , parentModule ) ->
 ModulePath.getContentType = ( extname ) ->
     ModulePath.EXTTABLE[ extname ]?.contentType
 
+
+ModulePath.addExtensionPlugin = ( extName , plugin ) ->
+    ModulePath.EXTLIST.push( extName )
+    ModulePath.EXTTABLE[ extName ] = plugin
+
 # 后缀列表 
 ModulePath.EXTLIST = []
 ModulePath.EXTTABLE = {}

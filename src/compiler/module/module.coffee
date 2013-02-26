@@ -131,8 +131,7 @@ Module.parse = ( line , parentModule ) ->
 
 
 Module.addExtensionPlugin = ( extName , plugin ) ->
-    ModulePath.EXTLIST.push( extName )
-    ModulePath.EXTTABLE[ extName ] = plugin
+    ModulePath.addExtensionPlugin( extName , plugin )
 
 #--------------------
 

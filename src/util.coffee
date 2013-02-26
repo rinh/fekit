@@ -306,7 +306,7 @@ class FekitConfig
 _runCode = ( path , ctx ) ->
     Module = require('module')
     mod = new Module( path )
-    context = _.extend( {} , ctx )
+    context = _.extend( {} , global , ctx )
     context.module = mod
     context.__filename = path
     context.__dirname = syspath.dirname( path )
