@@ -33,7 +33,7 @@ MODULE_LINE_REGEXP = ///^
                             (?:["'])
                             \s*
                         \)
-                        [\s;]?
+                        [\s;]*
                    $///
 
 exports.MODULE_LINE_REGEXP = MODULE_LINE_REGEXP

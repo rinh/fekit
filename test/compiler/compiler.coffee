@@ -8,6 +8,8 @@ describe 'Module', ->
                 {  str : "//  @import url('a.js'); " , except : null  }
                 {  str : '  @import url("b.js"); ' , except : "b.js"  }
                 {  str : "  require('a.js'); " , except : "a.js"  }
+                {  str : "  require('d.js') " , except : "d.js"  }
+                {  str : "  require('d1.js');; ; ; ; " , except : "d1.js"  }
                 {  str : '  require("b.js"); ' , except : "b.js"  }
                 {  str : "  @import  url(  'a.js' )   ;; " , except : "a.js"  }
                 {  str : '  @import url("b.js"); ' , except : "b.js"  }
