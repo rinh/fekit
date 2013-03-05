@@ -79,6 +79,9 @@ ModulePath.addExtensionPlugin = ( extName , plugin ) ->
     ModulePath.EXTLIST.push( extName )
     ModulePath.EXTTABLE[ extName ] = plugin
 
+ModulePath.getPlugin = ( extName ) ->
+    ModulePath.EXTTABLE[ extName ]
+
 # 后缀列表 
 ModulePath.EXTLIST = []
 ModulePath.EXTTABLE = {}

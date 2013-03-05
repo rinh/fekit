@@ -67,7 +67,7 @@ exports.path = utilpath =
             throw err
             return false
 
-    each_directory: ( path , cb ) ->
+    each_directory: ( path , cb , is_recursion ) ->
 
         if !utilpath.is_directory( path )
             path = syspath.dirname( path )
@@ -75,8 +75,16 @@ exports.path = utilpath =
         list = fs.readdirSync( path )
         for f in list 
             p = syspath.join( path , f )
-            if f isnt "." and f isnt ".." and !utilpath.is_directory( p )
-                cb( p )
+            if !is_recursion
+                if f isnt "." and f isnt ".." and !utilpath.is_directory( p )
+                    cb( p )
+            else 
+                if f isnt "." and f isnt ".." 
+                    if !utilpath.is_directory( p )
+                        cb( p )
+                    else
+                        utilpath.each_directory( p , cb , is_recursion )
+
 
     existsFiles: ( root , filenames ) ->
 
@@ -150,6 +158,7 @@ class Writer
 exports.file = utilfile = {}        
 utilfile.reader = Reader
 utilfile.writer = Writer
+utilfile.io = _.extend( {}, Reader.prototype , Writer.prototype )
 utilfile.NEWLINE = '\n'
 
 utilfile.copy = (srcFile, destFile) ->

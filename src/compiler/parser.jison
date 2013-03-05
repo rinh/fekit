@@ -66,38 +66,66 @@ comment_chr
 // -------------  common -------------
 
 var _ = require("underscore");
-var util = require("util")
+var util = require("util");
+var EventEmitter = require('events').EventEmitter;
 
 function AstNode() {};
-AstNode.prototype = {
+
+util.inherits(AstNode, EventEmitter);
+
+_.extend( AstNode.prototype , {
+
     setParam : function( param ) {
         this.params.push( param );
         this["$"+this.params.length] = param;
+    } , 
+
+    print : function(){
+        var r = [];
+        this.params.forEach(function(i){
+            r.push( typeof i.print != 'undefined' ? i.print() : i );
+        });
+        var obj = {
+            target : this ,
+            source : r.join('')
+        };
+        this.emit('printing',obj)
+        return obj.source;
+    },
+
+    find : function( name , cb ) {
+        var r = [];
+        this.params.forEach(function(i){
+            if( i.name == name ) {
+                r.push(i);
+                if( cb ) { cb(i); }    
+            } else if( i.find ) {
+                r = r.concat( i.find( name , cb ) );
+            }
+        });
+        return r;
     }
-}
+});
+
+
 
 function defineNode( name , prop ) {
     var CLS_NAME = name + "_AstNode";
-    parser.yy[ CLS_NAME ] = CLS = function( name ) {
-        this.name = name;
-        this.params = [];
-    };
+    var CLS = parser.yy[ CLS_NAME ];
+    if( !CLS ) {
+        parser.yy[ CLS_NAME ] = CLS = function( name ) {
+            this.name = name;
+            this.params = [];
+        };
+    }
     _.extend( CLS.prototype , AstNode.prototype );
     _.extend( CLS.prototype , prop );
-}
+};
 
 function o( name ) {
     var CLS = parser.yy[ name + "_AstNode" ];
     if( !CLS ) {
-        defineNode( name , {
-            print : function(){
-                var r = [];
-                this.params.forEach(function(i){
-                    r.push( typeof i.print != 'undefined' ? i.print() : i );
-                });
-                return r.join('');
-            }
-        });
+        defineNode( name );
         CLS = parser.yy[ name + "_AstNode" ];
     }
     var n = new CLS( name );
@@ -116,13 +144,32 @@ defineNode('STATEMENTS',{
         this.$1.forEach(function(i){
             lines.push( i.print() );
         });
-        return lines.join('');
+        var obj = {
+            target : this ,
+            source : lines.join('')
+        }
+        this.emit('printing',obj)
+        return obj.source;
+    } , 
+    find : function( name , cb ){
+        var r = [];
+        this.$1.forEach(function(i){
+            if( i.name ) {
+                if( i.name == name + '_AstNode' ) {
+                    r.push(i);
+                    if( cb ) { cb(i); }    
+                } else if( i.find ) {
+                    r = r.concat( i.find( name , cb ) );
+                }
+            }
+        });
+        return r;   
     }
 });
 
 defineNode('REQUIRE',{
-    print : function(){
-        return "[加载" + this.$3.print() + "]";
+    getPath : function(){
+        return this.$3.$1.replace(/("|')/g,"");
     }
 });
 
