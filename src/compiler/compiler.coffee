@@ -350,11 +350,12 @@ getSource = ( module , options , callback ) ->
                 _tmp = (sub_module) -> 
                     ( seriesCallback ) =>
                         if USED_MODULES[ sub_module.guid ]
-                            seriesCallback()
+                            process.nextTick seriesCallback
                             return
                         getSource sub_module , options , ( e , txt ) ->
                             arr.push( txt )
-                            seriesCallback( e )
+                            process.nextTick ()->
+                                seriesCallback( e )
                 deps.push _tmp(sub_module)
 
         async.series deps , ( err ) ->
