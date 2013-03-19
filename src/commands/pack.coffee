@@ -9,7 +9,6 @@ exports.set_options = ( optimist ) ->
 
 exports.run = ( options ) ->
 
-
     script_global =
         EXPORT_LIST : []
         EXPORT_MAP : {}

@@ -105,7 +105,6 @@ class JSModule extends Module
         super(uri)
 
     analyzed: () ->
-
         if @config.isCompileTypeNormal()
             @ast.find 'REQUIRE' , ( node ) ->
                 node.print = () ->

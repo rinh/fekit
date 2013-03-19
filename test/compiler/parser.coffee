@@ -45,7 +45,19 @@ describe 'Parser', ->
             })
 
             s = parser.parse('require("./abc/def");').print();
-            assert.equal( s , '[load ./abc/def];')
+            assert.equal( s , '[load ./abc/def]')
+
+            s = parser.parse('require("./abc/def").abc').print();
+            assert.equal( s , '[load ./abc/def].abc')
+
+            s = parser.parse('require("./abc");require("./def");').print();
+            assert.equal( s , '[load ./abc][load ./def]')
+
+            s = parser.parse('require("./abc");\nrequire("./def");').print();
+            assert.equal( s , '[load ./abc]\n[load ./def]')
+
+            s = parser.parse('require("./abc")\nrequire("./def")').print();
+            assert.equal( s , '[load ./abc]\n[load ./def]')
 
 
             parser.defineNode('LINE_COMMENT_STATEMENT',{

@@ -6,7 +6,7 @@ testcase_dir = util.path.join( __dirname , '../testcase' )
 
 do_case = ( cmd , case_name , cb ) ->
     command = "node #{util.path.join(testcase_dir,'../bin/fekit')} #{cmd}"
-    cwd = util.path.join( testcase_dir , case_name )
+    cwd = util.path.join( testcase_dir , case_name , "case" )
 
     exec( command , {
         cwd : cwd 
@@ -40,9 +40,10 @@ describe 'testcase case', ->
 
     this.timeout( 3 * 60 * 1000 )
 
-    describe '普通编译模式', ->
+    describe 'simple 普通编译模式', ->
 
         it '使用不同路径写法合并js文件', (done) ->
+
             do_case 'pack', 'simple' , () ->
                 done()
 

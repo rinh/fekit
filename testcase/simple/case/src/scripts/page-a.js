@@ -1,4 +1,4 @@
 require('./a.js');
 require('b');
-require('../scripts/c');
+require('../scripts/c')
 // this is page-a.js

@@ -219,7 +219,7 @@ class FekitConfig
             if !@root.lib then @root.lib = {}
         catch err
             if utilpath.exists( @fekit_config_path )
-                throw "@fekit_config_filename 解析失败, 请确认该文件格式是否符合正确的JSON格式"
+                throw "#{@fekit_config_filename} 解析失败, 请确认该文件格式是否符合正确的JSON格式"
             else
                 # 如果没有fekit, 有可能是使用单独文件编译模式, 则使用默认配置
                 @root = { "lib" : {} , "export" : [] }
