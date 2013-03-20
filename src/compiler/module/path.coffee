@@ -5,15 +5,23 @@ utils = require '../../util'
     模块路径
 ###
 class ModulePath
-    
+
     # @uri 物理真实路径
     constructor:( @uri ) ->
 
     parseify:( path_without_extname ) ->
         extname = @extname()
         if ~ModulePath.EXTLIST.indexOf( extname )
-            return utils.file.findify( path_without_extname , ModulePath.EXTLIST )
-        throw "not found extname for compile [#{extname}]"
+            result = utils.file.findify( path_without_extname , ModulePath.EXTLIST )
+            #如果仍然没有，则以 path_without_extname 为目录名进行测试
+            if result is null and utils.path.is_directory( path_without_extname )
+                p = utils.path.join( path_without_extname , "index" )
+                result = utils.file.findify( p , ModulePath.EXTLIST )
+        if result
+            console.info("result>>",result)
+            return result
+        else
+            throw "找不到文件或对应的编译方案 [#{path_without_extname}] 后缀检查列表为[#{ModulePath.EXTLIST}]"
 
     extname:() ->
         return syspath.extname(@uri)

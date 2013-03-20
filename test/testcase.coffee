@@ -42,7 +42,7 @@ describe 'testcase case', ->
 
     describe 'simple 普通编译模式', ->
 
-        it '使用不同路径写法合并js文件', (done) ->
+        it '使用不同路径写法合并js/css文件', (done) ->
 
             do_case 'pack', 'simple' , () ->
                 done()

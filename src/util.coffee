@@ -176,13 +176,14 @@ utilfile.copy = (srcFile, destFile) ->
     fs.closeSync(fdw)
 
 
+# 按照给定的后缀名列表找到文件
 utilfile.findify = ( path_without_extname , ext_list ) ->
     list = [ "" ].concat( ext_list )
     for ext in list
         path = path_without_extname + ext 
-        if utilpath.exists( path )
+        if utilpath.exists( path ) and !utilpath.is_directory( path )
             return path
-    throw "找不到文件或对应的编译方案 [#{path_without_extname}] 后缀检查列表为[#{ext_list}]"
+    return null
 
 #----------------------------
 
