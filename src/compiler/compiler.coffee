@@ -112,7 +112,6 @@ class JSModule extends Module
                 #{@sources.join( utils.file.NEWLINE )}
 
                 })( module_exports );
-                if ( r ) { module_exports = r; } 
                 __context.____MODULES[ "#{@guid}" ] = module_exports;
             })(this);
 
