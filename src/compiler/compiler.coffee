@@ -111,11 +111,11 @@ class JSModule extends Module
                     exports : {}
                 };
                 if( !__context.____MODULES ) { __context.____MODULES = {}; }
-                var r = (function( exports ){
+                var r = (function( exports , module , global ){
 
                 #{@sources.join( utils.file.NEWLINE )}
 
-                })( module.exports , module );
+                })( module.exports , module , __context );
                 __context.____MODULES[ "#{@guid}" ] = module.exports;
             })(this);
 
