@@ -105,14 +105,18 @@ class JSModule extends Module
         """
 
             ;(function(__context){
-                var module_exports = {};
+                var module = {
+                    id : "#{@guid}" , 
+                    filename : "#{@path.getFullPath()}" ,
+                    exports : {}
+                };
                 if( !__context.____MODULES ) { __context.____MODULES = {}; }
                 var r = (function( exports ){
 
                 #{@sources.join( utils.file.NEWLINE )}
 
-                })( module_exports );
-                __context.____MODULES[ "#{@guid}" ] = module_exports;
+                })( module.exports , module );
+                __context.____MODULES[ "#{@guid}" ] = module.exports;
             })(this);
 
         """
