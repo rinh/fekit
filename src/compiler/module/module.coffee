@@ -121,15 +121,18 @@ class JSModule extends Module
         """
 
             ;(function(__context){
-                var module_exports = {};
+                var module = {
+                    id : "#{@guid}" , 
+                    filename : "#{@path.getFullPath()}" ,
+                    exports : {}
+                };
                 if( !__context.____MODULES ) { __context.____MODULES = {}; }
-                var r = (function( exports ){
+                var r = (function( exports , module , global ){
 
                 #{source}
 
-                })( module_exports );
-                if ( r ) { module_exports = r; } 
-                __context.____MODULES[ "#{@guid}" ] = module_exports;
+                })( module.exports , module , __context );
+                __context.____MODULES[ "#{@guid}" ] = module.exports;
             })(this);
 
         """
