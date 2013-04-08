@@ -1,3 +1,4 @@
+rimraf = require 'rimraf'
 async = require 'async'
 child_process = require 'child_process'
 syspath = require 'path'
@@ -22,11 +23,49 @@ exports.array = utilarray =
 
 #----------------------------
 
+
+_closest = ( p , findfilename ) ->
+    if p is "/" or ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) )
+        return null
+
+    if utilpath.is_directory(p)
+        dir = p
+    else
+        dir = syspath.dirname(p)
+
+    files = fs.readdirSync( dir )
+    for file in files
+        if file == findfilename
+            return dir
+
+    return _closest( syspath.dirname( dir ) , findfilename )
+
+
+_closest_dir = ( p , finddirname ) ->
+    if p is "/" or ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) )
+        return null
+
+    if utilpath.is_directory(p)
+        dir = p
+    else
+        dir = syspath.dirname(p)
+
+    files = fs.readdirSync( dir )
+    for file in files
+        if file is finddirname and utilpath.is_directory( file )
+            return dir
+
+    return _closest_dir( syspath.dirname( dir ) , finddirname )
+
+
 exports.path = utilpath =
     join : syspath.join 
 
-    closest : ( path , findfilename ) ->
-        return _closest( path , findfilename )
+    closest : ( path , findfilename , is_directory ) ->
+        if is_directory
+            return _closest_dir( path , findfilename )
+        else
+            return _closest( path , findfilename )
 
     SEPARATOR : syspath.join('a','a').replace(/a/g,'')
 
@@ -98,22 +137,6 @@ exports.path = utilpath =
         return ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) ) or path.charAt(0) is "/" 
 
 
-_closest = ( p , findfilename ) ->
-    if p is "/" or ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) )
-        return null
-
-    if utilpath.is_directory(p)
-        dir = p
-    else
-        dir = syspath.dirname(p)
-
-    files = fs.readdirSync( dir )
-    for file in files
-        if file == findfilename
-            return dir
-
-    return _closest( syspath.dirname( dir ) , findfilename )
-
 #----------------------------
 
 
@@ -174,6 +197,13 @@ utilfile.copy = (srcFile, destFile) ->
         pos += bytesRead
     fs.closeSync(fdr)
     fs.closeSync(fdw)
+
+
+utilfile.rmrf = ( dest , cb ) ->
+    if cb 
+        rimraf dest , cb 
+    else
+        rimraf.sync dest
 
 
 # 按照给定的后缀名列表找到文件

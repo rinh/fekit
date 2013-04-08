@@ -2,7 +2,7 @@
     "author": "hao.lin <hao.lin@qunar.com>",
     "name": "fekit",
     "description": "FE Toolkit",
-    "version": "0.1.24",
+    "version": "0.2.0",
     "bin": "./bin/fekit",
     "repository": {
         "type": "git",
@@ -28,7 +28,8 @@
         "yaml" : "0.2.x" , 
         "findit" : "0.1.x" , 
         "cjson" : "0.2.x" , 
-        "connect-url-rewrite" : "0.1.0"
+        "connect-url-rewrite" : "0.1.0" , 
+        "rimraf" : "2.1.4"
     },
     "devDependencies": {},
     "optionalDependencies": {},
