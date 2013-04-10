@@ -1,3 +1,4 @@
+request = require 'request'
 rimraf = require 'rimraf'
 async = require 'async'
 child_process = require 'child_process'
@@ -9,7 +10,11 @@ cjson = require 'cjson'
 _ = require 'underscore'
 vm = require 'vm'
 coffee = require 'coffee-script'
-
+ncp = require('ncp').ncp
+tar = require 'tar'
+fstream = require 'fstream'
+zlib = require 'zlib'
+sty = require 'sty'
 
 #----------------------------
 
@@ -60,6 +65,9 @@ _closest_dir = ( p , finddirname ) ->
 
 exports.path = utilpath =
     join : syspath.join 
+
+    get_user_home : () ->
+        return process.env[ if (process.platform == 'win32') then 'USERPROFILE' else 'HOME'];
 
     closest : ( path , findfilename , is_directory ) ->
         if is_directory
@@ -197,6 +205,9 @@ utilfile.copy = (srcFile, destFile) ->
         pos += bytesRead
     fs.closeSync(fdr)
     fs.closeSync(fdw)
+
+utilfile.cpr = ( src , dest , cb ) ->
+    ncp src , dest , cb
 
 
 utilfile.rmrf = ( dest , cb ) ->
@@ -456,18 +467,38 @@ exports.sys = utilsys =
 
 #---------------------------
 
+exports.http = utilhttp = 
+
+    get : ( url , cb ) ->
+        utillogger.log "fekit #{sty.red 'http'} #{sty.green 'GET'} #{url}"
+        request url , cb 
+
+    put : ( url , filepath , cb ) ->
+        utillogger.log "fekit #{sty.red 'http'} #{sty.green 'PUT'} #{url}"
+
+        fs.createReadStream( filepath ).pipe( 
+            request.put url, ( err , res , body ) ->
+                cb err , body
+        )
+
+
+#---------------------------
+
 
 exports.logger = utillogger = 
     debug : false ,
     setup : ( options ) ->
         if options && options.debug then utillogger.debug = true 
-    info : () ->
+    trace : () ->
         if !utillogger.debug then return
-        console.info("[TRACE] " , Array.prototype.join.call( arguments , " " ) )
+        utillogger.to("[TRACE] " , Array.prototype.join.call( arguments , " " ) )
     error : () ->
-        console.info("[ERROR] " , Array.prototype.join.call( arguments , " " ) )
+        utillogger.to("[ERROR] " , Array.prototype.join.call( arguments , " " ) )
     log : () ->
-        console.info("[LOG] " , Array.prototype.join.call( arguments , " " ) )
+        utillogger.to("[LOG] " , Array.prototype.join.call( arguments , " " ) )
+    to : () ->
+        n = Array.prototype.join.call( arguments , "" )
+        console.info n 
 
 
 #---------------------------
@@ -478,6 +509,41 @@ exports.exit = exit = (exitCode) ->
             exit(exitCode)
     else
         process.exit(exitCode)
+
+
+#---------------------------
+
+# tar util
+
+exports.tar = 
+    
+    pack : ( source , dest , callback ) ->
+
+        fs.stat source, (err, stat) ->
+
+            process.nextTick ->
+                gzip = zlib.createGzip
+                    level : 6
+                    memLevel : 6
+ 
+                reader = fstream.Reader
+                    path : source
+                    type : 'Directory'
+                    depth : 1 
+                    filter : () ->
+                        return !this.basename.match(/^fekit_modules$/)
+
+                # 依赖 https://github.com/rinh/node-tar 修改过的版本
+                props = 
+                    noProprietary : false
+                    fromBase : true
+
+                writer = fstream.Writer 
+                    path : dest
+
+                reader.pipe(tar.Pack(props)).pipe(gzip).pipe writer.on 'close', ->
+                    callback null if typeof callback == 'function'
+
 
 
 #---------------------------

@@ -76,7 +76,7 @@ ModulePath.resolvePath = ( path , parentModule ) ->
     # 解析文件名( 猜文件名 )
     path_without_extname = syspath.join.apply( syspath , result )
     truelypath = parentModule.path.parseify( path_without_extname )
-    utils.logger.info("[COMPILE] 解析子模块真实路径 #{path} >>>> #{truelypath}")
+    utils.logger.trace("[COMPILE] 解析子模块真实路径 #{path} >>>> #{truelypath}")
     return truelypath
 
 ModulePath.getContentType = ( extname ) ->

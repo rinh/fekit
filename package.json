@@ -29,7 +29,13 @@
         "findit" : "0.1.x" , 
         "cjson" : "0.2.x" , 
         "connect-url-rewrite" : "0.1.0" , 
-        "rimraf" : "2.1.4"
+        "rimraf" : "2.1.4",
+        "request" : "2.16.x",
+        "fstream" : "*",
+        "tar" : "git://github.com/rinh/node-tar.git" , 
+        "ncp" : "0.4.x" , 
+        "temp" : "0.5.0" ,
+        "sty" : "0.6.x"
     },
     "devDependencies": {},
     "optionalDependencies": {},
