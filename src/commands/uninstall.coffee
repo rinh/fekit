@@ -1,3 +1,4 @@
+Package = require '../package'
 utils = require '../util'
 
 exports.usage = "删除指定的包"

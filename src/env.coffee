@@ -21,4 +21,13 @@ exports.each = ( cb ) ->
     cb( key , CONFIG[key] ) for key of CONFIG
 
 
+exports.getPackageUrl = ( name , version ) ->
+    
+    registry = CONFIG['registry']
+
+    registry = registry.replace(/http:\/\//,'').replace(/\/.*/,'')
+
+    "http://#{registry}/#{name}/" + ( if version then version else "" )
+
+
 merge_user_config()

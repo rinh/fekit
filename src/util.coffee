@@ -64,6 +64,7 @@ _closest_dir = ( p , finddirname ) ->
 
 
 exports.path = utilpath =
+    dirname : syspath.dirname
     join : syspath.join 
 
     get_user_home : () ->
@@ -215,6 +216,8 @@ utilfile.rmrf = ( dest , cb ) ->
         rimraf dest , cb 
     else
         rimraf.sync dest
+
+utilfile.mkdirp = mkdirp.sync
 
 
 # 按照给定的后缀名列表找到文件
@@ -470,8 +473,13 @@ exports.sys = utilsys =
 exports.http = utilhttp = 
 
     get : ( url , cb ) ->
-        utillogger.log "fekit #{sty.red 'http'} #{sty.green 'GET'} #{url}"
-        request url , cb 
+        if typeof url is 'object'
+            opts = url
+        else
+            opts = 
+                url : url
+        utillogger.log "fekit #{sty.red 'http'} #{sty.green 'GET'} #{opts.url}"
+        request opts , cb 
 
     put : ( url , filepath , cb ) ->
         utillogger.log "fekit #{sty.red 'http'} #{sty.green 'PUT'} #{url}"
@@ -545,6 +553,14 @@ exports.tar =
                     callback null if typeof callback == 'function'
 
 
+    unpack : ( tarfile , dest , callback ) ->
+
+        process.nextTick ->
+            fstream.Reader(
+                path : tarfile
+                type : 'File'
+            ).pipe(zlib.createGunzip()).pipe(tar.Extract({path: dest})).on 'end', ->
+                callback null if typeof callback == 'function' 
 
 #---------------------------
 

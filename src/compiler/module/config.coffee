@@ -1,3 +1,4 @@
+Package = require '../../package'
 syspath = require 'path'
 utils = require '../../util'
 
@@ -38,5 +39,8 @@ class ModuleConfig
         else
             return syspath.join( @config.fekit_root_dirname , path )
 
+    getPackage:(libname) ->
+        p = new Package( libname , null , @config.fekit_root_dirname )
+        return p.get_local_entry()
 
 exports.ModuleConfig = ModuleConfig

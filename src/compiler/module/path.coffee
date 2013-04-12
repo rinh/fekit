@@ -63,7 +63,10 @@ ModulePath.resolvePath = ( path , parentModule ) ->
     # 解析全路径
     for part , i in parts
         if i == 0
-            if parentModule.config.isUseLibrary( part )
+            package_path = parentModule.config.getPackage( part ) 
+            if package_path
+                result.push( package_path )
+            else if parentModule.config.isUseLibrary( part )
                 # 库引用路径
                 result.push( parentModule.config.parseLibrary( part ) )    
             else
@@ -72,6 +75,10 @@ ModulePath.resolvePath = ( path , parentModule ) ->
                 result.push( part )
         else
             result.push( part )
+
+    if parts.length is 1 and !package_path and !parentModule.config.isUseLibrary( part )
+        throw "[COMPILE] 引用模块出错! 找不到 #{parts.join('')} 在 #{parentModule.path.uri} 中"
+
 
     # 解析文件名( 猜文件名 )
     path_without_extname = syspath.join.apply( syspath , result )

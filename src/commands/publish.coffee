@@ -114,11 +114,7 @@ exports.pre_publish_hook = pre_publish_hook = ( opts , done ) ->
 # publish
 exports.upload_package = upload_package = ( opts , done ) ->
 
-    registry = env.get 'registry'
-
-    registry = registry.replace(/http:\/\//,'').replace(/\/.*/,'')
-
-    url = "http://#{registry}/#{opts.config.name}"
+    url = env.getPackageUrl( opts.config.name )
 
     utils.logger.trace "tar file: #{opts.tar_path}"
 

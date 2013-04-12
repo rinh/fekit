@@ -1,7 +1,6 @@
 syspath = require 'path'
 utils = require '../../util'
 md5 = require "MD5"
-
 parser = require '../parser'
 
 ModulePath = require('./path').ModulePath
