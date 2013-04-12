@@ -4,3 +4,7 @@ npm-debug.log
 testcase/**/prd/*
 testcase/**/dev/*
 testcase/**/ver/*
+
+test/compiler/compiler.coffee
+
+src/compiler/parser.jison

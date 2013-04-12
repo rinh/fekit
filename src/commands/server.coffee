@@ -86,7 +86,7 @@ setupServer = ( options ) ->
                 urlconvert = new utils.UrlConvert(p,ROOT)
                 srcpath = urlconvert.to_src()
 
-                utils.logger.info("由 PRD #{req.url} 解析至 SRC #{srcpath}")
+                utils.logger.trace("由 PRD #{req.url} 解析至 SRC #{srcpath}")
 
                 res.writeHead( 200, { 'Content-Type': mime_config[urlconvert.extname] });
 

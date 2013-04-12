@@ -6,6 +6,7 @@ FEKIT
 ##### fekit是一套前端开发工具, 其中包含了
 * 本地开发支持环境
 * 静态文件编译 css / js
+* 组件源服务
 * 开发辅助工具等
 
 ## 如何安装 ##
@@ -76,7 +77,8 @@ FEKIT
             "premin" : "./build/premin.js" ,
             "postmin" : "./build/premin.js" ,
             "prepack" : "./build/premin.js" ,
-            "postpack" : "./build/premin.js"
+            "postpack" : "./build/premin.js" , 
+            "prepublish" : "./build/prepublish.js"
         }
     }
 
@@ -90,7 +92,7 @@ fekit所有源码全部使用coffeescript开发
 * lib - 执行代码(编译结果,请不要修改)
 * src - 源码
 * test - 单元测试
-* testcase - 测试用例, 模拟了一个真实项目
+* testcase - 测试用例, 模拟了一个真实项目的case
 * Cakefile - 部署文件
 
 #### 如何增加一个命令  ####

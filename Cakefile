@@ -10,13 +10,15 @@ process_stdio = (proc,callback) ->
         callback?() if code is 0
 
 build = (option,callback) ->
+    jison = spawn './node_modules/.bin/jison', [ './src/compiler/parser.jison' , '-o' , './lib/compiler/parser.js' , '-m' , 'commonjs' ]
+    process_stdio jison , callback
+
     coffee = spawn './node_modules/.bin/coffee', option
     process_stdio coffee , callback
 
 test = () ->
     mocha = spawn './node_modules/.bin/mocha' , [ '--colors', '--recursive', '--compilers', 'coffee:coffee-script' ]
     process_stdio mocha
-
 
 coffee = "./node_modules/.bin/coffee"
 

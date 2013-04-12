@@ -81,7 +81,7 @@ exports.run = ( cmd ) ->
         utils.logger.error("请确认是否有 #{cmd} 这个命令")
         return 1
 
-    utils.logger.info( "加载命令 #{path}" )
+    utils.logger.trace( "加载命令 #{path}" )
     
     try
         command = require( path )

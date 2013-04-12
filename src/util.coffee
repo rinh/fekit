@@ -1,3 +1,5 @@
+request = require 'request'
+rimraf = require 'rimraf'
 async = require 'async'
 child_process = require 'child_process'
 syspath = require 'path'
@@ -8,7 +10,11 @@ cjson = require 'cjson'
 _ = require 'underscore'
 vm = require 'vm'
 coffee = require 'coffee-script'
-
+ncp = require('ncp').ncp
+tar = require 'tar'
+fstream = require 'fstream'
+zlib = require 'zlib'
+sty = require 'sty'
 
 #----------------------------
 
@@ -22,11 +28,53 @@ exports.array = utilarray =
 
 #----------------------------
 
+
+_closest = ( p , findfilename ) ->
+    if p is "/" or ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) )
+        return null
+
+    if utilpath.is_directory(p)
+        dir = p
+    else
+        dir = syspath.dirname(p)
+
+    files = fs.readdirSync( dir )
+    for file in files
+        if file == findfilename
+            return dir
+
+    return _closest( syspath.dirname( dir ) , findfilename )
+
+
+_closest_dir = ( p , finddirname ) ->
+    if p is "/" or ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) )
+        return null
+
+    if utilpath.is_directory(p)
+        dir = p
+    else
+        dir = syspath.dirname(p)
+
+    files = fs.readdirSync( dir )
+    for file in files
+        if file is finddirname and utilpath.is_directory( file )
+            return dir
+
+    return _closest_dir( syspath.dirname( dir ) , finddirname )
+
+
 exports.path = utilpath =
+    dirname : syspath.dirname
     join : syspath.join 
 
-    closest : ( path , findfilename ) ->
-        return _closest( path , findfilename )
+    get_user_home : () ->
+        return process.env[ if (process.platform == 'win32') then 'USERPROFILE' else 'HOME'];
+
+    closest : ( path , findfilename , is_directory ) ->
+        if is_directory
+            return _closest_dir( path , findfilename )
+        else
+            return _closest( path , findfilename )
 
     SEPARATOR : syspath.join('a','a').replace(/a/g,'')
 
@@ -67,7 +115,7 @@ exports.path = utilpath =
             throw err
             return false
 
-    each_directory: ( path , cb ) ->
+    each_directory: ( path , cb , is_recursion ) ->
 
         if !utilpath.is_directory( path )
             path = syspath.dirname( path )
@@ -75,8 +123,16 @@ exports.path = utilpath =
         list = fs.readdirSync( path )
         for f in list 
             p = syspath.join( path , f )
-            if f isnt "." and f isnt ".." and !utilpath.is_directory( p )
-                cb( p )
+            if !is_recursion
+                if f isnt "." and f isnt ".." and !utilpath.is_directory( p )
+                    cb( p )
+            else 
+                if f isnt "." and f isnt ".." 
+                    if !utilpath.is_directory( p )
+                        cb( p )
+                    else
+                        utilpath.each_directory( p , cb , is_recursion )
+
 
     existsFiles: ( root , filenames ) ->
 
@@ -89,22 +145,6 @@ exports.path = utilpath =
     is_absolute_path: ( path ) ->
         return ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) ) or path.charAt(0) is "/" 
 
-
-_closest = ( p , findfilename ) ->
-    if p is "/" or ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) )
-        return null
-
-    if utilpath.is_directory(p)
-        dir = p
-    else
-        dir = syspath.dirname(p)
-
-    files = fs.readdirSync( dir )
-    for file in files
-        if file == findfilename
-            return dir
-
-    return _closest( syspath.dirname( dir ) , findfilename )
 
 #----------------------------
 
@@ -150,6 +190,7 @@ class Writer
 exports.file = utilfile = {}        
 utilfile.reader = Reader
 utilfile.writer = Writer
+utilfile.io = _.extend( {}, Reader.prototype , Writer.prototype )
 utilfile.NEWLINE = '\n'
 
 utilfile.copy = (srcFile, destFile) ->
@@ -166,14 +207,27 @@ utilfile.copy = (srcFile, destFile) ->
     fs.closeSync(fdr)
     fs.closeSync(fdw)
 
+utilfile.cpr = ( src , dest , cb ) ->
+    ncp src , dest , cb
 
+
+utilfile.rmrf = ( dest , cb ) ->
+    if cb 
+        rimraf dest , cb 
+    else
+        rimraf.sync dest
+
+utilfile.mkdirp = mkdirp.sync
+
+
+# 按照给定的后缀名列表找到文件
 utilfile.findify = ( path_without_extname , ext_list ) ->
     list = [ "" ].concat( ext_list )
     for ext in list
         path = path_without_extname + ext 
-        if utilpath.exists( path )
+        if utilpath.exists( path ) and !utilpath.is_directory( path )
             return path
-    throw "找不到文件或对应的编译方案 [#{path_without_extname}] 后缀检查列表为[#{ext_list}]"
+    return null
 
 #----------------------------
 
@@ -210,7 +264,7 @@ class FekitConfig
             if !@root.lib then @root.lib = {}
         catch err
             if utilpath.exists( @fekit_config_path )
-                throw "@fekit_config_filename 解析失败, 请确认该文件格式是否符合正确的JSON格式"
+                throw "#{@fekit_config_filename} 解析失败, 请确认该文件格式是否符合正确的JSON格式"
             else
                 # 如果没有fekit, 有可能是使用单独文件编译模式, 则使用默认配置
                 @root = { "lib" : {} , "export" : [] }
@@ -306,7 +360,7 @@ class FekitConfig
 _runCode = ( path , ctx ) ->
     Module = require('module')
     mod = new Module( path )
-    context = _.extend( {} , ctx )
+    context = _.extend( {} , global , ctx )
     context.module = mod
     context.__filename = path
     context.__dirname = syspath.dirname( path )
@@ -416,18 +470,43 @@ exports.sys = utilsys =
 
 #---------------------------
 
+exports.http = utilhttp = 
+
+    get : ( url , cb ) ->
+        if typeof url is 'object'
+            opts = url
+        else
+            opts = 
+                url : url
+        utillogger.log "fekit #{sty.red 'http'} #{sty.green 'GET'} #{opts.url}"
+        request opts , cb 
+
+    put : ( url , filepath , cb ) ->
+        utillogger.log "fekit #{sty.red 'http'} #{sty.green 'PUT'} #{url}"
+
+        fs.createReadStream( filepath ).pipe( 
+            request.put url, ( err , res , body ) ->
+                cb err , body
+        )
+
+
+#---------------------------
+
 
 exports.logger = utillogger = 
     debug : false ,
     setup : ( options ) ->
         if options && options.debug then utillogger.debug = true 
-    info : () ->
+    trace : () ->
         if !utillogger.debug then return
-        console.info("[TRACE] " , Array.prototype.join.call( arguments , " " ) )
+        utillogger.to("[TRACE] " , Array.prototype.join.call( arguments , " " ) )
     error : () ->
-        console.info("[ERROR] " , Array.prototype.join.call( arguments , " " ) )
+        utillogger.to("[ERROR] " , Array.prototype.join.call( arguments , " " ) )
     log : () ->
-        console.info("[LOG] " , Array.prototype.join.call( arguments , " " ) )
+        utillogger.to("[LOG] " , Array.prototype.join.call( arguments , " " ) )
+    to : () ->
+        n = Array.prototype.join.call( arguments , "" )
+        console.info n 
 
 
 #---------------------------
@@ -439,6 +518,49 @@ exports.exit = exit = (exitCode) ->
     else
         process.exit(exitCode)
 
+
+#---------------------------
+
+# tar util
+
+exports.tar = 
+    
+    pack : ( source , dest , callback ) ->
+
+        fs.stat source, (err, stat) ->
+
+            process.nextTick ->
+                gzip = zlib.createGzip
+                    level : 6
+                    memLevel : 6
+ 
+                reader = fstream.Reader
+                    path : source
+                    type : 'Directory'
+                    depth : 1 
+                    filter : () ->
+                        return !this.basename.match(/^fekit_modules$/)
+
+                # 依赖 https://github.com/rinh/node-tar 修改过的版本
+                props = 
+                    noProprietary : false
+                    fromBase : true
+
+                writer = fstream.Writer 
+                    path : dest
+
+                reader.pipe(tar.Pack(props)).pipe(gzip).pipe writer.on 'close', ->
+                    callback null if typeof callback == 'function'
+
+
+    unpack : ( tarfile , dest , callback ) ->
+
+        process.nextTick ->
+            fstream.Reader(
+                path : tarfile
+                type : 'File'
+            ).pipe(zlib.createGunzip()).pipe(tar.Extract({path: dest})).on 'end', ->
+                callback null if typeof callback == 'function' 
 
 #---------------------------
 
