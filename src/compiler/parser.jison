@@ -11,10 +11,11 @@
 ^[ ]*"//".*                 {  return 'S_COMMENT';  }
 
 (require|\@import[ ]+url)[ ]* {  this.begin('req'); return 'REQUIRE_START'; }
-<req>"("[ ]*                 {  return 'REQUIRE_LOP'; }
-<req>[ ]*")"[ ]*[;]?          {  this.popState(); return 'REQUIRE_ROP'; }
-<req>\'[^']*\'                 {  return 'REQUIRE_CHR'; }
-<req>\"[^"]*\"                 {  return 'REQUIRE_CHR'; }
+<req>"("[ ]*                {  return 'REQUIRE_LOP'; }
+<req>[ ]*")"[ ]*[;]?        {  this.popState(); return 'REQUIRE_ROP'; }
+<req>\'[^']*\'              {  return 'REQUIRE_CHR'; }
+<req>\"[^"]*\"              {  return 'REQUIRE_CHR'; }
+<req>[^'")]*                {  return 'REQUIRE_CHR'; }
 
 (.|\n)                      {  return 'CONTENT';  }
 

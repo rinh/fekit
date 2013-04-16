@@ -41,9 +41,10 @@ describe 'Parser', ->
 
             parser.defineNode('REQUIRE',{
                 print : () ->
-                    return "[load " + this.$3.print().replace(/"/g,'') + "]";
+                    return "[load " + this.$3.print().replace(/"/g,'').replace(/'/g,'') + "]";
             })
 
+            # js
             s = parser.parse('require("./abc/def");').print();
             assert.equal( s , '[load ./abc/def]')
 
@@ -57,6 +58,28 @@ describe 'Parser', ->
             assert.equal( s , '[load ./abc]\n[load ./def]')
 
             s = parser.parse('require("./abc")\nrequire("./def")').print();
+            assert.equal( s , '[load ./abc]\n[load ./def]')
+
+            # css
+            s = parser.parse('@import url("./abc1/def");').print();
+            assert.equal( s , '[load ./abc1/def]')
+
+            s = parser.parse("@import url('./abc2/def');").print();
+            assert.equal( s , '[load ./abc2/def]')
+
+            s = parser.parse('@import url(./abc3/def);').print();
+            assert.equal( s , '[load ./abc3/def]')
+
+            s = parser.parse('@import url("./abc/def").abc').print();
+            assert.equal( s , '[load ./abc/def].abc')
+
+            s = parser.parse('@import url("./abc");@import url("./def");').print();
+            assert.equal( s , '[load ./abc][load ./def]')
+
+            s = parser.parse('@import url("./abc");\n@import url("./def");').print();
+            assert.equal( s , '[load ./abc]\n[load ./def]')
+
+            s = parser.parse('@import url("./abc")\n@import url("./def")').print();
             assert.equal( s , '[load ./abc]\n[load ./def]')
 
 

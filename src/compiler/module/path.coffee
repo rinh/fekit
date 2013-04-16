@@ -57,6 +57,13 @@ class ModulePath
 
 ###
 ModulePath.resolvePath = ( path , parentModule ) ->
+    # 解析文件名( 猜文件名 )
+    path_without_extname = ModulePath.parsePath( path , parentModule )
+    truelypath = parentModule.path.parseify( path_without_extname )
+    utils.logger.trace("[COMPILE] 解析子模块真实路径 #{path} >>>> #{truelypath}")
+    return truelypath
+
+ModulePath.parsePath = ( path , parentModule ) ->
     parts = utils.path.split_path( path , ModulePath.EXTLIST )
     result = []
 
@@ -77,14 +84,11 @@ ModulePath.resolvePath = ( path , parentModule ) ->
             result.push( part )
 
     if parts.length is 1 and !package_path and !parentModule.config.isUseLibrary( part )
-        throw "[COMPILE] 引用模块出错! 找不到 #{parts.join('')} 在 #{parentModule.path.uri} 中"
+        throw "[COMPILE] 引用模块出错! 找不到在 #{parentModule.path.uri} 中引用的 #{parts.join('')}, 请检查一下引用路径."
+
+    return syspath.join.apply( syspath , result )
 
 
-    # 解析文件名( 猜文件名 )
-    path_without_extname = syspath.join.apply( syspath , result )
-    truelypath = parentModule.path.parseify( path_without_extname )
-    utils.logger.trace("[COMPILE] 解析子模块真实路径 #{path} >>>> #{truelypath}")
-    return truelypath
 
 ModulePath.getContentType = ( extname ) ->
     ModulePath.EXTTABLE[ extname ]?.contentType
