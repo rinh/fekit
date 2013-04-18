@@ -33,6 +33,7 @@ utils.path.each_directory pluginsDir , ( filepath ) =>
 
 # 递归处理所有模块
 getSource = ( module , options , callback ) ->
+
     module.analyze ( err )->
 
         if err 

@@ -17,7 +17,9 @@
 <req>\"[^"]*\"              {  return 'REQUIRE_CHR'; }
 <req>[^'")]*                {  return 'REQUIRE_CHR'; }
 
-(.|\n)                      {  return 'CONTENT';  }
+<INITIAL>\n+                {  return 'CONTENT';  }
+<INITIAL>[^\s]+             {  return 'CONTENT';  }
+<INITIAL>\s+                {  return 'CONTENT';  }
 
 <<EOF>>                     {  return 'EOF';  }
 
@@ -38,7 +40,7 @@ statements
 statement
     : comment               { $$ = o('COMMENT_STATEMENT', $1 ); }
     | S_COMMENT             { $$ = o('LINE_COMMENT_STATEMENT' , $1 ); }
-    | CONTENT               { $$ = o('CONTENT_STATEMENT', $1 ); }
+    | content               { $$ = o('CONTENT_STATEMENT', $1 ); }
     | require               { $$ = o('REQUIRE_STATEMENT', $1 ); }
     ;
 
@@ -48,8 +50,13 @@ require
 
 
 require_chr
-    : require_chr REQUIRE_CHR       { $$ = o('REQUIRE_CHR', $1 , $2); }
-    | REQUIRE_CHR               { $$ = o('REQUIRE_CHR', $1); }
+    : require_chr REQUIRE_CHR       { $$ = $1 + $2; }
+    | REQUIRE_CHR               { $$ = $1; }
+    ;
+
+content 
+    : content CONTENT       { $$ = $1 + $2; }
+    | CONTENT               { $$ = $1; }
     ;
 
 
@@ -58,8 +65,8 @@ comment
     ;
 
 comment_chr
-    : comment_chr L_COMMENT_CHR     { $$ = o('COMMENT_CHR', $1 , $2); }
-    | L_COMMENT_CHR                 { $$ = o('COMMENT_CHR', $1 ); }
+    : comment_chr L_COMMENT_CHR     { $$ = $1 + $2; }
+    | L_COMMENT_CHR                 { $$ = $1; }
     ;
 
 %%
@@ -156,7 +163,7 @@ defineNode('STATEMENTS',{
         var r = [];
         this.$1.forEach(function(i){
             if( i.name ) {
-                if( i.name == name + '_AstNode' ) {
+                if( i.name == name ) {
                     r.push(i);
                     if( cb ) { cb(i); }    
                 } else if( i.find ) {

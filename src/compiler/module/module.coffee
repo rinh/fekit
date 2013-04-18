@@ -40,7 +40,6 @@ class Module
                 module = Module.parse( node.getPath() , self )
                 self.depends.push( module )
                 self.analyzed()
-
             doneCallback.call( self , err )
 
     # override
