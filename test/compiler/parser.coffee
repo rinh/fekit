@@ -117,7 +117,7 @@ describe 'Parser', ->
 
             parser.defineNode('REQUIRE',{
                 print : () ->
-                    return "[load " + this.$3.print().replace(/"/g,'').replace(/'/g,'') + "]";
+                    return "[load " + this.$3.replace(/"/g,'').replace(/'/g,'') + "]";
             })
 
             # js
@@ -167,6 +167,11 @@ describe 'Parser', ->
             s = parser.parse("/* hoho */\nabc\n// hohohohoohoh").print();
             assert.equal( s , '/* hoho */\nabc\n#LINE' );
 
+
+            reset()
+
+            s = parser.parse('').print()
+            assert.equal( s , '' )
 
 
 # find

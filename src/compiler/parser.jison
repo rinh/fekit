@@ -29,7 +29,7 @@
 
 program
     : statements EOF        { $$ = o('PROGRAM',$1); return $$; }
-    | EOF                   { }
+    | EOF                   { $$ = o('PROGRAM',''); return $$; }
     ;
 
 statements
@@ -177,7 +177,7 @@ defineNode('STATEMENTS',{
 
 defineNode('REQUIRE',{
     getPath : function(){
-        return this.$3.$1.replace(/("|')/g,"");
+        return this.$3.replace(/("|')/g,"");
     }
 });
 
