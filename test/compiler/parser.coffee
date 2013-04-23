@@ -1,14 +1,8 @@
 parser = require('../../lib/compiler/parser')
 assert = require('chai').assert
 
-reset = () ->
-    path = require.resolve('../../lib/compiler/parser')
-    delete require.cache[ path ]
-    parser = require('../../lib/compiler/parser')
-
-
 get_ast = ( code , level = 0 ) ->
-    ast = parser.parse(code)
+    ast = parser.parseAST(code)
     return ast
 
 css_source = """
@@ -86,92 +80,22 @@ css_source = """
 """
 
 
-# ast
-describe 'Parser', ->
-    it 'should be right', ->
-
-        reset()
-
-        assert.ok get_ast(css_source)
-
-        assert.ok( get_ast("aaaaa /* aaaaa */")["$1"]["$1"][1].name == "COMMENT_STATEMENT" )
-        assert.ok( get_ast("aaaaa  dsafsadf /* aaaaa */")["$1"]["$1"][1].name == "COMMENT_STATEMENT" )
-        
-        ast = get_ast("""
-            abcde 
-            /* 
-                abcde 
-            adfasd */
-            // hohohoh
-        """)["$1"]["$1"]
-
-        assert.ok( ast[1].name == "LINE_COMMENT_STATEMENT" )
-        assert.ok( ast[0]["$1"][0]["$1"][1].name == "COMMENT_STATEMENT" )
-
 # print
 describe 'Parser', ->
-    describe '#defineNode', ->
+    describe '#defineType', ->
         it 'should be right', ->
 
-            reset()
-
-            parser.defineNode('REQUIRE',{
-                print : () ->
-                    return "[load " + this.$3.replace(/"/g,'').replace(/'/g,'') + "]";
-            })
+            def1 = ( code ) ->
+                ast = parser.parseAST(code)
+                ast.defineType 'require' , ( line ) ->
+                    return "[load " + line.value + "]"
+                return ast;
 
             # js
-            s = parser.parse('require("./abc/def");').print();
+            s = def1('require("./abc/def");').print();
             assert.equal( s , '[load ./abc/def]')
 
-            s = parser.parse('require("./abc/def").abc').print();
-            assert.equal( s , '[load ./abc/def].abc')
 
-            s = parser.parse('require("./abc");require("./def");').print();
-            assert.equal( s , '[load ./abc][load ./def]')
-
-            s = parser.parse('require("./abc");\nrequire("./def");').print();
-            assert.equal( s , '[load ./abc]\n[load ./def]')
-
-            s = parser.parse('require("./abc")\nrequire("./def")').print();
-            assert.equal( s , '[load ./abc]\n[load ./def]')
-
-            # css
-            s = parser.parse('@import url("./abc1/def");').print();
-            assert.equal( s , '[load ./abc1/def]')
-
-            s = parser.parse("@import url('./abc2/def');").print();
-            assert.equal( s , '[load ./abc2/def]')
-
-            s = parser.parse('@import url(./abc3/def);').print();
-            assert.equal( s , '[load ./abc3/def]')
-
-            s = parser.parse('@import url("./abc/def").abc').print();
-            assert.equal( s , '[load ./abc/def].abc')
-
-            s = parser.parse('@import url("./abc");@import url("./def");').print();
-            assert.equal( s , '[load ./abc][load ./def]')
-
-            s = parser.parse('@import url("./abc");\n@import url("./def");').print();
-            assert.equal( s , '[load ./abc]\n[load ./def]')
-
-            s = parser.parse('@import url("./abc")\n@import url("./def")').print();
-            assert.equal( s , '[load ./abc]\n[load ./def]')
-
-
-            parser.defineNode('LINE_COMMENT_STATEMENT',{
-                print : () ->
-                    return "#LINE";
-            })
-
-            s = parser.parse("/* hoho */\nabc\n// hohohohoohoh").print();
-            assert.equal( s , '/* hoho */\nabc\n#LINE' );
-
-
-            reset()
-
-            s = parser.parse('').print()
-            assert.equal( s , '' )
 
 
 # find
@@ -179,18 +103,16 @@ describe 'Parser', ->
     describe '#find', ->
         it 'should be right', ->
 
-            reset()
-
-            s = parser.parse('abc\nabc\nrequire("./abc/def");\nabc');
+            s = get_ast('abc\nabc\nrequire("./abc/def");\nabc');
             r = s.find "REQUIRE" , (node) ->
-                assert.equal( node.getPath() , './abc/def' )
+                assert.equal( node.value , './abc/def' )
             assert.equal( r.length , 1 )
 
-            s = parser.parse('abc\nabc\nrequire("./abc");require(\'./def\');\nabc');
+            s = get_ast('abc\nabc\nrequire("./abc");require(\'./def\');\nabc');
             r = s.find "REQUIRE"
             assert.equal( r.length , 2 )
-            assert.equal( r[0].getPath() , './abc' )
-            assert.equal( r[1].getPath() , './def' )
+            assert.equal( r[0].value , './abc' )
+            assert.equal( r[1].value , './def' )
 
 
 # find
@@ -198,27 +120,7 @@ describe 'Css Parser', ->
     describe '#find', ->
         it 'should be right', ->
 
-            reset()
-
-            s = parser.parse(css_source);
+            s = get_ast(css_source);
             r = s.find "REQUIRE" , (node) ->
                 console.info( node )
-
-# emit
-describe 'Parser', ->
-    describe '#emit', ->
-        it 'should be right', ->
-
-            reset()
-
-            hit = 0
-            s = parser.parse('abc\nabc\nrequire("./abc/def");\nabc');
-            s.find 'REQUIRE' , ( node ) ->
-                node.on 'printing' , ( evt ) ->
-                    hit = 1
-            assert.equal( s.print() , 'abc\nabc\nrequire("./abc/def");\nabc' );
-            assert.equal( hit , 1 )
-
-
-
 

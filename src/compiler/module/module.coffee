@@ -35,9 +35,9 @@ class Module
     analyze:( doneCallback ) ->
         self = this
         @_process @path.getFullPath() , ( err , source ) ->
-            self.ast = parser.parse( source )
+            self.ast = parser.parseAST( source )
             self.ast.find 'REQUIRE' , ( node ) ->
-                module = Module.parse( node.getPath() , self )
+                module = Module.parse( node.value , self )
                 self.depends.push( module )
                 self.analyzed()
             doneCallback.call( self , err )
@@ -104,13 +104,11 @@ class JSModule extends Module
 
     analyzed: () ->
         if @config.isCompileTypeNormal()
-            @ast.find 'REQUIRE' , ( node ) ->
-                node.print = () ->
-                    return ""
+            @ast.defineType 'REQUIRE' , ( node ) ->
+                return ""
         else if @config.isCompileTypeModular()
-            @ast.find 'REQUIRE' , ( node ) ->
-                node.print = () ->
-                    return "__context.____MODULES['#{@guid}'];"
+            @ast.defineType 'REQUIRE' , ( node ) ->
+                return "__context.____MODULES['#{@guid}'];"
         else 
             throw "找不到正确的编译方式, 请修改fekit.config中的 compiler [目前值:#{@config.compileType()}]"
 
@@ -149,9 +147,8 @@ class CSSModule extends Module
         super(uri)
 
     analyzed:() ->
-        @ast.find 'REQUIRE' , ( node ) ->
-            node.print = () ->
-                return ""
+        @ast.defineType 'REQUIRE' , ( node ) ->
+            return ""
 
     getSourceWithoutDependencies: () ->
         return @ast.print()
