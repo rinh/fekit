@@ -52,7 +52,7 @@ class ModulePath
 
     子模块路径分2种
     1, 相对路径, 相对于父模块的dirname. 如 a/b/c
-    2, 库引用路径, 库是由配置指定的路径. 如 core/a/b/c , core是在配置文件中进行配置的
+    2, 别名引用路径, 别名是由配置指定的路径. 如 core/a/b/c , core是在配置文件中进行配置的
 
 ###
 ModulePath.resolvePath = ( path , parentModule ) ->
@@ -72,9 +72,9 @@ ModulePath.parsePath = ( path , parentModule ) ->
             package_path = parentModule.config.getPackage( part ) 
             if package_path
                 result.push( package_path )
-            else if parentModule.config.isUseLibrary( part )
-                # 库引用路径
-                result.push( parentModule.config.parseLibrary( part ) )    
+            else if parentModule.config.isUseAlias( part )
+                # 别名引用路径
+                result.push( parentModule.config.parseAlias( part ) )    
             else
                 # 相对路径
                 result.push( parentModule.path.dirname() )
@@ -82,7 +82,7 @@ ModulePath.parsePath = ( path , parentModule ) ->
         else
             result.push( part )
 
-    if parts.length is 1 and !package_path and !parentModule.config.isUseLibrary( part )
+    if parts.length is 1 and !package_path and !parentModule.config.isUseAlias( part )
         throw "[COMPILE] 引用模块出错! 找不到在 #{parentModule.path.uri} 中引用的 #{parts.join('')}, 请检查一下引用路径."
 
     return syspath.join.apply( syspath , result )

@@ -17,7 +17,7 @@ exports.set_options = ( optimist ) ->
 CURR = null
 CONFIG =
         "compiler" : false 
-        "lib" : {} 
+        "alias" : {} 
         "export" : []
 
 FILE = ( name ) ->

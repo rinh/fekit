@@ -10,9 +10,9 @@ describe '#parsePath', ->
             config : 
                 getPackage : ( name ) ->
                     return null;
-                isUseLibrary : ( name ) ->
+                isUseAlias : ( name ) ->
 
-                parseLibrary : ( name ) ->
+                parseAlias : ( name ) ->
 
             path : 
                 dirname : () ->
@@ -41,9 +41,9 @@ describe '#parsePath', ->
                         return "/home/packages/#{name}/index"
                     else 
                         return null
-                isUseLibrary : ( name ) ->
+                isUseAlias : ( name ) ->
 
-                parseLibrary : ( name ) ->
+                parseAlias : ( name ) ->
 
             path : 
                 dirname : () ->
@@ -67,9 +67,9 @@ describe '#parsePath', ->
             config : 
                 getPackage : ( name ) ->
                     return null
-                isUseLibrary : ( name ) ->
+                isUseAlias : ( name ) ->
                     name is "core"
-                parseLibrary : ( name ) ->
+                parseAlias : ( name ) ->
                     return "/home/lib/#{name}-base/"
             path : 
                 dirname : () ->
