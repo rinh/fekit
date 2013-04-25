@@ -325,6 +325,8 @@ class FekitConfig
     
         list = @root["export"] || []
 
+        hit = false
+
         for file in list
             if _.isObject( file )
                 path = syspath.join( @fekit_root_dirname , "src" , file.path )
@@ -335,9 +337,10 @@ class FekitConfig
                 parents = []
 
             if filepath is path
+                hit = true
                 cb( filepath , parents )
 
-        cb( filepath , [] )
+        cb( null , [] ) unless hit
 
     doScript : ( type , context ) ->
 

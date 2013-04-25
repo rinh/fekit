@@ -23,6 +23,10 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'c' , 'combine'
     optimist.describe 'c' , '指定所有文件以合并方式进行加载, 启动该参数则请求文件不会将依赖展开'
 
+    optimist.alias 'n' , 'noexport'
+    optimist.describe 'n' , '默认情况下，/prd/的请求需要加入export中才可以识别。 指定此选项则可以无视export属性'
+
+
 mime_config = 
     ".js" : "application/javascript"
     ".css" : "text/css"
@@ -78,6 +82,7 @@ setupServer = ( options ) ->
                 url = sysurl.parse( req.url )
                 p = syspath.join( ROOT , url.pathname )
                 params = qs.parse( url.query )
+                is_deps = params["no_dependencies"] is "true"
 
                 if utils.path.exists(p) and utils.path.is_directory(p)
                     next()
@@ -97,13 +102,17 @@ setupServer = ( options ) ->
                     else
                         res.end( txt ) 
 
-                if utils.path.exists( srcpath ) 
+                if utils.path.exists( srcpath )
                     config = new utils.config.parse( srcpath )
                     config.findExportFile srcpath , ( path , parents ) =>
-                        if options.combine 
-                            combine path , parents , _render
-                        else 
-                            no_combine path , parents , host , params , _render
+                        path = srcpath if options.noexport or is_deps
+                        if path 
+                            if options.combine 
+                                combine path , parents , _render
+                            else 
+                                no_combine path , parents , host , params , _render
+                        else
+                            res.end( "请确认文件 #{srcpath} 存在于 fekit.config 的 export 中。" )
 
                 else
                     res.end( "文件不存在 #{srcpath}" )
