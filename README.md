@@ -35,6 +35,9 @@ FEKIT
     
     npm install fekit -g
 
+    npm config set user 0
+    npm config set unsafe-perm true
+
 ### 使用
 
     fekit {命令名} --help 
