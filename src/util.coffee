@@ -67,6 +67,9 @@ exports.path = utilpath =
     dirname : syspath.dirname
     join : syspath.join 
 
+    fname : ( path ) ->
+        syspath.basename( path ).replace( syspath.extname( path ) , '' )
+
     get_user_home : () ->
         return process.env[ if (process.platform == 'win32') then 'USERPROFILE' else 'HOME'];
 

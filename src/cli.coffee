@@ -2,15 +2,23 @@ optimist = require "optimist"
 sysfs = require "fs"
 syspath = require "path"
 utils = require "./util"
+env = require "./env"
 
 CURR = syspath.dirname( __filename )
 
 each_commands = ( cb ) ->
     cmddir = syspath.join( CURR , "commands" )
     list = sysfs.readdirSync( cmddir )
+    list = list.concat env.getExtensions()
+
     for f in list 
-        if f isnt "." or f isnt ".."
-            cb( f.replace(".js","") , require( syspath.join( cmddir , f ) ) )
+        if typeof f is 'string'
+            if f isnt "." or f isnt ".." 
+                fullpath = syspath.resolve( cmddir , f )
+                command = utils.path.fname( fullpath )
+                cb( command , require(fullpath) )
+        else if f.name && f.path
+            cb( "#{f.name}(#{f.version})" , require(f.path) )
 
 fixempty = ( str , limit ) ->
     n = limit - str.length
