@@ -89,6 +89,8 @@ FEKIT
 
 fekit是一个插件化, 易于扩展的工具集, 如果你愿意为它增加功能, 请看下面的内容
 
+开发外部扩展请使用 [fekit extension template](https://github.com/rinh/fekit-extension-template)
+
 fekit所有源码全部使用coffeescript开发
 
 * bin - 放置可执行文件
@@ -102,7 +104,7 @@ fekit所有源码全部使用coffeescript开发
 
 请在`src/commands`增加文件 {命令名}.coffee
 
-一个命令请包含如下内容
+一个命令请包含如下内容 
 
     # 命令的使用说明
     exports.usage = "使用说明"
