@@ -92,8 +92,46 @@ describe 'Parser', ->
                 return ast;
 
             # js
+            s = def1('require("./abca/def");').print();
+            assert.equal( s , '[load ./abca/def]')
+
             s = def1('require("./abc/def");').print();
             assert.equal( s , '[load ./abc/def]')
+
+            s = def1('require("./abc/def").abc').print();
+            assert.equal( s , '[load ./abc/def].abc')
+
+            s = def1('require("./abc");require("./def");').print();
+            assert.equal( s , '[load ./abc][load ./def]')
+
+            s = def1('require("./abc");\nrequire("./def");').print();
+            assert.equal( s , '[load ./abc]\n[load ./def]')
+
+            s = def1('require("./abc")\nrequire("./def")').print();
+            assert.equal( s , '[load ./abc]\n[load ./def]')
+
+            # css
+            s = def1('@import url("./abc1/def");').print();
+            assert.equal( s , '[load ./abc1/def]')
+
+            s = def1("@import url('./abc2/def');").print();
+            assert.equal( s , '[load ./abc2/def]')
+
+            s = def1('@import url(./abc3/def);').print();
+            assert.equal( s , '[load ./abc3/def]')
+
+            s = def1('@import url("./abc/def").abc').print();
+            assert.equal( s , '[load ./abc/def].abc')
+
+            s = def1('@import url("./abc");@import url("./def");').print();
+            assert.equal( s , '[load ./abc][load ./def]')
+
+            s = def1('@import url("./abc");\n@import url("./def");').print();
+            assert.equal( s , '[load ./abc]\n[load ./def]')
+
+            s = def1('@import url("./abc")\n@import url("./def")').print();
+            assert.equal( s , '[load ./abc]\n[load ./def]')
+
 
 
 

@@ -9,7 +9,6 @@
         "url": "git://github.com/rinh/fekit.git"
     },
     "dependencies": {
-        "jison" : "0.3.12" ,
         "coffee-script" : "1.4.x" , 
         "underscore" : "1.4.x" , 
         "async" : "0.2.x" , 
