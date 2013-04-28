@@ -1,10 +1,7 @@
 .git
 node_modules
+!vendors/**/node_modules
 npm-debug.log
 testcase/**/prd/*
 testcase/**/dev/*
 testcase/**/ver/*
-
-test/compiler/compiler.coffee
-
-src/compiler/parser.jison

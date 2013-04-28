@@ -1,7 +1,25 @@
+path = require 'path'
 fs = require 'fs'
 
 {print} = require 'sys'
 {spawn} = require 'child_process'
+
+_spawn = ( cmd , args = [] , options = {} ) ->
+    cmd = if process.platform is "win32" then cmd + ".cmd" else cmd
+    spawn cmd , args , options
+
+fetch_vendors = () ->
+    
+    console.info('fetch vendors...')
+
+    # vendors npm install 
+    n = _spawn 'npm' , ['install'] , {
+        cwd : path.resolve( process.cwd() , './vendors/tar/' )
+        env : process.env
+    }
+
+    process_stdio n , () ->
+        console.info('fetch vendors done.')
 
 process_stdio = (proc,callback) ->
     proc.stderr.pipe process.stderr, end: false 
@@ -11,14 +29,16 @@ process_stdio = (proc,callback) ->
 
 build = (option,callback) ->
 
-    coffee = spawn './node_modules/.bin/coffee', option
+    fetch_vendors()
+
+    coffee = _spawn 'coffee', option
     process_stdio coffee , callback
 
 test = () ->
-    mocha = spawn './node_modules/.bin/mocha' , [ '--colors', '--recursive', '--compilers', 'coffee:coffee-script' ]
+    mocha = _spawn 'mocha' , [ '--colors', '--recursive', '--compilers', 'coffee:coffee-script' ]
     process_stdio mocha
 
-coffee = "./node_modules/.bin/coffee"
+coffee = "coffee"
 
 echo = (child) ->
   child.stdout.on "data", (data) -> print data.toString()
@@ -27,7 +47,10 @@ echo = (child) ->
 
 install = (cb) ->
     console.log "Building..."
-    echo child = spawn coffee, ["-c", "-o", "lib", "src"]
+
+    fetch_vendors()
+
+    echo child = _spawn coffee, ["-c", "-o", "lib", "src"]
     child.on "exit", (status) -> cb?() if status is 0
 
 #-------------------
