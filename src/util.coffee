@@ -65,7 +65,9 @@ _closest_dir = ( p , finddirname ) ->
 
 exports.path = utilpath =
     dirname : syspath.dirname
-    join : syspath.join 
+    join : () ->
+        arr = ( ( if typeof i == 'undefined' then '' else i ) for i in arguments )
+        syspath.join.apply( syspath , arr )
 
     fname : ( path ) ->
         syspath.basename( path ).replace( syspath.extname( path ) , '' )
