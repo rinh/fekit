@@ -31,14 +31,13 @@ build = (option,callback) ->
 
     fetch_vendors()
 
-    coffee = _spawn 'coffee', option
+    coffee = _spawn './node_modules/.bin/coffee', option
     process_stdio coffee , callback
 
 test = () ->
-    mocha = _spawn 'mocha' , [ '--colors', '--recursive', '--compilers', 'coffee:coffee-script' ]
+    mocha = _spawn './node_modules/.bin/mocha' , [ '--colors', '--recursive', '--compilers', 'coffee:coffee-script' ]
     process_stdio mocha
 
-coffee = "coffee"
 
 echo = (child) ->
   child.stdout.on "data", (data) -> print data.toString()
@@ -50,7 +49,7 @@ install = (cb) ->
 
     fetch_vendors()
 
-    echo child = _spawn coffee, ["-c", "-o", "lib", "src"]
+    echo child = _spawn "./node_modules/.bin/coffee", ["-c", "-o", "lib", "src"]
     child.on "exit", (status) -> cb?() if status is 0
 
 #-------------------
