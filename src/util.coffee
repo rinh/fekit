@@ -65,6 +65,7 @@ _closest_dir = ( p , finddirname ) ->
 
 exports.path = utilpath =
     dirname : syspath.dirname
+    basename : syspath.basename
     join : () ->
         arr = ( ( if typeof i == 'undefined' then '' else i ) for i in arguments )
         syspath.join.apply( syspath , arr )
@@ -391,7 +392,14 @@ _runCode = ( path , ctx ) ->
 exports.config = utilconfig = 
     parse : ( baseUri ) ->
         return new FekitConfig( baseUri )
-
+    createEmptySchema : () ->
+        return {
+            "name" : ""
+            "version" : ""
+            "dependencies" : {}
+            "alias" : {}
+            "export" : []
+        }
 
 #---------------------------
 

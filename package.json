@@ -34,7 +34,8 @@
         "ncp" : "0.4.x" , 
         "temp" : "0.5.0" ,
         "sty" : "0.6.x" , 
-        "semver" : "1.1.x"
+        "semver" : "1.1.x" , 
+        "prompt" : "0.2.x"
     },
     "devDependencies": {},
     "optionalDependencies": {},
