@@ -92,12 +92,15 @@ class Package
 
     _each_dependencies_install: ( done ) ->
 
+        pkgname = @name
+        version = @version
+
         async.eachSeries @children 
                         , ( pkg , pkg_done ) ->
                             pkg.install ( err ) ->
                                 pkg_done( err )
                         , ( err ) ->
-                            done( err )
+                            done( err , pkgname , version )
 
     install: ( done ) ->
 

@@ -21,11 +21,29 @@ doneCallback = ( err ) ->
     if err then utils.logger.error err.toString() 
 
 
+saveToConfig = ( configPath , name , version ) ->
+    return unless utils.path.exists configPath
+    config = utils.file.io.readJSON configPath
+    deps = config.dependencies || {}
+    deps[ name ] = version
+
+    config.dependencies = deps
+
+    utils.file.io.write configPath , JSON.stringify( config , {} , 4 )
+
+
 start = ( options ) ->
 
     spec_pkg = options['_'][1]
 
+    # 先寻找最近的fekit_modules目录 
     basepath = utils.path.closest options.cwd , Package.FEKIT_MODULE_DIR , true
+    # 如果没有，再寻找最近的fekit.config
+    basepath = utils.path.closest options.cwd , 'fekit.config' unless basepath 
+    # 再没有，则使用当前目录
+    basepath = options.cwd unless basepath
+
+    config_path = utils.path.join( basepath , 'fekit.config' )
 
     if !basepath then basepath = options.cwd
 
@@ -40,11 +58,12 @@ start = ( options ) ->
             # 真正安装
             p.install ( err ) ->
                 return doneCallback( err ) if err
+                saveToConfig( config_path , p.name , p.version )
                 p.report()
 
     else
         #根据配置安装
-        config = utils.config.parse utils.path.join( options.cwd , 'fekit.config' )
+        config = utils.config.parse config_path
         deps = config.root.dependencies
         return if _.size( deps or {} ) is 0
 
