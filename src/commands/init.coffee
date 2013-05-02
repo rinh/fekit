@@ -55,7 +55,7 @@ start = ( opts ) ->
 
         config.version = result.version
 
-        utils.file.mkdirp base
+        utils.file.mkdirp utils.path.join( base , 'src' )
 
         utils.file.io.write config_path , JSON.stringify( config , {} , 4 )
 
