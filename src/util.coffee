@@ -514,6 +514,17 @@ exports.http = utilhttp =
         )
 
 
+    del : ( url , cb ) ->
+        if typeof url is 'object'
+            opts = url
+        else
+            opts = 
+                url : url
+        opts.method = 'DELETE'
+        utillogger.log "fekit #{sty.red 'http'} #{sty.green 'DELETE'} #{url}"        
+        request opts , cb 
+
+
 #---------------------------
 
 
