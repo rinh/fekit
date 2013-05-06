@@ -46,7 +46,8 @@ class Package
 
     preinstall: ( done ) ->
 
-        return done("'#{@name}' is exists.") if @_check_local_package()
+        # 不再进行本地检查
+        #return done("'#{@name}' is exists.") if @_check_local_package()
 
         @_preinstall done
 
