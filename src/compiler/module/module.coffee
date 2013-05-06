@@ -25,7 +25,7 @@ class Module
     constructor:( uri ) ->
         @path = new ModulePath(uri)
         @config = new ModuleConfig(uri)
-        @guid = md5( @path.getFullPath() )
+        @guid = md5( utils.file.io.read( @path.getFullPath() ) )
         @depends = []
         @ast = null
 
