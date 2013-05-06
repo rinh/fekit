@@ -79,6 +79,9 @@ exports.valid_fekit_config = valid_fekit_config = ( opts , done ) ->
     if !json or !json.name or !json.version 
         throw "fekit.config 格式不正确"
 
+    if json.compiler isnt 'component'
+        throw "如果需要发布组件，则 fekit.config 中的 compiler 必须为 component"
+
     opts.config = json
 
     done()
