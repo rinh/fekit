@@ -41,6 +41,7 @@ exports.getExtensions = () ->
     up = utils.path
     dir = up.join up.get_user_home() , ".fekit" , ".extensions"
     list = []
+    return list unless up.exists dir 
     up.each_directory( dir , ( (p) -> 
         ext = require(p)
         if ext.path && ext.version
