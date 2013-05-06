@@ -29,7 +29,7 @@ exports.array = utilarray =
 #----------------------------
 
 
-_closest = ( p , findfilename ) ->
+_closest = ( p , findfilename , filterFunc ) ->
     if p is "/" or ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) )
         return null
 
@@ -41,12 +41,16 @@ _closest = ( p , findfilename ) ->
     files = fs.readdirSync( dir )
     for file in files
         if file == findfilename
-            return dir
+            if filterFunc 
+                if filterFunc( utilpath.join( dir , file ) ) 
+                    return dir
+            else 
+                return dir 
 
-    return _closest( syspath.dirname( dir ) , findfilename )
+    return _closest( syspath.dirname( dir ) , findfilename , filterFunc )
 
 
-_closest_dir = ( p , finddirname ) ->
+_closest_dir = ( p , finddirname , filterFunc ) ->
     if p is "/" or ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) )
         return null
 
@@ -58,9 +62,13 @@ _closest_dir = ( p , finddirname ) ->
     files = fs.readdirSync( dir )
     for file in files
         if file is finddirname and utilpath.is_directory( file )
-            return dir
+            if filterFunc 
+                if filterFunc( file ) 
+                    return dir
+            else 
+                return dir 
 
-    return _closest_dir( syspath.dirname( dir ) , finddirname )
+    return _closest_dir( syspath.dirname( dir ) , finddirname , filterFunc )
 
 
 exports.path = utilpath =
@@ -76,11 +84,11 @@ exports.path = utilpath =
     get_user_home : () ->
         return process.env[ if (process.platform == 'win32') then 'USERPROFILE' else 'HOME'];
 
-    closest : ( path , findfilename , is_directory ) ->
+    closest : ( path , findfilename , is_directory , filterFunc ) ->
         if is_directory
-            return _closest_dir( path , findfilename )
+            return _closest_dir( path , findfilename , filterFunc )
         else
-            return _closest( path , findfilename )
+            return _closest( path , findfilename , filterFunc )
 
     SEPARATOR : syspath.join('a','a').replace(/a/g,'')
 

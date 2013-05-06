@@ -21,11 +21,20 @@ class ModuleConfig
     compileType:() ->
         return @config.root.compiler
 
+    getCompileType: () ->
+        return ModuleConfig.MODULE_COMPILE_TYPE.NORMAL if !@config.root.compiler
+        return ModuleConfig.MODULE_COMPILE_TYPE.MODULAR if @config.root.compiler is "modular"
+        return ModuleConfig.MODULE_COMPILE_TYPE.COMPONENT if @config.root.compiler is "component"
+        return ModuleConfig.MODULE_COMPILE_TYPE.UNKNOWN
+
     isCompileTypeNormal:() ->
         return !@config.root.compiler
 
     isCompileTypeModular:() ->
         return @config.root.compiler is "modular"
+
+    isCompileTypeComponent:() ->
+        return @config.root.compiler is "component"        
         
     isUseAlias:(aliasName) ->
         return !!@config.root.alias[aliasName]
@@ -42,5 +51,12 @@ class ModuleConfig
     getPackage:(aliasName) ->
         p = new Package( aliasName , null , @config.fekit_root_dirname )
         return p.get_local_entry()
+
+
+ModuleConfig.MODULE_COMPILE_TYPE = 
+    NORMAL : 1
+    MODULAR : 2
+    COMPONENT : 3 
+    UNKNOWN : 4
 
 exports.ModuleConfig = ModuleConfig

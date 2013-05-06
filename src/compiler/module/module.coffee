@@ -9,6 +9,7 @@ ModuleConfig = require('./config').ModuleConfig
 
 # ---------------------------
 
+MODULE_COMPILE_TYPE = ModuleConfig.MODULE_COMPILE_TYPE
 
 MODULE_CONTENT_TYPE = 
     JAVASCRIPT : "javascript" 
@@ -30,6 +31,22 @@ class Module
 
     hasDependencies: () ->
         return @depends.length > 0
+
+    # 得到当前模块编译模式
+    getCompileType: () ->
+        type = @config.getCompileType()
+
+        # 如果是组件编译模式，寻找当前模块的上级fekit.config，如果没有，则报UNKNOWN
+        if type is MODULE_COMPILE_TYPE.COMPONENT
+            fkconf_path = utils.path.closest @path.getFullPath() , 'fekit.config' , false , ( path ) ->
+                config = utils.file.io.readJSON( path )
+                config.compiler isnt 'component'
+            return MODULE_COMPILE_TYPE.UNKNOWN if !fkconf_path
+
+            fkconf = new ModuleConfig( fkconf_path )
+            return fkconf.getCompileType()
+
+        return type
 
     # 分析模块的依赖关系
     analyze:( doneCallback ) ->
@@ -104,14 +121,15 @@ class JSModule extends Module
         super(uri)
 
     analyzed: () ->
-        if @config.isCompileTypeNormal()
-            @ast.defineType 'REQUIRE' , ( node ) ->
-                return ""
-        else if @config.isCompileTypeModular()
-            @ast.defineType 'REQUIRE' , ( node ) ->
-                return "__context.____MODULES['#{node.module.guid}'];"
-        else 
-            throw "找不到正确的编译方式, 请修改fekit.config中的 compiler [目前值:#{@config.compileType()}]"
+        switch @getCompileType()
+            when MODULE_COMPILE_TYPE.NORMAL
+                @ast.defineType 'REQUIRE' , ( node ) ->
+                    return ""
+            when MODULE_COMPILE_TYPE.MODULAR
+                @ast.defineType 'REQUIRE' , ( node ) ->
+                    return "__context.____MODULES['#{node.module.guid}'];"
+            else 
+                throw "找不到正确的编译方式, 请修改fekit.config中的 compiler [目前值:#{@config.compileType()}]"
 
 
     _wrap: ( source ) ->
@@ -135,11 +153,13 @@ class JSModule extends Module
         """
 
     getSourceWithoutDependencies:() ->
-        if @config.isCompileTypeNormal()
-            return @ast.print()
-        if @config.isCompileTypeModular()
-            return @_wrap( @ast.print() )
-        throw "找不到正确的编译方式, 请修改fekit.config中的 compiler [目前值:#{@config.compileType()}]"
+        switch @getCompileType()
+            when MODULE_COMPILE_TYPE.NORMAL
+                return @ast.print()
+            when MODULE_COMPILE_TYPE.MODULAR
+                return @_wrap( @ast.print() )
+            else
+                throw "找不到正确的编译方式, 请修改fekit.config中的 compiler [目前值:#{@config.compileType()}]"
 
 
 
