@@ -38,6 +38,7 @@ class Module
             self.ast = parser.parseAST( source )
             self.ast.find 'REQUIRE' , ( node ) ->
                 module = Module.parse( node.value , self )
+                node.module = module
                 self.depends.push( module )
                 self.analyzed()
             doneCallback.call( self , err )
@@ -108,7 +109,7 @@ class JSModule extends Module
                 return ""
         else if @config.isCompileTypeModular()
             @ast.defineType 'REQUIRE' , ( node ) ->
-                return "__context.____MODULES['#{@guid}'];"
+                return "__context.____MODULES['#{node.module.guid}'];"
         else 
             throw "找不到正确的编译方式, 请修改fekit.config中的 compiler [目前值:#{@config.compileType()}]"
 
