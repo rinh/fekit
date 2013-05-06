@@ -81,12 +81,25 @@ exports.help = () ->
     console.info(" 如果需要帮助, 请使用 fekit {命令名} --help ")
     console.info("")
 
-exports.run = ( cmd ) ->
-
+find_cmd = ( cmd ) ->
+    
     lib = syspath.dirname( __filename )
     path = syspath.join( lib , "./commands/#{cmd}.js" )
 
-    if !utils.path.exists( path ) 
+    return path if utils.path.exists( path )
+
+    list = env.getExtensions()
+    for i in list 
+        return i.path if i.name == cmd 
+
+    return null
+
+
+exports.run = ( cmd ) ->
+
+    path = find_cmd( cmd )
+
+    if !path
         utils.logger.error("请确认是否有 #{cmd} 这个命令")
         return 1
 
