@@ -12,7 +12,8 @@ class ModulePath
     parseify:( path_without_extname ) ->
         extname = @extname()
         if ~ModulePath.EXTLIST.indexOf( extname )
-            result = utils.file.findify( path_without_extname , ModulePath.EXTLIST )
+            ext_list = ModulePath.getContentTypeList(extname)
+            result = utils.file.findify( path_without_extname , ext_list )
             #如果仍然没有，则以 path_without_extname 为目录名进行测试
             if result is null and utils.path.is_directory( path_without_extname )
                 p = utils.path.join( path_without_extname , "index" )
@@ -33,6 +34,7 @@ class ModulePath
 
     getContentType:()->
         return ModulePath.getContentType( @extname() )
+
 
 ###
     解析子模块真实路径
@@ -99,6 +101,10 @@ ModulePath.addExtensionPlugin = ( extName , plugin ) ->
 
 ModulePath.getPlugin = ( extName ) ->
     ModulePath.EXTTABLE[ extName ]
+
+ModulePath.getContentTypeList = ( extName ) ->
+    type = ModulePath.EXTTABLE[ extName ].contentType 
+    return ( k for k , v of ModulePath.EXTTABLE when v.contentType is type )
 
 # 后缀列表 
 ModulePath.EXTLIST = []
