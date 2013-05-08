@@ -327,7 +327,7 @@ class FekitConfig
                         cb( path , parents , opts , seriesCallback )
                     else
                         utillogger.error("找不到文件 #{path}")
-                        seriesCallback()
+                        process.nextTick seriesCallback
 
             tasks.push _tmp(file)
 
