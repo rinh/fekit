@@ -536,6 +536,10 @@ exports.logger = utillogger =
     debug : false ,
     setup : ( options ) ->
         if options && options.debug then utillogger.debug = true 
+    start : () ->
+        @_tick = new Date()
+    stop : () ->
+        return ( new Date().getTime() - @_tick.getTime() ) + 'ms'
     trace : () ->
         if !utillogger.debug then return
         utillogger.to("[TRACE] " , Array.prototype.join.call( arguments , " " ) )

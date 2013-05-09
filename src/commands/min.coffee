@@ -87,10 +87,10 @@ process_single_file = ( options ) ->
     else
         srcpath = syspath.join( options.cwd , options.filename )
 
-    compiler.compile srcpath , ( source ) ->
+    compiler.compile srcpath , ( err , source ) ->
 
         extname = syspath.extname( srcpath )
-
+        
         switch extname
             when ".css"
                 final_code = uglifycss.processString(source)
@@ -104,7 +104,7 @@ process_single_file = ( options ) ->
 
         new utils.file.writer().write( dest , final_code )
 
-        utils.logger.log( "已经处理 #{srcpath}  ==> #{dest}" )
+        utils.logger.log( "已经处理  #{srcpath}  ==> #{dest}" )
 
         utils.logger.log("DONE.")
 
