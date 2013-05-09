@@ -9,7 +9,7 @@ _exec = ( cmd , callback ) ->
     console.info("[EXEC] #{cmd}")
     n = cmd.split(' ')
     n1 = n[0]
-    n2 = n.slice(1)
+    n2 = ( i.replace(/\t/g,' ') for i in n.slice(1) )
     c = spawn( n1 , n2 , {
             cwd : process.cwd() , 
             env : process.env
@@ -84,7 +84,7 @@ task "bump", 'bump version' , ->
     return console.error("[ERROR] please add change log for v#{pkg.version}") unless ~changelog.indexOf(pkg.version)
 
     _exec 'git add . ' , ->
-        _exec "git commit -m \"bump version v#{pkg.version}\"" , ->
+        _exec "git commit -m \"bump\tversion\tv#{pkg.version}\"" , ->
             _exec 'git push origin master' , ->
                 _exec 'npm publish' , ->
                     console.info "[success] BUMP done."
