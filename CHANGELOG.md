@@ -1,3 +1,6 @@
+# 0.2.9 #
+* fix: 修正 cake bump 的方式， 将exec改为spawn
+
 # 0.2.8  #
 
 * add: 增加 cake bump

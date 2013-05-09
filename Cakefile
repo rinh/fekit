@@ -7,16 +7,21 @@ fs = require 'fs'
 
 _exec = ( cmd , callback ) ->
     console.info("[EXEC] #{cmd}")
-    exec( cmd , {
+    n = cmd.split(' ')
+    n1 = n[0]
+    n2 = n.slice(1)
+    c = spawn( n1 , n2 , {
             cwd : process.cwd() , 
             env : process.env
-        } , (err , stdout , stderr) ->
-            console.info("---------------------------")
-            console.info(stdout)
-            console.info(stderr)
-            console.info("")
-            callback()
-        )
+        })
+
+    console.info("---------------------------")
+    c.stderr.pipe process.stderr, end: false 
+    c.stdout.pipe process.stdout, end: false 
+    c.on 'exit' , ( code ) ->
+        console.info("")
+        callback()
+        
 
 _spawn = ( cmd , args = [] , options = {} ) ->
     cmd = if process.platform is "win32" then cmd + ".cmd" else cmd
