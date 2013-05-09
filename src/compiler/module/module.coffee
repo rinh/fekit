@@ -25,7 +25,8 @@ class Module
     constructor:( uri ) ->
         @path = new ModulePath(uri)
         @config = new ModuleConfig(uri)
-        @guid = md5( utils.file.io.read( @path.getFullPath() ) )
+        @source = utils.file.io.read( @path.getFullPath() )
+        @guid = md5( @source )
         @depends = []
         @ast = null
 
@@ -65,11 +66,11 @@ class Module
 
 
     _process:( path , cb ) ->
-        txt = new utils.file.reader().read( path )
+        #txt = new utils.file.reader().read( path )
         ext = syspath.extname( path )
         plugin = ModulePath.getPlugin(ext)
         if plugin
-            plugin.process txt , path , ( err , result ) ->
+            plugin.process @source , path , ( err , result ) ->
                 if err 
                     cb( "文件编译错误 #{path} , #{err.toString()}" , "" ) 
                 else 

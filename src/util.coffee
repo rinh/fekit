@@ -327,7 +327,7 @@ class FekitConfig
                         cb( path , parents , opts , seriesCallback )
                     else
                         utillogger.error("找不到文件 #{path}")
-                        process.nextTick seriesCallback
+                        utilproc.setImmediate seriesCallback
 
             tasks.push _tmp(file)
 
@@ -485,6 +485,10 @@ exports.proc = utilproc =
         child_process.exec cmd , ( error , stdout , stderr ) =>
             if error then utillogger.error( error )
 
+    setImmediate : ( callback ) ->
+        fn = if typeof setImmediate is 'function' then setImmediate else process.nextTick
+        fn callback
+
 
 #---------------------------
 
@@ -548,7 +552,7 @@ exports.logger = utillogger =
 
 exports.exit = exit = (exitCode) ->
     if process.stdout._pendingWriteReqs or process.stderr._pendingWriteReqs
-        process.nextTick () ->
+        utilproc.setImmediate () ->
             exit(exitCode)
     else
         process.exit(exitCode)
@@ -564,7 +568,7 @@ exports.tar =
 
         fs.stat source, (err, stat) ->
 
-            process.nextTick ->
+            utilproc.setImmediate ->
                 gzip = zlib.createGzip
                     level : 6
                     memLevel : 6
@@ -590,7 +594,7 @@ exports.tar =
 
     unpack : ( tarfile , dest , callback ) ->
 
-        process.nextTick ->
+        utilproc.setImmediate ->
             fstream.Reader(
                 path : tarfile
                 type : 'File'

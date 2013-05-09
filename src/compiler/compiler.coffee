@@ -53,11 +53,11 @@ getSource = ( module , options , callback ) ->
                 _tmp = (sub_module) -> 
                     ( seriesCallback ) =>
                         if USED_MODULES[ sub_module.guid ]
-                            process.nextTick seriesCallback
+                            utils.proc.setImmediate seriesCallback
                             return
                         getSource sub_module , options , ( e , txt ) ->
                             arr.push( txt )
-                            process.nextTick ()->
+                            utils.proc.setImmediate ()->
                                 seriesCallback( e )
                 deps.push _tmp(sub_module)
 
@@ -98,7 +98,7 @@ exports.compile = ( filepath , options , doneCallback ) ->
             parent_module = new Module( dep_path )
             parent_module.analyze ( err ) ->
                 _.extend( use_modules , parent_module.getDependenciesURI() )
-                process.nextTick ()->
+                utils.proc.setImmediate ()->
                     seriesCallback( err )
     _done = ( err ) ->
             if err 

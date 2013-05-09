@@ -34,6 +34,7 @@ process_directory = ( options ) ->
 
     conf.each_export_files_async(
         (srcpath, parents, opts, seriesCallback) ->
+            start = new Date()
             utils.logger.log( "正在处理 #{srcpath}" )
             urlconvert = new utils.UrlConvert( srcpath , options.cwd )
             urlconvert.set_no_version() if opts.no_version 
@@ -65,7 +66,7 @@ process_directory = ( options ) ->
                 script_global.EXPORT_MAP[ opts.partial_path ]?.ver = md5code
                 script_global.EXPORT_MAP[ opts.partial_path ]?.minpath = dest.replace( options.cwd , "" )
 
-                utils.logger.log( "已经处理 #{srcpath}  ==> #{dest}" )
+                utils.logger.log( "已经处理 [#{new Date().getTime()-start.getTime()}ms] #{srcpath}  ==> #{dest}" )
                 seriesCallback()
 
             compiler.compile( srcpath , {
