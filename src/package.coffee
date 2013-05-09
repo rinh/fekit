@@ -23,7 +23,7 @@ class Package
     # 获取本地入口文件路径
     # 默认入口文件为 src/index， 如果出错则返回 null
     get_local_entry: () ->
-
+        return null if @name is '.' or @name is '..'
         _fekit_conf_path = utils.path.join @package_installed_path , 'fekit.config'
         return null unless utils.path.exists _fekit_conf_path
         _conf = utils.file.io.readJSON _fekit_conf_path

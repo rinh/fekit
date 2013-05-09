@@ -2,6 +2,7 @@
 * fix: 使用 node 0.10.x 中的 setImmediate ，并兼容老版本 node 的 process.nextTick
 * 优化 module io 读入次数
 * fix: min -f 单独压缩文件的问题
+* fix: 当引用路径为 require('../xxx') 或 require('xxx') 时，加载错误的问题
 
 # 0.2.9 #
 * fix: 修正 cake bump 的方式， 将exec改为spawn
