@@ -3,6 +3,20 @@ fs = require 'fs'
 
 {print} = require 'sys'
 {spawn} = require 'child_process'
+{exec} = require 'child_process'
+
+_exec = ( cmd , callback ) ->
+    console.info("[EXEC] #{cmd}")
+    exec( cmd , {
+            cwd : process.cwd() , 
+            env : process.env
+        } , (err , stdout , stderr) ->
+            console.info("---------------------------")
+            console.info(stdout)
+            console.info(stderr)
+            console.info("")
+            callback()
+        )
 
 _spawn = ( cmd , args = [] , options = {} ) ->
     cmd = if process.platform is "win32" then cmd + ".cmd" else cmd
@@ -54,6 +68,23 @@ install = (cb) ->
 
 #-------------------
 
+task "bump", 'bump version' , ->
+    semver = require('semver')
+    pkg = JSON.parse( fs.readFileSync('./package.json').toString() )
+    pkg.version = semver.inc( pkg.version , 'patch' )
+    fs.writeFileSync('./package.json', JSON.stringify( pkg , null , 4 ) )
+    
+    changelog = fs.readFileSync('./CHANGELOG.md').toString()
+
+    return console.error("[ERROR] please add change log for v#{pkg.version}") unless ~changelog.indexOf(pkg.version)
+
+    _exec 'git add . ' , ->
+        _exec "git commit -m \"bump version v#{pkg.version}\"" , ->
+            _exec 'git push origin master' , ->
+                _exec 'npm publish' , ->
+                    console.info "[success] BUMP done."
+
+
 task 'watch', 'Watch src/ for changes', ->
     build ['-w','-c','-o','lib','src']
 
@@ -64,3 +95,8 @@ task 'test', 'Test all case', ->
     test();
 
 task "install", "Install, build, and test repo", install
+
+
+
+
+

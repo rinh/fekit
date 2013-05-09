@@ -1,3 +1,8 @@
+# 0.2.8  #
+
+* add: 增加 cake bump
+* add: 增加 unpublish 前的警告
+
 # 0.2.7  #
 
 * add: 使用changelog记录变更

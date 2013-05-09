@@ -1,3 +1,4 @@
+prompt = require 'prompt'
 env = require '../env'
 request = require 'request'
 utils = require '../util'
@@ -29,13 +30,28 @@ exports.run = ( options ) ->
 
     # ----- 
 
-    url = env.getPackageUrl( name , version )
+    prompt.start()
 
-    utils.http.del url , ( err , res , body ) ->
+    prop = 
+        properties:
+            ensure:
+                description: 'are you sure? '
+                pattern: /^(y|n|yes|no)$/i
+                default: 'no'
 
-        data = JSON.parse( body )
+    prompt.get prop , ( err , result ) ->
 
-        return utils.logger.error( data.errmsg ) unless data.ret
+        return if /^(n|no)$/i.test( result.ensure )
 
-        utils.logger.log "#{name} @ #{version or "all"} 删除成功"
+        # ----- 
+
+        url = env.getPackageUrl( name , version )
+
+        utils.http.del url , ( err , res , body ) ->
+
+            data = JSON.parse( body )
+
+            return utils.logger.error( data.errmsg ) unless data.ret
+
+            utils.logger.log "#{name} @ #{version or "all"} 删除成功"
 
