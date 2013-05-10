@@ -1,3 +1,7 @@
+# 0.2.11 #
+* fix: convert 中使用的 findit 在 windows 下不能正常工作  https://github.com/substack/node-findit/issues/5
+* add: 增加 server 的 boost 功能 , 使用 watch file 方式动态缓存 file checksum
+
 # 0.2.10 #
 * fix: 使用 node 0.10.x 中的 setImmediate ，并兼容老版本 node 的 process.nextTick
 * 优化 module io 读入次数

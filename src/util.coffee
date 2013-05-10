@@ -129,6 +129,10 @@ exports.path = utilpath =
             throw err
             return false
 
+    is_normalize_dirname: ( path ) ->
+        return ( /[\w-\.\s]+/i.test(path) ) and ( path isnt '.' ) and ( path isnt '..' ) and ( path isnt '.svn' ) and ( path isnt '.git' )
+
+
     each_directory: ( path , cb , is_recursion ) ->
 
         if !utilpath.is_directory( path )
@@ -138,10 +142,10 @@ exports.path = utilpath =
         for f in list 
             p = syspath.join( path , f )
             if !is_recursion
-                if f isnt "." and f isnt ".." and !utilpath.is_directory( p )
+                if utilpath.is_normalize_dirname(f) and !utilpath.is_directory( p )
                     cb( p )
             else 
-                if f isnt "." and f isnt ".." 
+                if utilpath.is_normalize_dirname(f)
                     if !utilpath.is_directory( p )
                         cb( p )
                     else
@@ -206,6 +210,21 @@ utilfile.reader = Reader
 utilfile.writer = Writer
 utilfile.io = _.extend( {}, Reader.prototype , Writer.prototype )
 utilfile.NEWLINE = '\n'
+
+_watch = ( path , cb ) ->
+    if !utilpath.is_directory( path )
+        path = syspath.dirname( path )
+    fs.watch path , cb 
+
+    list = fs.readdirSync( path )
+    for f in list 
+        p = syspath.join( path , f )
+        if utilpath.is_normalize_dirname(f) and utilpath.is_directory( p )
+            _watch( p , cb )
+
+
+utilfile.watch = ( dest , cb ) ->
+    _watch( dest , cb )
 
 utilfile.copy = (srcFile, destFile) ->
     BUF_LENGTH = 64*1024

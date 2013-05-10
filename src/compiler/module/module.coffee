@@ -26,9 +26,12 @@ class Module
         @path = new ModulePath(uri)
         @config = new ModuleConfig(uri)
         @source = utils.file.io.read( @path.getFullPath() )
-        @guid = md5( @source )
         @depends = []
         @ast = null
+
+        Module.booster.init_cached( @path.uri ) if Module.booster
+        checksum = Module.booster && Module.booster.get_checksum_cache( @path.uri )
+        @guid = checksum or md5( @source )
 
     hasDependencies: () ->
         return @depends.length > 0
@@ -113,6 +116,11 @@ Module.parse = ( path , parentModule ) ->
 Module.addExtensionPlugin = ( extName , plugin ) ->
     ModulePath.addExtensionPlugin( extName , plugin )
 
+
+# 使用 booster 进行加速
+Module.booster = null
+
+
 #--------------------
 
 
@@ -177,6 +185,6 @@ class CSSModule extends Module
 
 
 
-exports.Module = Module
 
+exports.Module = Module
 

@@ -3,8 +3,10 @@ syspath = require 'path'
 fs = require 'fs'
 utils = require '../util'
 _ = require 'underscore'
+booster = require './module/booster'
 
 Module = require("./module/module").Module
+Module.booster = booster
 
 ### ---------------------------
     插件系统
@@ -114,7 +116,8 @@ exports.compile = ( filepath , options , doneCallback ) ->
 
     utils.async.series _list , _iter , _done
 
-        
 
+exports.boost = ( opts ) ->
 
+    booster.init( opts )
 
