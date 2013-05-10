@@ -40,7 +40,7 @@ class Module
     getCompileType: () ->
         type = @config.getCompileType()
 
-        # 如果是组件编译模式，寻找当前模块的上级fekit.config，如果没有，则报UNKNOWN
+        ### [Obsolete] 如果是组件编译模式，寻找当前模块的上级fekit.config，如果没有，则报UNKNOWN
         if type is MODULE_COMPILE_TYPE.COMPONENT
             fkconf_path = utils.path.closest @path.getFullPath() , 'fekit.config' , false , ( path ) ->
                 config = utils.file.io.readJSON( path )
@@ -49,6 +49,10 @@ class Module
 
             fkconf = new ModuleConfig( fkconf_path )
             return fkconf.getCompileType()
+        ###
+
+        # 如果是组件编译模式，自动转为 modular。 这样意味着非 modular 的项目不能使用组件
+        return MODULE_COMPILE_TYPE.MODULAR if type is MODULE_COMPILE_TYPE.COMPONENT
 
         return type
 

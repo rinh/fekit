@@ -1,3 +1,6 @@
+# 0.2.13  #
+* change: 组件(定义为compiler:component)的编译模式强制使用 modular
+
 # 0.2.12 #
 * fix: convert 时，export 中的路径永远使用 /
 * fix: 删除文件夹会导致 watch 中断
