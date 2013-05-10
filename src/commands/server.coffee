@@ -26,18 +26,43 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'n' , 'noexport'
     optimist.describe 'n' , '默认情况下，/prd/的请求需要加入export中才可以识别。 指定此选项则可以无视export属性'
 
+    optimist.alias 't' , 'transfer'
+    optimist.describe 't' , '当指定该选项后，会识别以前的 qzz 项目 url'
+
 
 mime_config = 
     ".js" : "application/javascript"
     ".css" : "text/css"
 
 _routeRules = ( options ) ->
+    
+    list = []
 
-    if !options.route then return []
+    if options.route 
+        r = options.route.split(":")
+        list.push( "\/#{r[0]}\/ \/#{r[1]}\/" )
 
-    r = options.route.split(":")
+    return list
 
-    return [ "\/#{r[0]}\/ \/#{r[1]}\/" ]
+
+_rewriteObsoleteUrl = ( options ) ->
+    
+    reg = /-(\d{16})/
+
+    unless options.transfer
+        return () -> 
+    
+    return ( req , res , next ) ->
+        
+        return next() unless utils.UrlConvert.PRODUCTION_REGEX.test( req.url )
+
+        return next() if req.query.no_dependencies
+
+        if reg.test( req.url )
+            req.url = req.url.replace reg , '@$1'
+
+        next()
+
 
 setupServer = ( options ) ->
 
@@ -119,11 +144,12 @@ setupServer = ( options ) ->
 
     app = connect()
             .use( connect.logger( 'tiny' ) ) 
+            .use( connect.query()  ) 
+            .use( _rewriteObsoleteUrl( options ) )
             .use( rewrite( _routeRules( options ) ) )
             .use( connect.bodyParser() ) 
             .use( fekitRouter )
             .use( connect.static( options.cwd , { hidden: true, redirect: true })  ) 
-            .use( connect.query()  ) 
             .use( connect.directory( options.cwd ) ) 
 
     listenPort( http.createServer(app) , options.port || 80 )
