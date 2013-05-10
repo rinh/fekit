@@ -84,7 +84,7 @@ task "bump", 'bump version' , ->
     return console.error("[ERROR] please add change log for v#{pkg.version}") unless ~changelog.indexOf(pkg.version)
 
     _exec 'git add . ' , ->
-        _exec 'git commit -m bump\tversion\tv#{pkg.version}' , ->
+        _exec "git commit -m bump\tversion\tv#{pkg.version}" , ->
             _exec 'git push origin master' , ->
                 _exec 'npm publish' , ->
                     console.info "[success] BUMP done."
