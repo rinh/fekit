@@ -214,7 +214,10 @@ utilfile.NEWLINE = '\n'
 _watch = ( path , cb ) ->
     if !utilpath.is_directory( path )
         path = syspath.dirname( path )
-    fs.watch path , cb 
+    watcher = fs.watch path , cb 
+    watcher.on 'error' , (e) ->
+        watcher.close()
+        watcher = null
 
     list = fs.readdirSync( path )
     for f in list 
@@ -223,8 +226,8 @@ _watch = ( path , cb ) ->
             _watch( p , cb )
 
 
-utilfile.watch = ( dest , cb ) ->
-    _watch( dest , cb )
+utilfile.watch = ( dest , cb , crashCB ) ->
+    _watch( dest , cb , crashCB )
 
 utilfile.copy = (srcFile, destFile) ->
     BUF_LENGTH = 64*1024

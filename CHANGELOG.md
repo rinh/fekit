@@ -1,3 +1,7 @@
+# 0.2.12 #
+* fix: convert 时，export 中的路径永远使用 /
+* fix: 删除文件夹会导致 watch 中断
+
 # 0.2.11 #
 * fix: convert 中使用的 findit 在 windows 下不能正常工作  https://github.com/substack/node-findit/issues/5
 * add: 增加 server 的 boost 功能 , 使用 watch file 方式动态缓存 file checksum

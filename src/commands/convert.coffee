@@ -69,7 +69,7 @@ _replaceSrclist = ( filepath ) ->
         part = dest.split('/src/')[1]
     else if ~dest.indexOf('\\src\\')
         part = dest.split('\\src\\')[1]
-    CONFIG.export.push( part )
+    CONFIG.export.push( part.replace( /\\/g , '/' ) )
 
     return dest
 
