@@ -46,14 +46,7 @@ process_directory = ( options ) ->
                     utils.exit(1)
                     return
 
-                switch urlconvert.extname
-                    when ".css"
-                        final_code = uglifycss.processString(source).replace( /}/g , "}\n" )
-                    when ".js"
-                        ast = jsp.parse(source)
-                        ast = pro.ast_mangle(ast)
-                        #ast = pro.ast_squeeze(ast)
-                        final_code = pro.gen_code( ast )
+                final_code = minCode( urlconvert.extname , source )
 
                 md5code = md5(final_code)
                 dest = urlconvert.to_prd( md5code )
@@ -90,15 +83,8 @@ process_single_file = ( options ) ->
     compiler.compile srcpath , ( err , source ) ->
 
         extname = syspath.extname( srcpath )
-        
-        switch extname
-            when ".css"
-                final_code = uglifycss.processString(source)
-            when ".js"
-                ast = jsp.parse(source)
-                ast = pro.ast_mangle(ast)
-                #ast = pro.ast_squeeze(ast)
-                final_code = pro.gen_code( ast )
+
+        final_code = minCode( extname , source )
 
         dest = srcpath.replace( extname , ".min" + extname )
 
@@ -107,6 +93,22 @@ process_single_file = ( options ) ->
         utils.logger.log( "已经处理  #{srcpath}  ==> #{dest}" )
 
         utils.logger.log("DONE.")
+
+
+exports.minCode = minCode = ( extname , source , options = {} ) ->
+
+    switch extname
+        when ".css"
+            if options.noSplitCSS
+                final_code = uglifycss.processString(source)
+            else 
+                final_code = uglifycss.processString(source).replace( /}/g , "}\n" )
+        when ".js"
+            ast = jsp.parse(source)
+            ast = pro.ast_mangle(ast) 
+            final_code = pro.gen_code( ast )
+
+    return final_code
 
 
 exports.run = ( options ) ->
