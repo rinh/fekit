@@ -28,10 +28,8 @@ fixempty = ( str , limit ) ->
 
 help_title = () ->
 
-    version = new utils.file.reader().readJSON( syspath.join( CURR , "../package.json" ) ).version
-
     console.info("")
-    console.info("===================== FEKIT #{version} ====================")
+    console.info("===================== FEKIT #{utils.version} ====================")
     console.info("")
 
 init_options = ( command ) ->

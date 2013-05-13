@@ -16,6 +16,7 @@ fstream = require 'fstream'
 zlib = require 'zlib'
 sty = require 'sty'
 
+
 #----------------------------
 
 exports.array = utilarray =
@@ -639,4 +640,6 @@ exports.async = utilasync =
             _list.push( _tmp(item) )
         async.series _list , done
 
+#---------------------------
 
+exports.version = utilfile.io.readJSON( syspath.join( __dirname , "../package.json" ) ).version

@@ -111,6 +111,8 @@ process_single_file = ( options ) ->
 
 exports.run = ( options ) ->
     
+    utils.logger.log "fekit(#{utils.version}) min"
+
     if options.filename 
         process_single_file( options )
     else

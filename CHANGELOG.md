@@ -1,5 +1,7 @@
 # 0.2.14 #
 * add: server 添加了 transfer 功能
+* add: min 添加了编译使用的毫秒数
+* add: min 添加了使用版本
 
 # 0.2.13  #
 * change: 组件(定义为compiler:component)的编译模式强制使用 modular
