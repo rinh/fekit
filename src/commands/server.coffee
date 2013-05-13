@@ -50,7 +50,8 @@ _rewriteObsoleteUrl = ( options ) ->
     reg = /-(\d{16})/
 
     unless options.transfer
-        return () -> 
+        return ( req , res , next ) ->
+            next()
     
     return ( req , res , next ) ->
         

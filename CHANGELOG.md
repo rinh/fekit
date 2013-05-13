@@ -1,3 +1,6 @@
+# 0.2.15  #
+* fix: server transfer 没有正确处理非 -t 的情况 
+
 # 0.2.14 #
 * add: server 添加了 transfer 功能
 * add: min 添加了编译使用的毫秒数
