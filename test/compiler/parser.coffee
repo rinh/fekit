@@ -79,10 +79,18 @@ css_source = """
 .result tr td.t7 { color:#333; }
 """
 
+describe 'Parser', ->
+    it 'find_line_from_str', ->
+
+        assert.equal parser.find_line_from_str( "abcde\n12345" , 3 , true ) , "abcde"
+        assert.equal parser.find_line_from_str( "abcde\n12345" , 7 , true ) , "12345"
+        assert.equal parser.find_line_from_str( "abcde\n12345" , 3 , false ) , "abc"
+        assert.equal parser.find_line_from_str( "abcde\n12345" , 7 , false ) , "1"
+
 
 # print
 describe 'Parser', ->
-    describe '#defineType', ->
+    describe '#defineType1', ->
         it 'should be right', ->
 
             def1 = ( code ) ->
@@ -109,6 +117,18 @@ describe 'Parser', ->
 
             s = def1('require("./abc")\nrequire("./def")').print();
             assert.equal( s , '[load ./abc]\n[load ./def]')
+
+            s = def1('ext.require("./abc")\nrequire("./def")').print();
+            assert.equal( s , 'ext.require("./abc")\n[load ./def]')
+
+            s = def1('require("./abc")\next.require("./def")').print();
+            assert.equal( s , '[load ./abc]\next.require("./def")')
+
+            s = def1('require("./abc")\n // require("./def")').print();
+            assert.equal( s , '[load ./abc]\n // require("./def")')
+
+            s = def1('require("./abc")\n // require("./def") \r\n ext.require("abc");').print();
+            assert.equal( s , '[load ./abc]\n // require("./def") \r\n ext.require("abc");')
 
             # css
             s = def1('@import url("./abc1/def");').print();

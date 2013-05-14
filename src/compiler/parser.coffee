@@ -6,9 +6,27 @@ getVal = ( regexpResult ) ->
         return r if r 
 
 
-convertRegexp = ( str ) ->
-    str.replace(/\s/g,'').replace('{space}',' ')
+convertRegexp = ( str , flag ) ->
+    str = str.replace(/\s/g,'').replace('{space}',' ')
+    return new RegExp str , flag 
 
+_is_break = ( str , idx ) ->
+    return true if idx < 0
+    return true if idx > str.length
+    return true if str.charAt(idx) is '\n'
+    return false
+
+exports.find_line_from_str = find_line_from_str = ( str , index , is_fullline ) ->
+    start = index 
+    end = index 
+    while !_is_break( str , start )
+        start--
+    if is_fullline
+        while !_is_break( str , end )
+            end++
+        return str.substring( start , end ).replace(/\n/g,'')
+    else 
+        return str.substring( start , index ).replace(/\n/g,'')
 
 parse = ( str ) -> 
     
@@ -16,26 +34,38 @@ parse = ( str ) ->
 
     regstr = convertRegexp("""
     (
-        ?: require\\s*\\(\\s*'([^']+)'\\s*\\)
-        |  require\\s*\\(\\s*"([^"]+)"\\s*\\)
-        |  @import\\s+url\\s*\\(\\s*'([^']+)'\\s*\\)
-        |  @import\\s+url\\s*\\(\\s*"([^"]+)"\\s*\\)
-        |  @import\\s+url\\s*\\(\\s*([^\\)]+)\\s*\\)
+        ?: [{space}]*require\\s*\\(\\s*'([^']+)'\\s*\\)
+        |  [{space}]*require\\s*\\(\\s*"([^"]+)"\\s*\\)
+        |  [{space}]*@import\\s+url\\s*\\(\\s*'([^']+)'\\s*\\)
+        |  [{space}]*@import\\s+url\\s*\\(\\s*"([^"]+)"\\s*\\)
+        |  [{space}]*@import\\s+url\\s*\\(\\s*([^\\)]+)\\s*\\)
     )
     [{space};]*
+    """ , "g")
+
+    prefix_comment = convertRegexp("""
+        ^\\s*\\/\\/
     """)
 
-    REG = new RegExp regstr , "g"
-
     start = end = 0
-    while( ( r = REG.exec(str) ) isnt null )
-        end = REG.lastIndex - r[0].length;
+    while( ( r = regstr.exec(str) ) isnt null )
+        end = regstr.lastIndex - r[0].length;
+
+        # 添加匹配内容前面的内容
         result.push( str.substring( start , end ) )
-        result.push({
-            type : 'require' , 
-            value : getVal(r)
-        })
-        start = REG.lastIndex
+
+        # 判断require之前的字符是否符合规则
+        # 不符合则不认为该匹配为正确的 require 
+        _line = find_line_from_str( str , end , false )
+        if prefix_comment.test( _line ) or _line.charAt( _line.length - 1 ) is '.'
+            result.push( r[0] )
+        else
+            result.push({
+                type : 'require' , 
+                value : getVal(r)
+            })
+            
+        start = regstr.lastIndex
 
     result.push( str.substring( start ) )
 
