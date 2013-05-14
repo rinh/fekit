@@ -1,3 +1,6 @@
+# 0.2.16  #
+* add: 兼容 0.1.x 的源码格式
+
 # 0.2.15  #
 * fix: server transfer 没有正确处理非 -t 的情况 
 * add: 导出 minCode 功能

@@ -298,13 +298,19 @@ class FekitConfig
         @fekit_config_path = syspath.join( @fekit_root_dirname , @fekit_config_filename )
         try 
             @root = new utilfile.reader().readJSON( @fekit_config_path )
-            if !@root.alias then @root.alias = {}
+            if !@getAlias() then @root.alias = {}
         catch err
             if utilpath.exists( @fekit_config_path )
                 throw "#{@fekit_config_filename} 解析失败, 请确认该文件格式是否符合正确的JSON格式"
             else
                 # 如果没有fekit, 有可能是使用单独文件编译模式, 则使用默认配置
                 @root = { "alias" : {} , "export" : [] }
+
+    getAlias: ( name ) ->
+        unless name
+            return @root.alias or @root.lib
+        else
+            return @root.alias?[name] or @root.lib?[name]
 
     each_export_files : ( cb ) ->
         list = @root["export"] || []

@@ -37,12 +37,12 @@ class ModuleConfig
         return @config.root.compiler is "component"        
         
     isUseAlias:(aliasName) ->
-        return !!@config.root.alias[aliasName]
+        return !!@config.getAlias(aliasName)
 
     # 解析别名的真实物理地址
     # aliasName 如果不是一个别名, 则直接返回. 如果是则解析 
     parseAlias:(aliasName) ->
-        path = @config.root.alias[aliasName]
+        path = @config.getAlias(aliasName)
         if !path
             return aliasName
         else

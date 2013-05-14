@@ -84,9 +84,6 @@ ModulePath.parsePath = ( path , parentModule ) ->
         else
             result.push( part )
 
-    if parts.length is 1 and !package_path and !parentModule.config.isUseAlias( part )
-        throw "[COMPILE] 引用模块出错! 找不到在 #{parentModule.path.uri} 中引用的 #{parts.join('')}, 请检查一下引用路径."
-
     return syspath.join.apply( syspath , result )
 
 

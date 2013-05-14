@@ -1,7 +1,7 @@
 ModulePath = require('../../lib/compiler/module/path').ModulePath
 assert = require('chai').assert
 
-describe '#parsePath', ->
+describe '#parsePath1', ->
     it 'should be right', ->
 
         ModulePath.EXTLIST = ['.js','.css']
@@ -21,15 +21,13 @@ describe '#parsePath', ->
         assert.equal ModulePath.parsePath('./core.js',fakeParent) , '/home/test/core.js'
         assert.equal ModulePath.parsePath('./core',fakeParent) , '/home/test/core'
         assert.equal ModulePath.parsePath('./core/abc',fakeParent) , '/home/test/core/abc'
-        assert.throws () ->
-                    ModulePath.parsePath('core.js',fakeParent) 
-        assert.throws () ->
-                    ModulePath.parsePath('core',fakeParent)
+        assert.equal ModulePath.parsePath('core.js',fakeParent) , '/home/test/core.js'
+        assert.equal ModulePath.parsePath('core',fakeParent) , '/home/test/core'
 
 
 
 
-describe '#parsePath', ->
+describe '#parsePath2', ->
     it 'should be right', ->
 
         ModulePath.EXTLIST = ['.js','.css']
@@ -51,14 +49,12 @@ describe '#parsePath', ->
 
         assert.equal ModulePath.parsePath('./core.js',fakeParent) , '/home/test/core.js'
         assert.equal ModulePath.parsePath('./core',fakeParent) , '/home/test/core'
-        assert.throws () ->
-                     ModulePath.parsePath('core-js',fakeParent) 
+        assert.equal ModulePath.parsePath('core-js',fakeParent) , '/home/test/core-js'
         assert.equal ModulePath.parsePath('core',fakeParent) , '/home/packages/core/index'
         assert.equal ModulePath.parsePath('base-js',fakeParent) , '/home/packages/base-js/index'
 
 
-
-describe '#parsePath', ->
+describe '#parsePath3', ->
     it 'should be right', ->
 
         ModulePath.EXTLIST = ['.js','.css']
