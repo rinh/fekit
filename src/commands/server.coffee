@@ -32,6 +32,7 @@ exports.set_options = ( optimist ) ->
 
 mime_config = 
     ".js" : "application/javascript"
+    ".mustache" : "application/javascript"
     ".css" : "text/css"
 
 _routeRules = ( options ) ->
