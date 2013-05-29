@@ -14,6 +14,9 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'f' , 'filename'
     optimist.describe 'f' , '指定编译某个文件, 而不是当前目录. 处理后默认将文件放在同名目录下并加后缀 min'
     
+    optimist.alias 'o' , 'output'
+    optimist.describe 'o' , '指定单个文件编译的输出位置'
+
 
 process_directory = ( options ) ->
     
@@ -48,18 +51,25 @@ process_directory = ( options ) ->
 
                 final_code = minCode( urlconvert.extname , source )
 
-                md5code = md5(final_code)
-                dest = urlconvert.to_prd( md5code )
+                if final_code isnt null
 
-                # 生成真正的压缩后的文件
-                writer.write( dest , final_code )
-                # 生成对应的 ver 文件
-                writer.write( urlconvert.to_ver() , md5code ) 
+                    md5code = md5(final_code)
+                    dest = urlconvert.to_prd( md5code )
 
-                script_global.EXPORT_MAP[ opts.partial_path ]?.ver = md5code
-                script_global.EXPORT_MAP[ opts.partial_path ]?.minpath = dest.replace( options.cwd , "" )
+                    # 生成真正的压缩后的文件
+                    writer.write( dest , final_code )
+                    # 生成对应的 ver 文件
+                    writer.write( urlconvert.to_ver() , md5code ) 
 
-                utils.logger.log( "已经处理 [#{new Date().getTime()-start.getTime()}ms] #{srcpath}  ==> #{dest}" )
+                    script_global.EXPORT_MAP[ opts.partial_path ]?.ver = md5code
+                    script_global.EXPORT_MAP[ opts.partial_path ]?.minpath = dest.replace( options.cwd , "" )
+
+                    utils.logger.log( "已经处理 [#{new Date().getTime()-start.getTime()}ms] #{srcpath}  ==> #{dest}" )
+
+                else 
+
+                    utils.logger.error( "编译出现错误 #{srcpath}" )
+
                 seriesCallback()
 
             compiler.compile( srcpath , {
@@ -80,17 +90,32 @@ process_single_file = ( options ) ->
     else
         srcpath = syspath.join( options.cwd , options.filename )
 
-    compiler.compile srcpath , ( err , source ) ->
+    # 指定位置保存
+    extname = syspath.extname( srcpath )
+    fname = syspath.basename( srcpath ) 
 
-        extname = syspath.extname( srcpath )
+    if options.output
+        if utils.path.exists( options.output ) and utils.path.is_directory( options.output )
+            dest = utils.path.join( options.output , fname.replace( extname , ".min" + extname ) )
+        else 
+            dest = options.output
+    else
+        dest = srcpath.replace( extname , ".min" + extname )
+
+
+    compiler.compile srcpath , ( err , source ) ->
 
         final_code = minCode( extname , source )
 
-        dest = srcpath.replace( extname , ".min" + extname )
+        if final_code isnt null
 
-        new utils.file.writer().write( dest , final_code )
+            new utils.file.writer().write( dest , final_code )
 
-        utils.logger.log( "已经处理  #{srcpath}  ==> #{dest}" )
+            utils.logger.log( "已经处理  #{srcpath}  ==> #{dest}" )
+
+        else
+
+            utils.logger.error( "编译出现错误 #{srcpath}" )
 
         utils.logger.log("DONE.")
 
@@ -104,9 +129,13 @@ exports.minCode = minCode = ( extname , source , options = {} ) ->
             else 
                 final_code = uglifycss.processString(source).replace( /}/g , "}\n" )
         when ".js"
-            ast = jsp.parse(source)
-            ast = pro.ast_mangle(ast) 
-            final_code = pro.gen_code( ast )
+            try 
+                ast = jsp.parse(source)
+                ast = pro.ast_mangle(ast) 
+                final_code = pro.gen_code( ast )
+            catch err 
+                console.info( err )
+                return null
 
     return final_code
 
