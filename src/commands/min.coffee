@@ -17,6 +17,12 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'o' , 'output'
     optimist.describe 'o' , '指定单个文件编译的输出位置'
 
+    optimist.alias 'n' , 'nopack'
+    optimist.describe 'n' , '不进行压缩处理'
+
+    optimist.alias 'c' , 'noSplitCSS' 
+    optimist.describe 'c' , '不分割 css 为多行形式，默认分割'
+
 
 process_directory = ( options ) ->
     
@@ -49,7 +55,7 @@ process_directory = ( options ) ->
                     utils.exit(1)
                     return
 
-                final_code = minCode( urlconvert.extname , source )
+                final_code = minCode( urlconvert.extname , source , options )
 
                 if final_code isnt null
 
@@ -105,7 +111,7 @@ process_single_file = ( options ) ->
 
     compiler.compile srcpath , ( err , source ) ->
 
-        final_code = minCode( extname , source )
+        final_code = minCode( extname , source , options )
 
         if final_code isnt null
 
@@ -121,6 +127,8 @@ process_single_file = ( options ) ->
 
 
 exports.minCode = minCode = ( extname , source , options = {} ) ->
+
+    if options.nopack then return source
 
     switch extname
         when ".css"
