@@ -32,7 +32,6 @@ exports.set_options = ( optimist ) ->
 
 mime_config = 
     ".js" : "application/javascript"
-    ".mustache" : "application/javascript"
     ".css" : "text/css"
 
 _routeRules = ( options ) ->
@@ -119,8 +118,11 @@ setupServer = ( options ) ->
                 srcpath = urlconvert.to_src()
 
                 utils.logger.trace("由 PRD #{req.url} 解析至 SRC #{srcpath}")
-
-                res.writeHead( 200, { 'Content-Type': mime_config[urlconvert.extname] });
+                
+                ctype = if compiler.getContentType(urlconvert.uri) is "javascript" then ".js"
+                ctype = if compiler.getContentType(urlconvert.uri) is "css" then ".css"
+                
+                res.writeHead( 200, { 'Content-Type': mime_config[ctype] });
 
                 _render = ( err , txt ) ->
                     if err 

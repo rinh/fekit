@@ -120,6 +120,8 @@ Module.parse = ( path , parentModule ) ->
 Module.addExtensionPlugin = ( extName , plugin ) ->
     ModulePath.addExtensionPlugin( extName , plugin )
 
+Module.getContentType = ( extName ) ->
+    ModulePath.getContentType( extName )
 
 # 使用 booster 进行加速
 Module.booster = null

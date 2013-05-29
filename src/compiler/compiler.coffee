@@ -12,6 +12,10 @@ Module.booster = booster
     插件系统
 ###
 
+# 返回插件后缀所代表的 contentType 
+exports.getContentType = ( url ) ->
+    Module.getContentType( syspath.extname( url ) )
+
 # 增加插件, 该插件会跟据不同后缀名进行不同的渲染
 addPlugin = ( extName , plugin ) ->
     # plugin.process
