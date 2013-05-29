@@ -1,3 +1,9 @@
+# 0.2.18 #
+* add: 增加单元测试方案(mocha) fekit test
+* fix: 解决 server 中不可识别后缀名的 content-type。 https://github.com/rinh/fekit/pull/20
+* change: fekit min 的路径可指定，使用 -o
+* change: fekit min 编译出现错误时的提示信息更友好
+
 # 0.2.17 #
 * fix: 处理 require 的匹配方式 , 识别 // 及 Ext.require 这样的代码
 
