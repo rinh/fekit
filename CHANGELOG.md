@@ -4,6 +4,8 @@
 * change: fekit min 的路径可指定，使用 -o
 * change: fekit min 编译出现错误时的提示信息更友好
 * add: fkeit min -n 可以指定不进行压缩处理
+* add: fekit sync 时可以指定 shell 执行
+* fix: fekit server 当遇到引错路径的情况会导致 server crash
 
 # 0.2.17 #
 * fix: 处理 require 的匹配方式 , 识别 // 及 Ext.require 这样的代码

@@ -30,6 +30,21 @@ rsync = ( opts ) ->
         if stdout then utils.logger.log( stdout )
         if stderr then utils.logger.error( stderr )
 
+        if opts.shell then shell( opts )
+
+
+shell = ( opts ) ->
+    
+    cmd = opts.shell.replace /'/g , "\\'"
+    args = "#{opts.user}#{opts.host} '#{cmd}'"
+
+    utils.logger.log "[执行] ssh #{args}"
+
+    child_process.exec "ssh #{args}" , ( err , stdout , stderr ) ->
+        if err then throw err 
+        if stdout then utils.logger.log( stdout )
+        if stderr then utils.logger.error( stderr )        
+
 
 exports.run = ( options ) ->
 
@@ -50,6 +65,7 @@ exports.run = ( options ) ->
         path : conf.path
         local : ( conf.local || './' )
         user : ( if conf.user then conf.user + "@" else "" )
+        shell : conf.shell
 
     #------
      

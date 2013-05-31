@@ -15,7 +15,7 @@ class ModulePath
             ext_list = ModulePath.getContentTypeList(extname)
             result = utils.file.findify( path_without_extname , ext_list )
             #如果仍然没有，则以 path_without_extname 为目录名进行测试
-            if result is null and utils.path.is_directory( path_without_extname )
+            if result is null and utils.path.exists( path_without_extname ) and utils.path.is_directory( path_without_extname )
                 p = utils.path.join( path_without_extname , "index" )
                 result = utils.file.findify( p , ModulePath.EXTLIST )
         if result
