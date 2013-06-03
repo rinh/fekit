@@ -1,3 +1,6 @@
+# 0.2.20 #
+* fix: compiler 修改 modular 模式为 basename
+
 # 0.2.19 #
 * fix: fekit server , contnet-type bug
 

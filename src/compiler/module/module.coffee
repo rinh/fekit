@@ -153,7 +153,7 @@ class JSModule extends Module
             ;(function(__context){
                 var module = {
                     id : "#{@guid}" , 
-                    filename : "#{@path.getFullPath()}" ,
+                    filename : "#{syspath.basename(@path.getFullPath())}" ,
                     exports : {}
                 };
                 if( !__context.____MODULES ) { __context.____MODULES = {}; }
