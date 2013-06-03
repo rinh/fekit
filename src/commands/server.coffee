@@ -119,9 +119,11 @@ setupServer = ( options ) ->
 
                 utils.logger.trace("由 PRD #{req.url} 解析至 SRC #{srcpath}")
                 
-                ctype = if compiler.getContentType(urlconvert.uri) is "javascript" then ".js"
-                ctype = if compiler.getContentType(urlconvert.uri) is "css" then ".css"
-                
+                switch compiler.getContentType(urlconvert.uri) 
+                    when "javascript" then ctype = ".js"
+                    when "css" then ctype = ".css"
+                    else ctype = ""
+
                 res.writeHead( 200, { 'Content-Type': mime_config[ctype] });
 
                 _render = ( err , txt ) ->

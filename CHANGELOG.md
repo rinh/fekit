@@ -1,3 +1,6 @@
+# 0.2.19 #
+* fix: fekit server , contnet-type bug
+
 # 0.2.18 #
 * add: 增加单元测试方案(mocha) fekit test
 * fix: 解决 server 中不可识别后缀名的 content-type。 https://github.com/rinh/fekit/pull/20
