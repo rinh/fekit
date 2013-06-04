@@ -59,9 +59,9 @@ _replaceSrclist = ( filepath ) ->
     # 修改引用 
     content = new utils.file.reader().read( filepath )
     content = content.replace JS_REG , ($0,$1) =>
-                    return "require('#{$1}');"
+                    return "require('./#{$1}');"
     content = content.replace CSS_REG , ($0,$1) =>
-                    return "require('#{$1}');"
+                    return "require('./#{$1}');"
     new utils.file.writer().write( dest , content )
 
     # 添加config
