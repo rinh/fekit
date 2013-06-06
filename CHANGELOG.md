@@ -1,5 +1,6 @@
 # 0.2.21  #
 * change: fekit convert --qzz，将转换后的require路径设置为以 ./ 开始
+* add: fekit min 后，会在 ver 文件中生成 versions.mapping 文件，该文件包括本次编辑产生的所有版本号文件及版本号的键值对
 
 # 0.2.20 #
 * fix: compiler 修改 modular 模式为 basename

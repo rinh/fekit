@@ -84,9 +84,19 @@ process_directory = ( options ) ->
  
 
         () ->
+            save_versions_mapping( syspath.join( options.cwd , './ver/versions.mapping' ) , script_global.EXPORT_MAP )
             conf.doScript "postmin" , script_global 
             utils.logger.log("DONE.")
     )
+
+save_versions_mapping = ( mapping_file_path , mapping ) ->
+
+    str = []
+
+    for k , v of mapping 
+        str.push( k.replace(/\\/g,"/") + '#' + v.ver )
+
+    utils.file.io.write( mapping_file_path , str.join('\n') )
 
 
 process_single_file = ( options ) ->
