@@ -1,3 +1,6 @@
+# 0.2.22 #
+* fix: fekit min 当指定压缩某非fekit项目文件时失败
+
 # 0.2.21  #
 * change: fekit convert --qzz，将转换后的require路径设置为以 ./ 开始
 * add: fekit min 后，会在 ver 文件中生成 versions.mapping 文件，该文件包括本次编辑产生的所有版本号文件及版本号的键值对

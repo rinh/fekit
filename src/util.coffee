@@ -295,7 +295,7 @@ class FekitConfig
     constructor: ( @baseUri ) ->
         @fekit_config_filename = "fekit.config"
         @fekit_root_dirname = utilpath.closest( @baseUri , @fekit_config_filename )
-        @fekit_config_path = syspath.join( @fekit_root_dirname , @fekit_config_filename )
+        @fekit_config_path = syspath.join( @fekit_root_dirname || "" , @fekit_config_filename )
         try 
             @root = new utilfile.reader().readJSON( @fekit_config_path )
             if !@getAlias() then @root.alias = {}
