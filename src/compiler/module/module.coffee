@@ -142,7 +142,7 @@ class JSModule extends Module
                     return ""
             when MODULE_COMPILE_TYPE.MODULAR
                 @ast.defineType 'REQUIRE' , ( node ) ->
-                    return "__context.____MODULES['#{node.module.guid}'];"
+                    return "__context.____MODULES['#{node.module.guid}']"
             else 
                 throw "找不到正确的编译方式, 请修改fekit.config中的 compiler [目前值:#{@config.compileType()}]"
 

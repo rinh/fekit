@@ -1,5 +1,6 @@
 # 0.2.22 #
 * fix: fekit min 当指定压缩某非fekit项目文件时失败
+* fix: module 被编译后不追加 ;
 
 # 0.2.21  #
 * change: fekit convert --qzz，将转换后的require路径设置为以 ./ 开始
