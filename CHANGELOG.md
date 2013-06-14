@@ -1,3 +1,6 @@
+# 0.2.24  #
+* change: 编译js时，判断require后如果没有任何字符，则在后面追加分号
+
 # 0.2.23 #
 * change: fekit server -b ./project，server功能默认不开启全目录加速，需要时请指定特定目录进行加速
 * change: fekit server -r aa:bb -r cc:dd，server的路由功能可以使用多个

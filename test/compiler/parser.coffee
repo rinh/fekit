@@ -154,6 +154,17 @@ describe 'Parser', ->
 
 
 
+describe 'Parser', ->
+    describe '#is_line_end', ->
+        it 'should be right', ->
+
+            str = "12345\n12345require   \n"
+
+            assert.ok( parser.is_line_end( "1234   \n" , 4 ) )
+
+            assert.ok( parser.is_line_end( str , 5 ) )
+            assert.ok( !parser.is_line_end( str , 4 ) )
+            assert.ok( parser.is_line_end( str , 18 ) )
 
 
 # find

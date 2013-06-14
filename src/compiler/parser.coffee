@@ -28,6 +28,13 @@ exports.find_line_from_str = find_line_from_str = ( str , index , is_fullline ) 
     else 
         return str.substring( start , index ).replace(/\n/g,'')
 
+exports.is_line_end = is_line_end = ( str , index ) ->
+    s = ""
+    while !_is_break( str , index ) 
+        s += str[index]
+        index++
+    return s.replace(/\s*/g,'') is ""
+
 parse = ( str ) -> 
     
     result = []
@@ -62,7 +69,9 @@ parse = ( str ) ->
         else
             result.push({
                 type : 'require' , 
-                value : getVal(r)
+                value : getVal(r) , 
+                # 确认 require 后是否没有任何内容
+                is_line_end : is_line_end( str , regstr.lastIndex )
             })
             
         start = regstr.lastIndex
