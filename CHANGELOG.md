@@ -1,3 +1,7 @@
+# 0.2.23 #
+* change: fekit server -b ./project，server功能默认不开启全目录加速，需要时请指定特定目录进行加速
+* change: fekit server -r aa:bb -r cc:dd，server的路由功能可以使用多个
+
 # 0.2.22 #
 * fix: fekit min 当指定压缩某非fekit项目文件时失败
 * fix: module 被编译后不追加 ;

@@ -18,7 +18,7 @@ exports.set_options = ( optimist ) ->
     optimist.describe 'p' , '服务端口号, 一般无法使用 80 时设置, 并且需要自己做端口转发'
 
     optimist.alias 'r' , 'route'
-    optimist.describe 'r' , '路由,将指定路径路由到其它地址, 物理地址需要均在当前执行目录下. 格式为 项目名:路由后的物理目录名'
+    optimist.describe 'r' , '路由,将指定路径路由到其它地址, 物理地址需要均在当前执行目录下。格式为 -r 原路径名:路由后的物理目录名'
 
     optimist.alias 'c' , 'combine'
     optimist.describe 'c' , '指定所有文件以合并方式进行加载, 启动该参数则请求文件不会将依赖展开'
@@ -29,6 +29,9 @@ exports.set_options = ( optimist ) ->
     optimist.alias 't' , 'transfer'
     optimist.describe 't' , '当指定该选项后，会识别以前的 qzz 项目 url'
 
+    optimist.alias 'b' , 'boost'
+    optimist.describe 'b' , '可以指定目录进行编译加速。格式为 -b 目录名'    
+
 
 mime_config = 
     ".js" : "application/javascript"
@@ -37,10 +40,12 @@ mime_config =
 _routeRules = ( options ) ->
     
     list = []
+    rs = [].concat( options.route || [] )
 
-    if options.route 
-        r = options.route.split(":")
+    for n in rs
+        r = n.split(":")
         list.push( "\/#{r[0]}\/ \/#{r[1]}\/" )
+        utils.logger.log "已由 \/#{r[0]}\/ 转发至 \/#{r[1]}\/" 
 
     return list
 
