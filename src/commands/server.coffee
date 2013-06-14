@@ -185,7 +185,8 @@ listenPort = ( server, port ) ->
 exports.run = ( options ) ->
 
     compiler.boost({
-            cwd : process.cwd() 
+            cwd : process.cwd() , 
+            directories : [].concat( options.boost || [] )
         })
 
     setupServer( options )

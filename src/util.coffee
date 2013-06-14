@@ -75,6 +75,7 @@ _closest_dir = ( p , finddirname , filterFunc ) ->
 exports.path = utilpath =
     dirname : syspath.dirname
     basename : syspath.basename
+    resolve : syspath.resolve
     join : () ->
         arr = ( ( if typeof i == 'undefined' then '' else i ) for i in arguments )
         syspath.join.apply( syspath , arr )

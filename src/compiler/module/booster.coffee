@@ -11,11 +11,16 @@ cached = (filename) ->
         
 ###
     加速方案
-    * 将指定目录 opts.cwd 的文件按路径缓存 checksum , 在 module 初始化的时候使用该缓存
+    * 将指定目录 opts.directories 的文件按路径缓存 checksum , 在 module 初始化的时候使用该缓存
+    * 
 ###
 exports.init = ( options ) ->
     
-    utils.file.watch options.cwd , ( filename ) ->
+    for dir in options.directories 
+        _dir = utils.path.resolve( options.cwd , dir )
+        if utils.path.exists(_dir) and utils.path.is_directory(_dir)
+            utils.logger.log "已对 #{_dir} 进行加速"
+            utils.file.watch _dir , ( filename ) ->
                 cached(filename)
 
 exports.get_checksum_cache = ( filename ) ->
