@@ -131,11 +131,19 @@ setupServer = ( options ) ->
 
                 res.writeHead( 200, { 'Content-Type': mime_config[ctype] });
 
+                # 判断如果有 cache 则使用，否则进行编译
+                cache = compiler.booster.get_compiled_cache( p )
+                if cache
+                    res.end( cache )
+                    return
+
                 _render = ( err , txt ) ->
                     if err 
                         res.writeHead( 500 )
                         res.end( err )
                     else
+                        # 编译后将内容加入 cache
+                        compiler.booster.set_compiled_cache( p , txt ) 
                         res.end( txt ) 
 
                 if utils.path.exists( srcpath )

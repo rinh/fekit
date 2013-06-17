@@ -1,5 +1,6 @@
 # 0.2.25 #
 * change: fekit server -r aaa:bbb，进行路由功能时，不自动添加前后斜线 https://github.com/rinh/fekit/issues/25
+* change: 修改加速方案，改为缓存编译内容
 
 # 0.2.24  #
 * change: 编译js时，判断require后如果没有任何字符，则在后面追加分号

@@ -34,7 +34,8 @@
         "temp": "0.5.0",
         "sty": "0.6.x",
         "semver": "1.1.x",
-        "prompt": "0.2.x"
+        "prompt": "0.2.x",
+        "watchr": "2.4.x"
     },
     "devDependencies": {},
     "optionalDependencies": {},

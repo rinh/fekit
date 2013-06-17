@@ -3,7 +3,7 @@ syspath = require 'path'
 fs = require 'fs'
 utils = require '../util'
 _ = require 'underscore'
-booster = require './module/booster'
+exports.booster = booster = require './module/booster'
 
 Module = require("./module/module").Module
 Module.booster = booster
