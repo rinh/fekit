@@ -44,8 +44,8 @@ _routeRules = ( options ) ->
 
     for n in rs
         r = n.split(":")
-        list.push( "\/#{r[0]}\/ \/#{r[1]}\/" )
-        utils.logger.log "已由 \/#{r[0]}\/ 转发至 \/#{r[1]}\/" 
+        list.push( "#{r[0]} #{r[1]}" )
+        utils.logger.log "已由 #{r[0]} 转发至 #{r[1]}" 
 
     return list
 
