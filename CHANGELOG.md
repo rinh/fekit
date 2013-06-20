@@ -1,3 +1,6 @@
+# 0.2.27  #
+* fix: fekit server 全局 cache 问题
+
 # 0.2.26 #
 * change: fekit publish 时，过滤.git , .svn
 * fix: fekit server 刷新 cache 时消除 deps 的内容

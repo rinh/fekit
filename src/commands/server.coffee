@@ -132,7 +132,7 @@ setupServer = ( options ) ->
                 res.writeHead( 200, { 'Content-Type': mime_config[ctype] });
 
                 # 判断如果有 cache 则使用，否则进行编译
-                cachekey = p + ( if is_deps then "_deps" else "" ) 
+                cachekey = srcpath + ( if is_deps then "_deps" else "" ) 
                 cache = compiler.booster.get_compiled_cache( cachekey )
                 if cache
                     res.end( cache )
