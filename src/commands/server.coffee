@@ -132,7 +132,8 @@ setupServer = ( options ) ->
                 res.writeHead( 200, { 'Content-Type': mime_config[ctype] });
 
                 # 判断如果有 cache 则使用，否则进行编译
-                cache = compiler.booster.get_compiled_cache( p )
+                cachekey = p + ( if is_deps then "_deps" else "" ) 
+                cache = compiler.booster.get_compiled_cache( cachekey )
                 if cache
                     res.end( cache )
                     return
@@ -143,7 +144,7 @@ setupServer = ( options ) ->
                         res.end( err )
                     else
                         # 编译后将内容加入 cache
-                        compiler.booster.set_compiled_cache( p , txt ) 
+                        compiler.booster.set_compiled_cache( cachekey , txt ) 
                         res.end( txt ) 
 
                 if utils.path.exists( srcpath )

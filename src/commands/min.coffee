@@ -23,9 +23,24 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'c' , 'noSplitCSS' 
     optimist.describe 'c' , '不分割 css 为多行形式，默认分割'
 
+    optimist.alias 'v' , 'onlyVersionFile' 
+    optimist.describe 'v' , '在 /ver 目录中只生成 version 文件'
+
+    optimist.alias 'm' , 'onlyMappingFile' 
+    optimist.describe 'm' , '在 /ver 目录中只生成 mapping 文件'
+
 
 process_directory = ( options ) ->
     
+    # 0 - 都生成 ， 1 - 只生成 ver ， 2 - 只生成 mapping
+    vertype = 0
+    if options.onlyMappingFile and options.onlyVersionFile 
+        vertype = 0
+    else if !options.onlyMappingFile and options.onlyVersionFile 
+        vertype = 1
+    else if options.onlyMappingFile and !options.onlyVersionFile 
+        vertype = 2
+
     script_global =
         EXPORT_LIST : []
         EXPORT_MAP : {}
@@ -65,7 +80,8 @@ process_directory = ( options ) ->
                     # 生成真正的压缩后的文件
                     writer.write( dest , final_code )
                     # 生成对应的 ver 文件
-                    writer.write( urlconvert.to_ver() , md5code ) 
+                    if vertype is 0 or vertype is 1
+                        writer.write( urlconvert.to_ver() , md5code ) 
 
                     script_global.EXPORT_MAP[ opts.partial_path ]?.ver = md5code
                     script_global.EXPORT_MAP[ opts.partial_path ]?.minpath = dest.replace( options.cwd , "" )
@@ -84,7 +100,8 @@ process_directory = ( options ) ->
  
 
         () ->
-            save_versions_mapping( syspath.join( options.cwd , './ver/versions.mapping' ) , script_global.EXPORT_MAP )
+            if vertype is 0 or vertype is 2
+                save_versions_mapping( syspath.join( options.cwd , './ver/versions.mapping' ) , script_global.EXPORT_MAP )
             conf.doScript "postmin" , script_global 
             utils.logger.log("DONE.")
     )

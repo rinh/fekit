@@ -1,5 +1,7 @@
 # 0.2.26 #
 * change: fekit publish 时，过滤.git , .svn
+* fix: fekit server 刷新 cache 时消除 deps 的内容
+* change: fekit min 支持只生成 ver 或 mapping 
 
 # 0.2.25 #
 * change: fekit server -r aaa:bbb，进行路由功能时，不自动添加前后斜线 https://github.com/rinh/fekit/issues/25

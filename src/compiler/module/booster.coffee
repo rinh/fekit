@@ -30,6 +30,8 @@ exports.init = ( options ) ->
                         # 当修改文件内容时，清除编译缓存
                         console.info( "已清除cache #{filepath}")
                         COMPILED_CACHED[filepath] = null
+                        # 为了 server 里使用的缓存数据
+                        COMPILED_CACHED[filepath+"_deps"] = null
 
 exports.get_checksum_cache = ( filename ) ->
     return CHECKSUM_CACHED[filename]
