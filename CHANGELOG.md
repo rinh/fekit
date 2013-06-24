@@ -1,3 +1,6 @@
+# 0.2.28 #
+* fix: require了不存在的文件时，编译出错应输出 [ERROR]
+
 # 0.2.27  #
 * fix: fekit server 全局 cache 问题
 

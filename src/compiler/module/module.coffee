@@ -59,14 +59,19 @@ class Module
     # 分析模块的依赖关系
     analyze:( doneCallback ) ->
         self = this
+        is_err = false
         @_process @path.getFullPath() , ( err , source ) ->
             self.ast = parser.parseAST( source )
             self.ast.find 'REQUIRE' , ( node ) ->
-                module = Module.parse( node.value , self )
-                node.module = module
-                self.depends.push( module )
-                self.analyzed()
-            doneCallback.call( self , err )
+                try 
+                    module = Module.parse( node.value , self )
+                    node.module = module
+                    self.depends.push( module )
+                    self.analyzed()
+                catch err 
+                    is_err = true
+                    doneCallback.call( self , err )
+            unless is_err then doneCallback.call( self , err )
 
     # override
     analyzed:()->
