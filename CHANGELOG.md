@@ -1,5 +1,6 @@
 # 0.2.30 #
 * change: fekit init 默认 config 文件修改为 modular 模式
+* change: fekit install xxx -c，强制使用配置文件中的版本范围。 如果没有配置文件或配置文件中没有配置，则不安装
 
 # 0.2.29 #
 * change: fekit min 之前，删除 ver & prd 后再生成

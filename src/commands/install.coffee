@@ -7,7 +7,9 @@ Package = require '../package'
 exports.usage = "安装 fekit 组件 "
 
 exports.set_options = ( optimist ) ->
-    optimist
+
+    optimist.alias 'c' , 'useconfig'
+    optimist.describe 'c' , '强制使用配置文件中的版本范围。 如果没有配置文件或配置文件中没有配置，则不安装。安装后不改写配置文件。'
 
 exports.run = ( options ) ->
 
@@ -20,6 +22,11 @@ exports.run = ( options ) ->
 doneCallback = ( err ) ->
     if err then utils.logger.error err.toString() 
 
+getPackageConfig = ( configPath , name ) ->
+    return null unless utils.path.exists configPath
+    config = utils.file.io.readJSON configPath
+    deps = config.dependencies || {}
+    return deps[name]
 
 saveToConfig = ( configPath , name , version ) ->
     return unless utils.path.exists configPath
@@ -50,15 +57,23 @@ start = ( options ) ->
     if spec_pkg
         #单独安装
         spec_pkg = spec_pkg.split('@')
+        name = spec_pkg[0]
+        ver = spec_pkg[1]
 
-        p = new Package( spec_pkg[0] , spec_pkg[1] , basepath )
+        if options.useconfig 
+            ver = getPackageConfig( config_path , name )
+            unless ver
+                utils.logger.error("在 fekit.config 中找不到关于 #{name} 组件依赖配置.")
+                return
+
+        p = new Package( name , ver , basepath )
         # 安装检查
         p.preinstall ( err ) ->
             return doneCallback( err ) if err
             # 真正安装
             p.install ( err ) ->
                 return doneCallback( err ) if err
-                saveToConfig( config_path , p.name , p.version )
+                unless options.useconfig then saveToConfig( config_path , p.name , p.version )
                 p.report()
 
     else
