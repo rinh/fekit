@@ -432,6 +432,7 @@ exports.config = utilconfig =
         return new FekitConfig( baseUri )
     createEmptySchema : () ->
         return {
+            "compiler" : "modular"
             "name" : ""
             "version" : ""
             "dependencies" : {}

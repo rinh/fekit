@@ -1,3 +1,6 @@
+# 0.2.30 #
+* change: fekit init 默认 config 文件修改为 modular 模式
+
 # 0.2.29 #
 * change: fekit min 之前，删除 ver & prd 后再生成
 
