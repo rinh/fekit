@@ -31,6 +31,9 @@ exports.set_options = ( optimist ) ->
 
 
 process_directory = ( options ) ->
+
+    utils.file.rmrf syspath.join( options.cwd , './ver/' )
+    utils.file.rmrf syspath.join( options.cwd , './prd/' )
     
     # 0 - 都生成 ， 1 - 只生成 ver ， 2 - 只生成 mapping
     vertype = 0

@@ -1,3 +1,6 @@
+# 0.2.29 #
+* change: fekit min 之前，删除 ver & prd 后再生成
+
 # 0.2.28 #
 * fix: require了不存在的文件时，编译出错应输出 [ERROR]
 
