@@ -46,7 +46,20 @@ FEKIT
 
     {
         // 编译方案, 参考 [issue #1](https://github.com/rinh/fekit/issues/1)
-        "compiler" : false 或 "modular" ,
+        "compiler" : false 或 "modular" 或 "component" ,
+
+        // 如果是组件，需要有如下节点
+        "name" : "hello1" ,         // 组件名称
+        "version" : "0.0.1" ,       // 遵循semver
+        "author" : "rinh" ,         // 作者名
+        "email" : "rinh@abc.com" ,  // 作者邮箱
+        "description" : "" ,        // 组件描述
+        "main" : "home" ,           //指定某个文件作为包入口, 该路径以src目录为根.  默认使用 src/index  
+
+        // 依赖的组件
+        "dependencies" : {
+               "dialog" : "1.2.*"    
+         } , 
 
         // 别名的配置, 该库作为编译时, @import url 和 require 使用
         "alias" : {
