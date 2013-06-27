@@ -1,3 +1,6 @@
+# 0.2.31 #
+* change: fekit publish 时过滤所有隐藏文件
+
 # 0.2.30 #
 * change: fekit init 默认 config 文件修改为 modular 模式
 * change: fekit install xxx -c，强制使用配置文件中的版本范围。 如果没有配置文件或配置文件中没有配置，则不安装

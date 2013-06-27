@@ -614,8 +614,7 @@ exports.tar =
                     depth : 1 
                     filter : (entry) ->
                         if this.basename.match(/^fekit_modules$/) then return false
-                        if this.basename.match(/^\.git$/) then return false
-                        if this.basename.match(/^\.svn$/) then return false
+                        if this.basename.match(/^\..+$/) then return false
                         # Make sure readable directories have execute permission
                         if entry.props.type is "Directory" then entry.props.mode |= (entry.props.mode >>> 2) & 0o0111;
                         return true
