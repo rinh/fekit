@@ -95,6 +95,20 @@ FEKIT
             "prepack" : "./build/premin.js" ,
             "postpack" : "./build/premin.js" , 
             "prepublish" : "./build/prepublish.js"
+        } ,
+
+        // 自定义编译参数
+        "min" : {
+            "config" : {
+                // 参数名及含义见: https://github.com/fmarcia/UglifyCSS
+                "uglifycss" : {} , 
+                // 参数名及含义见: https://github.com/mishoo/UglifyJS
+                "uglifyjs" : {
+                    "ast_mangle" : {} , 
+                    "ast_squeeze" : {} ,
+                    "gen_code" : {}
+                }
+            }
         }
     }
 
