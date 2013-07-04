@@ -1,6 +1,7 @@
 # 0.2.31 #
 * change: fekit publish 时过滤所有隐藏文件
 * change: 可以通过 fekit.config 文件的 min 节点进行自定义编译参数设定
+* add: fekit init 增加 README.md 的自动创建
 
 # 0.2.30 #
 * change: fekit init 默认 config 文件修改为 modular 模式
