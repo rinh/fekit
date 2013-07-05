@@ -125,7 +125,7 @@ exports.path = utilpath =
 
     is_directory: (path) ->
         try
-            stats = fs.lstatSync( path )
+            stats = fs.statSync( path )
             return stats.isDirectory()
         catch err 
             throw err
