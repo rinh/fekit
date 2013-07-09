@@ -1,3 +1,6 @@
+# 0.2.32  #
+* fix: fekit 支持 less @import 语法
+
 # 0.2.31 #
 * change: fekit publish 时过滤所有隐藏文件
 * change: 可以通过 fekit.config 文件的 min 节点进行自定义编译参数设定

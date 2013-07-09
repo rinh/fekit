@@ -115,6 +115,9 @@ exports.run = ( cmd ) ->
 
     catch err
 
+        if typeof err is 'object'
+            err = JSON.stringify err 
+
         if utils.logger.debug is true
             throw err 
         else
