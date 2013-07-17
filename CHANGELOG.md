@@ -1,3 +1,6 @@
+# 0.2.33 #
+* add: 增加 fekit config -s 和 -d 功能
+
 # 0.2.32  #
 * fix: fekit 支持 less @import 语法
 
