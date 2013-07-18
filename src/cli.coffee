@@ -114,13 +114,14 @@ exports.run = ( cmd ) ->
             command_run( cmd , command , options )
 
     catch err
-
-        if typeof err is 'object'
-            err = JSON.stringify err 
-
+        
         if utils.logger.debug is true
-            throw err 
+            throw err
         else
+        
+           if typeof err is 'object'
+                err = JSON.stringify err 
+            
             utils.logger.error( err )
             return 1
 
