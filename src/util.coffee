@@ -540,22 +540,55 @@ exports.http = utilhttp =
         utillogger.log "fekit #{sty.red 'http'} #{sty.green 'GET'} #{opts.url}"
         request opts , cb 
 
-    put : ( url , filepath , cb ) ->
+    put : ( url , filepath_or_formdata , formdata , cb ) ->
         utillogger.log "fekit #{sty.red 'http'} #{sty.green 'PUT'} #{url}"
 
-        fs.createReadStream( filepath ).pipe( 
-            request.put url, ( err , res , body ) ->
-                cb err , body
-        )
+        if arguments.length is 4 and typeof filepath_or_formdata is 'string' and typeof formdata is 'object' and typeof cb is 'function'
+
+            r = request.put url , ( err , res , body ) ->
+                cb err , body , res 
+            
+            form = r.form()
+
+            for k, v of formdata
+                form.append k , v 
+
+            form.append('file', fs.createReadStream( filepath_or_formdata ))
 
 
-    del : ( url , cb ) ->
+        else if arguments.length is 3
+
+            cb = formdata
+
+            if typeof filepath_or_formdata is 'string'
+
+                fs.createReadStream( filepath_or_formdata ).pipe( 
+                    request.put url, ( err , res , body ) ->
+                        cb err , body , res 
+                )
+
+            else if typeof filepath_or_formdata is 'object'
+
+                request.put url , {
+                    form : filepath_or_formdata 
+                } , ( err , res , body ) ->
+                    cb err , body , res 
+
+
+    del : ( url , formdata , cb ) ->
         if typeof url is 'object'
             opts = url
         else
             opts = 
                 url : url
+
+        if typeof formdata == 'function' 
+            cb = formdata 
+            formdata = {}
+
         opts.method = 'DELETE'
+        opts.form = formdata 
+
         utillogger.log "fekit #{sty.red 'http'} #{sty.green 'DELETE'} #{url}"        
         request opts , cb 
 

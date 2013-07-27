@@ -1,5 +1,7 @@
 # 0.2.33 #
 * add: 增加 fekit config -s 和 -d 功能
+* add: 增加源的用户管理，fekit login 与 fekit logout
+* add: 增加源的发布管理，必须以组件作者身份才能进行 publish 与 unpublish
 
 # 0.2.32  #
 * fix: fekit 支持 less @import 语法

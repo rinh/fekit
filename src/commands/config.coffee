@@ -2,25 +2,6 @@ utils = require '../util'
 env = require '../env'
 
 r = console.info
-cpath = utils.path.join( utils.path.get_user_home() , ".fekitrc" )
-
-exports.getCofnig = getConfig = () ->
-    return utils.file.io.readJSON( cpath )
-
-exports.setCofnig = setConfig = ( config ) ->
-    utils.file.io.write cpath , JSON.stringify( config )
-
-
-exports.set = Set = ( key , value ) ->
-    d = getConfig()
-    d[key] = value
-    setConfig( d )
-
-exports.del = Del = ( key ) ->
-    d = getConfig()
-    delete d[key]
-    setConfig( d )
-
 
 show = () ->
     r "\n"
@@ -45,13 +26,13 @@ exports.run = ( options ) ->
     if options.set and options._[0] is 'config' and options._[1]
         key = options.set
         val = options._[1] or 0
-        Set key , val
+        env.set key , val
         utils.logger.log "已设置 #{key} 为 #{val}"
 
     else if options['delete'] 
     
         key = options['delete'] 
-        Del key 
+        env.del key 
         utils.logger.log "已删除 #{key}"
 
     else 

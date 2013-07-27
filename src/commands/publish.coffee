@@ -56,15 +56,19 @@ lifecycle = ( options , list ) ->
 # 确认当前目录是否有配置文件
 exports.check_fekit_config_file = check_fekit_config_file = ( opts , done ) ->
     
-    assert opts , 'cwd'
+    env.authenticate ( err ) ->
 
-    p = utils.path.join opts.cwd , 'fekit.config'
+        if err then return done(err)
 
-    if utils.path.exists p 
-        opts.fekit_config_path = p
-        done()
-    else
-        done "not found fekit.config"
+        assert opts , 'cwd'
+
+        p = utils.path.join opts.cwd , 'fekit.config'
+
+        if utils.path.exists p 
+            opts.fekit_config_path = p
+            done()
+        else
+            done "not found fekit.config"
     
 
 # 验证当前文件配置
@@ -121,21 +125,24 @@ exports.upload_package = upload_package = ( opts , done ) ->
 
     utils.logger.trace "tar file: #{opts.tar_path}"
 
-    utils.http.put url , opts.tar_path , ( err , body ) ->
+    utils.http.put url , opts.tar_path , {
+            username : env.get('user') 
+            password_md5 : env.getUserPasspharse()
+        } , ( err , body ) ->
 
-        if err 
-            utils.logger.error err
+            if err 
+                utils.logger.error err
+                done()
+                return
+
+            json = JSON.parse( body or "{}" )
+
+            unless json.ret 
+                utils.logger.error json.errmsg
+            else
+                utils.logger.log "publish success."
+
             done()
-            return
-
-        json = JSON.parse( body or "{}" )
-
-        unless json.ret 
-            utils.logger.error json.errmsg
-        else
-            utils.logger.log "publish success."
-
-        done()
 
 
 
