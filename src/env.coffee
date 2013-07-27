@@ -87,7 +87,7 @@ exports.getExtensions = () ->
 ###
 exports.authorize = authorize = ( cb ) ->
 
-    errmsg = "该功能需要登录后使用. 请执行 fekit login 进行登录\n\t\t如果没有注册，请到 fekit源 网站进行注册."
+    errmsg = "该功能需要登录后使用. 请执行 fekit login 进行登录. 如果没有注册，请到 fekit源 网站进行注册."
     
     pharse_file = utils.path.join( utils.path.get_user_home() , ".fekit.pas" )
     unless utils.path.exists( pharse_file ) then return cb( errmsg )
