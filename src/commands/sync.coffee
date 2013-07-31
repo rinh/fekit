@@ -17,6 +17,9 @@ exports.set_options = ( optimist ) ->
 
     optimist.alias 'e' , 'exclude'
     optimist.describe 'e' , '同 rsync 的 exclude 选项'
+    
+    optimist.alias 'x' , 'nonexec' 
+    optimist.describe 'x' , '上传后禁止执行 shell'
 
 
 rsync = ( opts ) ->
@@ -30,7 +33,7 @@ rsync = ( opts ) ->
         if stdout then utils.logger.log( stdout )
         if stderr then utils.logger.error( stderr )
 
-        if opts.shell then shell( opts )
+        if opts.shell and !opts.nonexec then shell( opts )
 
 
 shell = ( opts ) ->
