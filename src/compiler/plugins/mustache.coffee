@@ -1,5 +1,5 @@
 syspath = require 'path'
-hogan = require 'hogan.js'
+hogan = require '../../../vendors/hogan.js/lib/hogan'
 
 exports.contentType = "javascript"
 
