@@ -1,3 +1,12 @@
+# 0.2.35 #
+* add: 增加sync的non exec功能
+* add: mustache 开启 useArrayBuffer 模式
+* add: sync 以 spawn 方式调用
+* add: 增加 fekit upgrade 功能
+
+# 0.2.34 #
+废弃
+
 # 0.2.33 #
 * add: 增加 fekit config -s 和 -d 功能
 * add: 增加源的用户管理，fekit login 与 fekit logout

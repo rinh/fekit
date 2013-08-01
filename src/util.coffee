@@ -520,14 +520,18 @@ exports.proc = utilproc =
         fn = if typeof setImmediate is 'function' then setImmediate else process.nextTick
         fn callback
 
-    run : ( cmd , args , cb ) ->
-        r = child_process.spawn cmd , args || [] 
-        r.stdout.on 'data' , ( data ) ->
-            console.info data.toString()
-        r.stderr.on 'data' , ( data ) ->
-            utillogger.error data 
+    spawn : ( cmd , args , cb , options ) ->
+        r = child_process.spawn cmd , args || [] , _.extend({
+            cwd : process.cwd , 
+            env : process.env
+        }, options || {} )
+
+        r.stderr.pipe process.stderr, end: false 
+        r.stdout.pipe process.stdout, end: false 
         r.on 'exit' , ( code ) ->
             cb( code )
+
+utilproc.run = utilproc.spawn
 
 #---------------------------
 

@@ -24,14 +24,17 @@ exports.set_options = ( optimist ) ->
 
 rsync = ( opts ) ->
 
-    _args = [ "-rzcv" , "--chmod=a=rX,u+w" , "--rsync-path='sudo rsync'" , "#{opts.local}" , "#{opts.user}#{opts.host}:#{opts.path}" , "#{opts.include||''}" , "#{opts.exclude||''}" , "--temp-dir=/tmp" ]
+    _args = [ "-rzcv" , "--chmod=a='rX,u+w'" , "--rsync-path='sudo rsync'" , "#{opts.local}" , "#{opts.user}#{opts.host}:#{opts.path}" , "#{opts.include||''}" , "#{opts.exclude||''}" , "--temp-dir=/tmp" ]
     args = _args.join(' ')
 
     utils.logger.log "[调用] rsync #{args}"
 
-    utils.proc.run "rsync" , _args , ( code ) ->
-        if opts.shell and !opts.nonexec then shell( opts )        
+    child_process.exec "rsync #{args}" , ( err , stdout , stderr ) ->
+        if err then throw err 
+        if stdout then utils.logger.log( stdout )
+        if stderr then utils.logger.error( stderr )              
 
+        if opts.shell and !opts.nonexec then shell( opts ) 
 
 shell = ( opts ) ->
     
