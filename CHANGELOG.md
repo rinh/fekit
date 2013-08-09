@@ -1,12 +1,9 @@
-# 0.2.35 #
+# 0.2.36 #
 * add: 增加sync的non exec功能
 * add: mustache 开启 useArrayBuffer 模式
 * add: sync 以 spawn 方式调用
 * add: 增加 fekit upgrade 功能
 * add: 增加 fekit.config 中的配置 development 节点，可以对开发中的渲染内容进行修改
-
-# 0.2.34 #
-废弃
 
 # 0.2.33 #
 * add: 增加 fekit config -s 和 -d 功能

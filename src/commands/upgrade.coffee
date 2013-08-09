@@ -12,17 +12,16 @@ exports.run = ( options ) ->
     
     tasks = []
 
-    tasks.push ( done ) ->
-        utils.proc.spawn 'npm' , [ 'fekit' , '-g' ] , () ->
-            done()
-
     for i in env.getExtensions()
         tasks.push ((name) ->
                 return ( done ) ->
-                    utils.proc.spawn 'npm' , [ 'fekit-extension-' + name , '-g' ] , () ->
+                    utils.proc.spawn 'npm' , [ 'install', 'fekit-extension-' + name , '-g' ] , () ->
                         done()
             )(i.name)
 
+    tasks.push ( done ) ->
+        utils.proc.spawn 'npm' , [ 'install', 'fekit' , '-g' ] , () ->
+            done()
 
     async.series tasks , ( err ) ->
         if err then return utils.logger.error( err ) 
