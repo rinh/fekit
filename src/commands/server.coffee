@@ -83,18 +83,39 @@ setupServer = ( options ) ->
             }, doneCallback )
 
         else
-            compiler.compile( path , {
-                dependencies_filepath_list : parents  
-                render_dependencies : () ->
-                    host = host.replace(/:\d+/,"")
-                    port = if options.port and options.port != "80" then ":#{options.port}" else ""
-                    path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
-                    partial = "http://#{host}#{port}#{path}?no_dependencies=true"
+
+            conf = utils.config.parse path 
+            custom_script = conf.root?.development?.custom_render_dependencies
+            custom_script_path = utils.path.join( conf.fekit_root_dirname , custom_script )
+
+            host = host.replace(/:\d+/,"")
+            port = if options.port and options.port != "80" then ":#{options.port}" else ""
+
+            if utils.path.exists custom_script_path
+                ctx = utils.proc.requireScript custom_script_path
+                render_func = () ->
+                    _path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
+                    partial = "http://#{host}#{port}#{_path}?no_dependencies=true"                    
+                    return ctx.render({
+                            type : @path.getContentType()
+                            path : @path.getFullPath()
+                            url : partial
+                            base_path : path 
+                        });
+            else 
+                render_func = () ->
+                    _path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
+                    partial = "http://#{host}#{port}#{_path}?no_dependencies=true"                    
                     switch @path.getContentType()
                         when "javascript"
                             return "document.write('<script src=\"#{partial}\"></script>');"
                         when "css"
                             return "@import url('#{partial}');"
+            
+
+            compiler.compile( path , {
+                dependencies_filepath_list : parents  
+                render_dependencies : render_func
             }, doneCallback)
 
 

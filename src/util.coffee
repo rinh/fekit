@@ -404,6 +404,8 @@ class FekitConfig
         utillogger.log("自动脚本 #{type} , 执行完毕.")
 
 
+
+
 _runCode = ( path , ctx ) ->
     Module = require('module')
     mod = new Module( path )
@@ -530,6 +532,31 @@ exports.proc = utilproc =
         r.stdout.pipe process.stdout, end: false 
         r.on 'exit' , ( code ) ->
             cb( code )
+
+    requireScript : ( path , ctx = {} ) ->
+        Module = require('module')
+        mod = new Module( path )
+        context = _.extend( {} , global , ctx )
+        context.module = mod
+        context.__filename = path
+        context.__dirname = syspath.dirname( path )
+        context.require = ( path ) ->
+            return mod.require( path )
+        context.exports = {}
+        
+        code = new Reader().read( path )
+        switch syspath.extname( path ) 
+            when ".js"
+                code = code
+            when ".coffee"
+                code = coffee.compile code
+            else
+                throw "没有正确的自动化脚本解析器 #{path}"
+
+        m = vm .createScript( code )
+        m.runInNewContext( context )
+        return context.exports
+
 
 utilproc.run = utilproc.spawn
 
