@@ -91,7 +91,7 @@ setupServer = ( options ) ->
             host = host.replace(/:\d+/,"")
             port = if options.port and options.port != "80" then ":#{options.port}" else ""
 
-            if utils.path.exists custom_script_path and !utils.path.is_directory( custom_script_path )
+            if custom_script and utils.path.exists custom_script_path 
                 ctx = utils.proc.requireScript custom_script_path
                 render_func = () ->
                     _path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
