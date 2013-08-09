@@ -1,4 +1,4 @@
-# 0.2.36 #
+# 0.2.37 #
 * add: 增加sync的non exec功能
 * add: mustache 开启 useArrayBuffer 模式
 * add: sync 以 spawn 方式调用
