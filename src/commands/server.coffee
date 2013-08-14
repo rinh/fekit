@@ -79,7 +79,8 @@ setupServer = ( options ) ->
         if params["no_dependencies"] is "true"
             compiler.compile( path , {
                 dependencies_filepath_list : parents  
-                no_dependencies : true
+                no_dependencies : true 
+                root_module_path : params["root"]
             }, doneCallback )
 
         else
@@ -95,7 +96,7 @@ setupServer = ( options ) ->
                 ctx = utils.proc.requireScript custom_script_path
                 render_func = () ->
                     _path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
-                    partial = "http://#{host}#{port}#{_path}?no_dependencies=true"                    
+                    partial = "http://#{host}#{port}#{_path}?no_dependencies=true&root=#{encodeURIComponent(path)}"                    
                     return ctx.render({
                             type : @path.getContentType()
                             path : @path.getFullPath()
@@ -105,7 +106,7 @@ setupServer = ( options ) ->
             else 
                 render_func = () ->
                     _path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
-                    partial = "http://#{host}#{port}#{_path}?no_dependencies=true"                    
+                    partial = "http://#{host}#{port}#{_path}?no_dependencies=true&root=#{encodeURIComponent(path)}"                    
                     switch @path.getContentType()
                         when "javascript"
                             return "document.write('<script src=\"#{partial}\"></script>');"

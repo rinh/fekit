@@ -64,7 +64,8 @@ class Module
             self.ast = parser.parseAST( source )
             self.ast.find 'REQUIRE' , ( node ) ->
                 try 
-                    module = Module.parse( node.value , self )
+                    module = Module.parse( node.value , self , self.root_module )
+                    module.parent_module = module
                     node.module = module
                     self.depends.push( module )
                     self.analyzed()
@@ -76,13 +77,13 @@ class Module
     # override
     analyzed:()->
 
-
+ 
     _process:( path , cb ) ->
         #txt = new utils.file.reader().read( path )
         ext = syspath.extname( path )
         plugin = ModulePath.getPlugin(ext)
         if plugin
-            plugin.process @source , path , ( err , result ) ->
+            plugin.process @source , path , this , ( err , result ) ->
                 if err 
                     cb( "文件编译错误 #{path} , #{err.toString()}" , "" ) 
                 else 
@@ -110,16 +111,20 @@ class Module
 
 # 通过模块引用字符串, 跟据parentModule解析出子模块的真实路径 , 并返回正确的模块
 # 从一行代码中解析出模块引用的路径
-Module.parse = ( path , parentModule ) ->
+Module.parse = ( path , parentModule , rootModule ) ->
+
     if parentModule
         uri = ModulePath.resolvePath( path , parentModule )
     else
         uri = path
     switch ModulePath.getContentType( syspath.extname( uri ) )
         when MODULE_CONTENT_TYPE.JAVASCRIPT
-            return new JSModule( uri )
+            m = new JSModule( uri )
         when MODULE_CONTENT_TYPE.CSS
-            return new CSSModule( uri )
+            m = new CSSModule( uri )
+
+    m.root_module = rootModule if rootModule
+    return m
 
 
 Module.addExtensionPlugin = ( extName , plugin ) ->

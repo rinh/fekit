@@ -313,6 +313,13 @@ class FekitConfig
         else
             return @root.alias?[name] or @root.lib?[name]
 
+    getExportFileConfig : ( fullpath ) ->
+        n = null
+        @each_export_files ( path , parents , opts ) ->
+            n = opts if path is fullpath
+        return n
+
+
     each_export_files : ( cb ) ->
         list = @root["export"] || []
         for file in list

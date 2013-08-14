@@ -1,3 +1,6 @@
+# 0.2.39 #
+* add: 添加 css/less 多域名图片替换方案
+
 # 0.2.38 #
 * add: 增加sync的non exec功能
 * add: mustache 开启 useArrayBuffer 模式
