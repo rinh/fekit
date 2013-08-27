@@ -1,3 +1,6 @@
+# 0.2.40 #
+* add: 添加 angular.js 支持，可以使用 ng(javascript) 或 ngc(coffee) 进行开发
+
 # 0.2.39 #
 * add: 添加 css/less 多域名图片替换方案
 
