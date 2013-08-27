@@ -1,9 +1,9 @@
 syspath = require 'path'
-hogan = require 'hogan.js'
+hogan = require '../../../vendors/hogan.js/lib/hogan'
 
 exports.contentType = "javascript"
 
-exports.process = ( txt , path , cb ) ->
+exports.process = ( txt , path ,module , cb ) ->
     try 
         name = syspath.basename( path , '.mustache');
         builded = 'if(typeof window.QTMPL === "undefined"){ window.QTMPL={}; }\n';

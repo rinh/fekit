@@ -17,18 +17,36 @@ exports.set_options = ( optimist ) ->
 
     optimist.alias 'e' , 'exclude'
     optimist.describe 'e' , '同 rsync 的 exclude 选项'
+    
+    optimist.alias 'x' , 'nonexec' 
+    optimist.describe 'x' , '上传后禁止执行 shell'
 
 
 rsync = ( opts ) ->
 
-    args = "-rzcv --chmod='a=rX,u+w' --rsync-path='sudo rsync' #{opts.local} #{opts.user}#{opts.host}:#{opts.path} #{opts.include||''} #{opts.exclude||''} --temp-dir=/tmp"
+    _args = [ "-rzcv" , "--chmod=a='rX,u+w'" , "--rsync-path='sudo rsync'" , "#{opts.local}" , "#{opts.user}#{opts.host}:#{opts.path}" , "#{opts.include||''}" , "#{opts.exclude||''}" , "--temp-dir=/tmp" ]
+    args = _args.join(' ')
 
     utils.logger.log "[调用] rsync #{args}"
 
-    child_process.exec "rsync #{args}" , ( err , stdout , stderr ) =>
+    child_process.exec "rsync #{args}" , ( err , stdout , stderr ) ->
         if err then throw err 
         if stdout then utils.logger.log( stdout )
-        if stderr then utils.logger.error( stderr )
+        if stderr then utils.logger.error( stderr )              
+
+        if opts.shell and !opts.nonexec then shell( opts ) 
+
+shell = ( opts ) ->
+    
+    cmd = opts.shell.replace /'/g , "\\'"
+    args = "#{opts.user}#{opts.host} '#{cmd}'"
+
+    utils.logger.log "[执行] ssh #{args}"
+
+    child_process.exec "ssh #{args}" , ( err , stdout , stderr ) ->
+        if err then throw err 
+        if stdout then utils.logger.log( stdout )
+        if stderr then utils.logger.error( stderr )        
 
 
 exports.run = ( options ) ->
@@ -50,6 +68,7 @@ exports.run = ( options ) ->
         path : conf.path
         local : ( conf.local || './' )
         user : ( if conf.user then conf.user + "@" else "" )
+        shell : conf.shell
 
     #------
      
@@ -61,7 +80,7 @@ exports.run = ( options ) ->
         default_include = default_include.concat( options.include )
     
     if default_include.length > 0 
-        opts.include = ( "--include #{item}" for item in default_include ).join(' ') 
+        opts.include = ( "--include=#{item}" for item in default_include ).join(' ') 
 
     #------
      
@@ -73,6 +92,6 @@ exports.run = ( options ) ->
         default_exclude = default_exclude.concat( options.exclude )
     
     if default_exclude.length > 0 
-        opts.exclude = ( "--exclude #{item}" for item in default_exclude ).join(' ') 
+        opts.exclude = ( "--exclude=#{item}" for item in default_exclude ).join(' ') 
     
     rsync( opts )

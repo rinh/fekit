@@ -1,0 +1,1 @@
+(function(e){var t={};e.____MODULES||(e.____MODULES={});var n=function(e){var t=require("core.dom.helper");console.info(t)}(t);n&&(t=n),e.____MODULES["5c270565aac6e15d47814292fd6ffc27"]=t})(this)

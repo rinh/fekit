@@ -1,3 +1,5 @@
+request = require 'request'
+rimraf = require 'rimraf'
 async = require 'async'
 child_process = require 'child_process'
 syspath = require 'path'
@@ -8,6 +10,11 @@ cjson = require 'cjson'
 _ = require 'underscore'
 vm = require 'vm'
 coffee = require 'coffee-script'
+ncp = require('ncp').ncp
+tar = require '../vendors/tar/tar.js'
+fstream = require 'fstream'
+zlib = require 'zlib'
+sty = require 'sty'
 
 
 #----------------------------
@@ -22,11 +29,68 @@ exports.array = utilarray =
 
 #----------------------------
 
-exports.path = utilpath =
-    join : syspath.join 
 
-    closest : ( path , findfilename ) ->
-        return _closest( path , findfilename )
+_closest = ( p , findfilename , filterFunc ) ->
+    if p is "/" or ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) )
+        return null
+
+    if utilpath.is_directory(p)
+        dir = p
+    else
+        dir = syspath.dirname(p)
+
+    files = fs.readdirSync( dir )
+    for file in files
+        if file == findfilename
+            if filterFunc 
+                if filterFunc( utilpath.join( dir , file ) ) 
+                    return dir
+            else 
+                return dir 
+
+    return _closest( syspath.dirname( dir ) , findfilename , filterFunc )
+
+
+_closest_dir = ( p , finddirname , filterFunc ) ->
+    if p is "/" or ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) )
+        return null
+
+    if utilpath.is_directory(p)
+        dir = p
+    else
+        dir = syspath.dirname(p)
+
+    files = fs.readdirSync( dir )
+    for file in files
+        if file is finddirname and utilpath.is_directory( file )
+            if filterFunc 
+                if filterFunc( file ) 
+                    return dir
+            else 
+                return dir 
+
+    return _closest_dir( syspath.dirname( dir ) , finddirname , filterFunc )
+
+
+exports.path = utilpath =
+    dirname : syspath.dirname
+    basename : syspath.basename
+    resolve : syspath.resolve
+    join : () ->
+        arr = ( ( if typeof i == 'undefined' then '' else i ) for i in arguments )
+        syspath.join.apply( syspath , arr )
+
+    fname : ( path ) ->
+        syspath.basename( path ).replace( syspath.extname( path ) , '' )
+
+    get_user_home : () ->
+        return process.env[ if (process.platform == 'win32') then 'USERPROFILE' else 'HOME'];
+
+    closest : ( path , findfilename , is_directory , filterFunc ) ->
+        if is_directory
+            return _closest_dir( path , findfilename , filterFunc )
+        else
+            return _closest( path , findfilename , filterFunc )
 
     SEPARATOR : syspath.join('a','a').replace(/a/g,'')
 
@@ -61,13 +125,17 @@ exports.path = utilpath =
 
     is_directory: (path) ->
         try
-            stats = fs.lstatSync( path )
+            stats = fs.statSync( path )
             return stats.isDirectory()
         catch err 
             throw err
             return false
 
-    each_directory: ( path , cb ) ->
+    is_normalize_dirname: ( path ) ->
+        return ( /[\w-\.\s]+/i.test(path) ) and ( path isnt '.' ) and ( path isnt '..' ) and ( path isnt '.svn' ) and ( path isnt '.git' )
+
+
+    each_directory: ( path , cb , is_recursion ) ->
 
         if !utilpath.is_directory( path )
             path = syspath.dirname( path )
@@ -75,8 +143,16 @@ exports.path = utilpath =
         list = fs.readdirSync( path )
         for f in list 
             p = syspath.join( path , f )
-            if f isnt "." and f isnt ".." and !utilpath.is_directory( p )
-                cb( p )
+            if !is_recursion
+                if utilpath.is_normalize_dirname(f) and !utilpath.is_directory( p )
+                    cb( p )
+            else 
+                if utilpath.is_normalize_dirname(f)
+                    if !utilpath.is_directory( p )
+                        cb( p )
+                    else
+                        utilpath.each_directory( p , cb , is_recursion )
+
 
     existsFiles: ( root , filenames ) ->
 
@@ -89,22 +165,6 @@ exports.path = utilpath =
     is_absolute_path: ( path ) ->
         return ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) ) or path.charAt(0) is "/" 
 
-
-_closest = ( p , findfilename ) ->
-    if p is "/" or ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) )
-        return null
-
-    if utilpath.is_directory(p)
-        dir = p
-    else
-        dir = syspath.dirname(p)
-
-    files = fs.readdirSync( dir )
-    for file in files
-        if file == findfilename
-            return dir
-
-    return _closest( syspath.dirname( dir ) , findfilename )
 
 #----------------------------
 
@@ -150,7 +210,26 @@ class Writer
 exports.file = utilfile = {}        
 utilfile.reader = Reader
 utilfile.writer = Writer
+utilfile.io = _.extend( {}, Reader.prototype , Writer.prototype )
 utilfile.NEWLINE = '\n'
+
+_watch = ( path , cb ) ->
+    if !utilpath.is_directory( path )
+        path = syspath.dirname( path )
+    watcher = fs.watch path , cb 
+    watcher.on 'error' , (e) ->
+        watcher.close()
+        watcher = null
+
+    list = fs.readdirSync( path )
+    for f in list 
+        p = syspath.join( path , f )
+        if utilpath.is_normalize_dirname(f) and utilpath.is_directory( p )
+            _watch( p , cb )
+
+
+utilfile.watch = ( dest , cb , crashCB ) ->
+    _watch( dest , cb , crashCB )
 
 utilfile.copy = (srcFile, destFile) ->
     BUF_LENGTH = 64*1024
@@ -166,14 +245,27 @@ utilfile.copy = (srcFile, destFile) ->
     fs.closeSync(fdr)
     fs.closeSync(fdw)
 
+utilfile.cpr = ( src , dest , cb ) ->
+    ncp src , dest , cb
 
+
+utilfile.rmrf = ( dest , cb ) ->
+    if cb 
+        rimraf dest , cb 
+    else
+        rimraf.sync dest
+
+utilfile.mkdirp = mkdirp.sync
+
+
+# 按照给定的后缀名列表找到文件
 utilfile.findify = ( path_without_extname , ext_list ) ->
     list = [ "" ].concat( ext_list )
     for ext in list
         path = path_without_extname + ext 
-        if utilpath.exists( path )
+        if utilpath.exists( path ) and !utilpath.is_directory( path )
             return path
-    throw "找不到文件或对应的编译方案 [#{path_without_extname}] 后缀检查列表为[#{ext_list}]"
+    return null
 
 #----------------------------
 
@@ -182,8 +274,8 @@ utilfile.findify = ( path_without_extname , ext_list ) ->
 # 内容为
 ###
     {
-        // 库配置
-        "lib" : {
+        // 别名配置
+        "alias" : {
             "core" : "./src/scripts/core"
         } ,
         // 导出配置 , 默认是以src为根目录
@@ -204,16 +296,29 @@ class FekitConfig
     constructor: ( @baseUri ) ->
         @fekit_config_filename = "fekit.config"
         @fekit_root_dirname = utilpath.closest( @baseUri , @fekit_config_filename )
-        @fekit_config_path = syspath.join( @fekit_root_dirname , @fekit_config_filename )
+        @fekit_config_path = syspath.join( @fekit_root_dirname || "" , @fekit_config_filename )
         try 
             @root = new utilfile.reader().readJSON( @fekit_config_path )
-            if !@root.lib then @root.lib = {}
+            if !@getAlias() then @root.alias = {}
         catch err
             if utilpath.exists( @fekit_config_path )
-                throw "@fekit_config_filename 解析失败, 请确认该文件格式是否符合正确的JSON格式"
+                throw "#{@fekit_config_filename} 解析失败, 请确认该文件格式是否符合正确的JSON格式"
             else
                 # 如果没有fekit, 有可能是使用单独文件编译模式, 则使用默认配置
-                @root = { "lib" : {} , "export" : [] }
+                @root = { "alias" : {} , "export" : [] }
+
+    getAlias: ( name ) ->
+        unless name
+            return @root.alias or @root.lib
+        else
+            return @root.alias?[name] or @root.lib?[name]
+
+    getExportFileConfig : ( fullpath ) ->
+        n = null
+        @each_export_files ( path , parents , opts ) ->
+            n = opts if path is fullpath
+        return n
+
 
     each_export_files : ( cb ) ->
         list = @root["export"] || []
@@ -259,7 +364,7 @@ class FekitConfig
                         cb( path , parents , opts , seriesCallback )
                     else
                         utillogger.error("找不到文件 #{path}")
-                        seriesCallback()
+                        utilproc.setImmediate seriesCallback
 
             tasks.push _tmp(file)
 
@@ -271,6 +376,8 @@ class FekitConfig
     
         list = @root["export"] || []
 
+        hit = false
+
         for file in list
             if _.isObject( file )
                 path = syspath.join( @fekit_root_dirname , "src" , file.path )
@@ -281,9 +388,10 @@ class FekitConfig
                 parents = []
 
             if filepath is path
+                hit = true
                 cb( filepath , parents )
 
-        cb( filepath , [] )
+        cb( null , [] ) unless hit
 
     doScript : ( type , context ) ->
 
@@ -303,10 +411,12 @@ class FekitConfig
         utillogger.log("自动脚本 #{type} , 执行完毕.")
 
 
+
+
 _runCode = ( path , ctx ) ->
     Module = require('module')
     mod = new Module( path )
-    context = _.extend( {} , ctx )
+    context = _.extend( {} , global , ctx )
     context.module = mod
     context.__filename = path
     context.__dirname = syspath.dirname( path )
@@ -329,7 +439,15 @@ _runCode = ( path , ctx ) ->
 exports.config = utilconfig = 
     parse : ( baseUri ) ->
         return new FekitConfig( baseUri )
-
+    createEmptySchema : () ->
+        return {
+            "compiler" : "modular"
+            "name" : ""
+            "version" : ""
+            "dependencies" : {}
+            "alias" : {}
+            "export" : []
+        }
 
 #---------------------------
 
@@ -407,6 +525,47 @@ exports.proc = utilproc =
         child_process.exec cmd , ( error , stdout , stderr ) =>
             if error then utillogger.error( error )
 
+    setImmediate : ( callback ) ->
+        fn = if typeof setImmediate is 'function' then setImmediate else process.nextTick
+        fn callback
+
+    spawn : ( cmd , args , cb , options ) ->
+        r = child_process.spawn cmd , args || [] , _.extend({
+            cwd : process.cwd , 
+            env : process.env
+        }, options || {} )
+
+        r.stderr.pipe process.stderr, end: false 
+        r.stdout.pipe process.stdout, end: false 
+        r.on 'exit' , ( code ) ->
+            cb( code )
+
+    requireScript : ( path , ctx = {} ) ->
+        Module = require('module')
+        mod = new Module( path )
+        context = _.extend( {} , global , ctx )
+        context.module = mod
+        context.__filename = path
+        context.__dirname = syspath.dirname( path )
+        context.require = ( path ) ->
+            return mod.require( path )
+        context.exports = {}
+        
+        code = new Reader().read( path )
+        switch syspath.extname( path ) 
+            when ".js"
+                code = code
+            when ".coffee"
+                code = coffee.compile code
+            else
+                throw "没有正确的自动化脚本解析器 #{path}"
+
+        m = vm .createScript( code )
+        m.runInNewContext( context )
+        return context.exports
+
+
+utilproc.run = utilproc.spawn
 
 #---------------------------
 
@@ -416,29 +575,149 @@ exports.sys = utilsys =
 
 #---------------------------
 
+exports.http = utilhttp = 
+
+    get : ( url , cb ) ->
+        if typeof url is 'object'
+            opts = url
+        else
+            opts = 
+                url : url
+        utillogger.log "fekit #{sty.red 'http'} #{sty.green 'GET'} #{opts.url}"
+        request opts , cb 
+
+    put : ( url , filepath_or_formdata , formdata , cb ) ->
+        utillogger.log "fekit #{sty.red 'http'} #{sty.green 'PUT'} #{url}"
+
+        if arguments.length is 4 and typeof filepath_or_formdata is 'string' and typeof formdata is 'object' and typeof cb is 'function'
+
+            r = request.put url , ( err , res , body ) ->
+                cb err , body , res 
+            
+            form = r.form()
+
+            for k, v of formdata
+                form.append k , v 
+
+            form.append('file', fs.createReadStream( filepath_or_formdata ))
+
+
+        else if arguments.length is 3
+
+            cb = formdata
+
+            if typeof filepath_or_formdata is 'string'
+
+                fs.createReadStream( filepath_or_formdata ).pipe( 
+                    request.put url, ( err , res , body ) ->
+                        cb err , body , res 
+                )
+
+            else if typeof filepath_or_formdata is 'object'
+
+                request.put url , {
+                    form : filepath_or_formdata 
+                } , ( err , res , body ) ->
+                    cb err , body , res 
+
+
+    del : ( url , formdata , cb ) ->
+        if typeof url is 'object'
+            opts = url
+        else
+            opts = 
+                url : url
+
+        if typeof formdata == 'function' 
+            cb = formdata 
+            formdata = {}
+
+        opts.method = 'DELETE'
+        opts.form = formdata 
+
+        utillogger.log "fekit #{sty.red 'http'} #{sty.green 'DELETE'} #{url}"        
+        request opts , cb 
+
+
+#---------------------------
+
 
 exports.logger = utillogger = 
     debug : false ,
     setup : ( options ) ->
         if options && options.debug then utillogger.debug = true 
-    info : () ->
+    start : () ->
+        @_tick = new Date()
+    stop : () ->
+        return ( new Date().getTime() - @_tick.getTime() ) + 'ms'
+    trace : () ->
         if !utillogger.debug then return
-        console.info("[TRACE] " , Array.prototype.join.call( arguments , " " ) )
+        utillogger.to("[TRACE] " , Array.prototype.join.call( arguments , " " ) )
     error : () ->
-        console.info("[ERROR] " , Array.prototype.join.call( arguments , " " ) )
+        utillogger.to("[ERROR] " , Array.prototype.join.call( arguments , " " ) )
     log : () ->
-        console.info("[LOG] " , Array.prototype.join.call( arguments , " " ) )
+        utillogger.to("[LOG] " , Array.prototype.join.call( arguments , " " ) )
+    to : () ->
+        n = Array.prototype.join.call( arguments , "" )
+        console.info n 
 
 
 #---------------------------
 
 exports.exit = exit = (exitCode) ->
     if process.stdout._pendingWriteReqs or process.stderr._pendingWriteReqs
-        process.nextTick () ->
+        utilproc.setImmediate () ->
             exit(exitCode)
     else
         process.exit(exitCode)
 
+
+#---------------------------
+
+# tar util
+
+exports.tar = 
+    
+    pack : ( source , dest , callback ) ->
+
+        fs.stat source, (err, stat) ->
+
+            utilproc.setImmediate ->
+                gzip = zlib.createGzip
+                    level : 6
+                    memLevel : 6
+ 
+                reader = fstream.Reader
+                    path : source
+                    type : 'Directory'
+                    depth : 1 
+                    filter : (entry) ->
+                        if this.basename.match(/^fekit_modules$/) then return false
+                        if this.basename.match(/^\..+$/) then return false
+                        # Make sure readable directories have execute permission
+                        if entry.props.type is "Directory" then entry.props.mode |= (entry.props.mode >>> 2) & 0o0111;
+                        return true
+
+                # 依赖 https://github.com/rinh/node-tar 修改过的版本
+                props = 
+                    noProprietary : false
+                    fromBase : true
+
+                writer = fstream.Writer 
+                    path : dest
+
+                reader.pipe(tar.Pack(props)).pipe(gzip).pipe writer.on 'close', ->
+                    callback null if typeof callback == 'function'
+
+
+    unpack : ( tarfile , dest , callback ) ->
+
+        utilproc.setImmediate ->
+            fstream.Reader(
+                path : tarfile
+                type : 'File'
+            ).pipe(zlib.createGunzip()).pipe(tar.Extract({path: dest})).on 'end', ->
+                callback null if typeof callback == 'function' 
 
 #---------------------------
 
@@ -452,4 +731,6 @@ exports.async = utilasync =
             _list.push( _tmp(item) )
         async.series _list , done
 
+#---------------------------
 
+exports.version = utilfile.io.readJSON( syspath.join( __dirname , "../package.json" ) ).version

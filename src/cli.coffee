@@ -2,15 +2,24 @@ optimist = require "optimist"
 sysfs = require "fs"
 syspath = require "path"
 utils = require "./util"
+env = require "./env"
 
 CURR = syspath.dirname( __filename )
 
 each_commands = ( cb ) ->
     cmddir = syspath.join( CURR , "commands" )
     list = sysfs.readdirSync( cmddir )
+    list = list.concat env.getExtensions()
+
     for f in list 
-        if f isnt "." or f isnt ".."
-            cb( f.replace(".js","") , require( syspath.join( cmddir , f ) ) )
+        if typeof f is 'string'
+            if f isnt "." or f isnt ".."
+                fullpath = syspath.resolve( cmddir , f )
+                continue if utils.path.is_directory( fullpath )
+                command = utils.path.fname( fullpath )
+                cb( command , require(fullpath) )
+        else if f.name && f.path
+            cb( "#{f.name}(#{f.version})" , require(f.path) )
 
 fixempty = ( str , limit ) ->
     n = limit - str.length
@@ -19,10 +28,8 @@ fixempty = ( str , limit ) ->
 
 help_title = () ->
 
-    version = new utils.file.reader().readJSON( syspath.join( CURR , "../package.json" ) ).version
-
     console.info("")
-    console.info("===================== FEKIT #{version} ====================")
+    console.info("===================== FEKIT #{utils.version} ====================")
     console.info("")
 
 init_options = ( command ) ->
@@ -72,16 +79,29 @@ exports.help = () ->
     console.info(" 如果需要帮助, 请使用 fekit {命令名} --help ")
     console.info("")
 
-exports.run = ( cmd ) ->
-
+find_cmd = ( cmd ) ->
+    
     lib = syspath.dirname( __filename )
     path = syspath.join( lib , "./commands/#{cmd}.js" )
 
-    if !utils.path.exists( path ) 
+    return path if utils.path.exists( path )
+
+    list = env.getExtensions()
+    for i in list 
+        return i.path if i.name == cmd 
+
+    return null
+
+
+exports.run = ( cmd ) ->
+
+    path = find_cmd( cmd )
+
+    if !path
         utils.logger.error("请确认是否有 #{cmd} 这个命令")
         return 1
 
-    utils.logger.info( "加载命令 #{path}" )
+    utils.logger.trace( "加载命令 #{path}" )
     
     try
         command = require( path )
@@ -94,10 +114,14 @@ exports.run = ( cmd ) ->
             command_run( cmd , command , options )
 
     catch err
-
+        
         if utils.logger.debug is true
-            throw err 
+            throw err
         else
+        
+           if typeof err is 'object'
+                err = JSON.stringify err 
+            
             utils.logger.error( err )
             return 1
 

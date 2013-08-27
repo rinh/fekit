@@ -1,5 +1,6 @@
 .git
 node_modules
+!vendors/**/node_modules
 npm-debug.log
 testcase/**/prd/*
 testcase/**/dev/*

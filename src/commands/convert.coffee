@@ -1,7 +1,6 @@
 syspath = require 'path'
 sysfs = require 'fs'
 utils = require '../util'
-findit = require 'findit'
 spawn = require('child_process').spawn
 
 exports.usage = "转换 [qzz项目] 为 [fekit项目] "
@@ -17,7 +16,7 @@ exports.set_options = ( optimist ) ->
 CURR = null
 CONFIG =
         "compiler" : false 
-        "lib" : {} 
+        "alias" : {} 
         "export" : []
 
 FILE = ( name ) ->
@@ -36,14 +35,14 @@ check = () ->
             b. 修改引用方式 document.write 变为 require , js/css的
 ###
 process_srclist = () ->
-    files = findit.sync( CURR )
     add_list = []
     remove_list = []
-    for file in files
-        if ~file.indexOf('-srclist.') and !~file.indexOf(".svn")
-            utils.logger.log("正在处理 #{file}")
-            add_list.push( _replaceSrclist( file ) )
-            remove_list.push( file )
+    utils.path.each_directory CURR , ( file ) ->
+            if ~file.indexOf('-srclist.') and !~file.indexOf(".svn")
+                utils.logger.log("正在处理 #{file}")
+                add_list.push( _replaceSrclist( file ) )
+                remove_list.push( file )
+        , true
 
     add = spawn 'svn' , [ 'add' ].concat( add_list )
     add.on 'exit' , (code) =>
@@ -60,9 +59,9 @@ _replaceSrclist = ( filepath ) ->
     # 修改引用 
     content = new utils.file.reader().read( filepath )
     content = content.replace JS_REG , ($0,$1) =>
-                    return "require('#{$1}');"
+                    return "require('./#{$1}');"
     content = content.replace CSS_REG , ($0,$1) =>
-                    return "require('#{$1}');"
+                    return "require('./#{$1}');"
     new utils.file.writer().write( dest , content )
 
     # 添加config
@@ -70,7 +69,7 @@ _replaceSrclist = ( filepath ) ->
         part = dest.split('/src/')[1]
     else if ~dest.indexOf('\\src\\')
         part = dest.split('\\src\\')[1]
-    CONFIG.export.push( part )
+    CONFIG.export.push( part.replace( /\\/g , '/' ) )
 
     return dest
 
@@ -109,14 +108,14 @@ get_config = () ->
 
 _each_files = ( cb ) ->
     config = get_config()
-    files = findit.sync( CURR )
-    for file in files
-        if ~file.indexOf(".svn") then continue
-        if utils.path.is_directory(file) then continue
-        ext = syspath.extname( file )
-        if  !config.filter.length or ( config.filter.length and ~config.filter.indexOf(ext) )  
-            if cb( file , config )
-                utils.logger.log("已处理 #{file}")
+    utils.path.each_directory CURR , ( file ) ->
+            if ~file.indexOf(".svn") then return
+            if utils.path.is_directory(file) then return
+            ext = syspath.extname( file )
+            if  !config.filter.length or ( config.filter.length and ~config.filter.indexOf(ext) )  
+                if cb( file , config )
+                    utils.logger.log("已处理 #{file}")
+        , true
 
 _get_verpath = ( config , path , type , filepath ) ->
     ext = syspath.extname( filepath )
