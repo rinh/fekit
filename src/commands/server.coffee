@@ -77,6 +77,7 @@ setupServer = ( options ) ->
     no_combine = ( path , parents , host , params , doneCallback ) ->
         # 根据是否非依赖模式, 生成不同的结果
         if params["no_dependencies"] is "true"
+
             compiler.compile( path , {
                 dependencies_filepath_list : parents  
                 no_dependencies : true 
@@ -102,6 +103,7 @@ setupServer = ( options ) ->
                             path : @path.getFullPath()
                             url : partial
                             base_path : path 
+                            base_params : params 
                         });
             else 
                 render_func = () ->
