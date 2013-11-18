@@ -49,6 +49,6 @@
     "license": "MIT",
     "scripts": {
         "prepublish": "cake build",
-        "postinstall": "node ./node_modules/.bin/cake build"
+        "postinstall": "node ./node_modules/coffee-script/bin/cake build"
     }
 }
