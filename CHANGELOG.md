@@ -1,3 +1,6 @@
+# 0.2.41 #
+* change: 修正安装问题
+
 # 0.2.40 #
 * add: 添加 server 的 custom_render_dependencies 其中 context 的 base_params
 * add: 添加 angular.js 支持，可以使用 ng(javascript) 或 ngc(coffee) 进行开发
