@@ -39,7 +39,9 @@
         "esprima": "1.0.3",
         "escodegen": "0.0.26",
         "astral": "0.1.0",
-        "astral-angular-annotate": "0.0.2"
+        "astral-angular-annotate": "0.0.2",
+        "inherits": "*",
+        "block-stream": "*"
     },
     "devDependencies": {},
     "optionalDependencies": {},
