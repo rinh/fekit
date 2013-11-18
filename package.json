@@ -2,7 +2,7 @@
     "author": "hao.lin <hao.lin@qunar.com>",
     "name": "fekit",
     "description": "FE Toolkit",
-    "version": "0.2.41",
+    "version": "0.2.42",
     "bin": "./bin/fekit",
     "repository": {
         "type": "git",
@@ -39,7 +39,7 @@
         "esprima": "1.0.3",
         "escodegen": "0.0.26",
         "astral": "0.1.0",
-        "astral-angular-annotate": "0.0.2" 
+        "astral-angular-annotate": "0.0.2"
     },
     "devDependencies": {},
     "optionalDependencies": {},
@@ -48,7 +48,7 @@
     },
     "license": "MIT",
     "scripts": {
-        "prepublish": "cake build" , 
+        "prepublish": "cake build",
         "postinstall": "node ./node_modules/.bin/cake build"
     }
 }
