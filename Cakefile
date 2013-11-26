@@ -28,7 +28,8 @@ _spawn = ( cmd , args = [] , options = {} ) ->
     spawn cmd , args , options
 
 fetch_vendors = () ->
-    
+
+    ###    
     console.info('fetch vendors...')
 
     # vendors npm install 
@@ -39,6 +40,7 @@ fetch_vendors = () ->
 
     process_stdio n , () ->
         console.info('fetch vendors done.')
+    ###
 
 process_stdio = (proc,callback) ->
     proc.stderr.pipe process.stderr, end: false 
