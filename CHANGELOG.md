@@ -1,3 +1,6 @@
+# 0.2.5
+* change: fekit sync 添加 -d 功能，允许删除服务器中的文件
+
 # 0.2.45 
 * change: 不再使用 vendor 中提供的 tar
 
