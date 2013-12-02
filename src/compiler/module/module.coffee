@@ -136,6 +136,7 @@ Module.getContentType = ( extName ) ->
 # 使用 booster 进行加速
 Module.booster = null
 
+Module.path = ModulePath 
 
 #--------------------
 

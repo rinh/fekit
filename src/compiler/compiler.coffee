@@ -8,6 +8,8 @@ exports.booster = booster = require './module/booster'
 Module = require("./module/module").Module
 Module.booster = booster
 
+exports.path = Module.path
+
 ### ---------------------------
     插件系统
 ###

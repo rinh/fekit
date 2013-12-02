@@ -146,6 +146,9 @@ setupServer = ( options ) ->
                 urlconvert = new utils.UrlConvert(p,ROOT)
                 srcpath = urlconvert.to_src()
 
+                srcpath = compiler.path.findFileWithoutExtname( srcpath )
+                console.info( srcpath )
+
                 utils.logger.trace("由 PRD #{req.url} 解析至 SRC #{srcpath}")
                 
                 switch compiler.getContentType(urlconvert.uri) 
