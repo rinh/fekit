@@ -2,6 +2,7 @@
 * change: fekit sync 添加 -d 功能，允许删除服务器中的文件
 * change: 首引用文件（export中定义）可为非js,css扩展名。 https://github.com/rinh/fekit/issues/30
 * fix: 组件版本号递归问题 https://github.com/rinh/fekit/issues/31
+* change: 删除源上的组件时加入版本号的输入验证，禁止直接删除组件的全部版本
 
 # 0.2.45 
 * change: 不再使用 vendor 中提供的 tar
