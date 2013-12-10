@@ -148,6 +148,8 @@ process_single_file = ( options ) ->
 
     compiler.compile srcpath , ( err , source ) ->
 
+        return utils.logger.error(err) if err 
+
         final_code = minCode( replaced_extname , source , options )
 
         if final_code isnt null
