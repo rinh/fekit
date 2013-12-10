@@ -1,6 +1,6 @@
 css = require './css'
 syspath = require 'path'
-less = require 'less'
+less = require 'qless'
 
 exports.contentType = "css"
 

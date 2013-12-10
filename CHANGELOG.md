@@ -4,6 +4,7 @@
 * fix: 组件版本号递归问题 https://github.com/rinh/fekit/issues/31
 * change: 删除源上的组件时加入版本号的输入验证，禁止直接删除组件的全部版本
 * fix: fekit min 单文件模式下报错输出不正确的问题
+* change: less 解析使用 [qless.js](https://github.com/rinh/qless.js)
 
 # 0.2.45 
 * change: 不再使用 vendor 中提供的 tar
