@@ -79,11 +79,12 @@ task "bump", 'bump version' , ->
     semver = require('semver')
     pkg = JSON.parse( fs.readFileSync('./package.json').toString() )
     pkg.version = semver.inc( pkg.version , 'patch' )
-    fs.writeFileSync('./package.json', JSON.stringify( pkg , null , 4 ) )
     
     changelog = fs.readFileSync('./CHANGELOG.md').toString()
 
     return console.error("[ERROR] please add change log for v#{pkg.version}") unless ~changelog.indexOf(pkg.version)
+
+    fs.writeFileSync('./package.json', JSON.stringify( pkg , null , 4 ) )
 
     _exec 'git add . ' , ->
         _exec "git commit -m bump\tversion\tv#{pkg.version}" , ->
