@@ -1,3 +1,6 @@
+# 0.2.51
+* fix: watchr@2.4.3 以上版本，安装后出现问题，故锁定版本在2.4.3
+
 # 0.2.50
 * change: fekit sync 添加 -d 功能，允许删除服务器中的文件
 * change: 首引用文件（export中定义）可为非js,css扩展名。 https://github.com/rinh/fekit/issues/30
