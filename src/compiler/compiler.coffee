@@ -8,6 +8,8 @@ exports.booster = booster = require './module/booster'
 Module = require("./module/module").Module
 Module.booster = booster
 
+exports.path = Module.path
+
 ### ---------------------------
     插件系统
 ###
@@ -85,7 +87,9 @@ getSource = ( module , options , callback ) ->
     // 使用非依赖模式
     no_dependencies : false , 
     // 非依赖模式的生成方案
-    render_dependencies : function
+    render_dependencies : function , 
+    // 根模块文件路径(可有可无,如果没有则默认当前处理文件为root_module)
+    root_module_path : ""
  }
 ###
 exports.compile = ( filepath , options , doneCallback ) ->
@@ -97,7 +101,7 @@ exports.compile = ( filepath , options , doneCallback ) ->
         options = {}
 
     use_modules = {}
-    module = Module.parse( filepath )
+    module = Module.parse( filepath , null , Module.parse( options.root_module_path or filepath ) )
 
     _list = ( options.dependencies_filepath_list or [] )
     _iter = ( dep_path , seriesCallback ) ->

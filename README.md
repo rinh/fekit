@@ -66,6 +66,28 @@ FEKIT
             "core" : "./src/core"  /* 该路径相对于当前fekit.config文件 */
         } ,
 
+        // 在本地开发时(fekit server)，需要用到的一些配置
+        "development" : {
+            // 自定义依赖解决方案
+            // 指向一个js脚本，运行环境是 nodejs
+            // 请指定入口函数为 exports.render = function( context )
+            // context 内容为:
+            // {
+            //      type : 'javascript 或 css' ,  文件类型
+            //      path : '..' ,                 当前文件的物理路径
+            //      url : '..' ,                  当前文件的引用路径
+            //      base_path : '..' ,            当前文件的父级物理路径
+            // }
+            "custom_render_dependencies" : "./build/runtime.js"
+        } ,
+
+        // 配置导出使用的全局参数
+        "export_global_config" : {
+
+            // 优先级为 页面 > 全局
+            "domain_mapping" : "domain.com => img1.domain.com img2.domain.com img3.domain.com img4.domain.com"
+        } ,
+
         // 将要导出至 `prd` 和 `dev` 目录的文件列表
         // 其中所有路径, 均相对于 `src` 目录
         "export" : [
@@ -84,6 +106,12 @@ FEKIT
             {
                 "path" : "./scripts/page-c.js" , 
                 "no_version" : true
+            } ,
+
+            // 允许 css 使用 domain_mapping 功能
+            {
+                "path" : "./scripts/page-a.css" , 
+                "domain_mapping" : "domain.com => img1.domain.com img2.domain.com img3.domain.com img4.domain.com"
             }
             
         ] ,

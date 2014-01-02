@@ -79,27 +79,16 @@ start = ( options ) ->
     else
         #根据配置安装
         config = utils.config.parse config_path
-        deps = config.root.dependencies
-        return if _.size( deps or {} ) is 0
 
-        tasks = ( new Package( _name , _ver , basepath ) for _name , _ver of deps )
-
-        # 真正安装
-        check_all_done = ( err ) ->
-            return doneCallback( err ) if err 
-            async.each tasks 
-                        , ( pkg , done ) ->
-                            pkg.install ( err ) ->
-                                done( err )
-                        , ( err ) ->
-                            pkg.report() for pkg in tasks
-                            doneCallback()
+        p = new Package()
+        p.loadConfig( utils.path.dirname( config_path ) , config.root )
         # 安装检查
-        async.eachSeries tasks 
-                        , ( pkg , done ) -> 
-                            pkg.preinstall ( err ) ->
-                                done( err )
-                        , check_all_done
+        p.preinstall ( err ) ->
+            return doneCallback( err ) if err
+            # 真正安装
+            p.install ( err ) ->
+                return doneCallback( err ) if err
+                p.report()
 
 
 

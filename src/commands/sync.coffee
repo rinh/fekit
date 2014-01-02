@@ -17,21 +17,31 @@ exports.set_options = ( optimist ) ->
 
     optimist.alias 'e' , 'exclude'
     optimist.describe 'e' , '同 rsync 的 exclude 选项'
+    
+    optimist.alias 'x' , 'nonexec' 
+    optimist.describe 'x' , '上传后禁止执行 shell'
+
+    optimist.alias 'd' , 'delete' 
+    optimist.describe 'd' , '删除服务器上本地不存在的文件'
+
 
 
 rsync = ( opts ) ->
 
-    args = "-rzcv --chmod='a=rX,u+w' --rsync-path='sudo rsync' #{opts.local} #{opts.user}#{opts.host}:#{opts.path} #{opts.include||''} #{opts.exclude||''} --temp-dir=/tmp"
+    _args = [ "-rzcv" , "--chmod=a='rX,u+w'" , "--rsync-path='sudo rsync'" , "#{opts.local}" , "#{opts.user}#{opts.host}:#{opts.path}" , "#{opts.include||''}" , "#{opts.exclude||''}" , "--temp-dir=/tmp" ]
+
+    if opts.delete then _args.push('--delete')
+
+    args = _args.join(' ')
 
     utils.logger.log "[调用] rsync #{args}"
 
-    child_process.exec "rsync #{args}" , ( err , stdout , stderr ) =>
+    child_process.exec "rsync #{args}" , ( err , stdout , stderr ) ->
         if err then throw err 
         if stdout then utils.logger.log( stdout )
-        if stderr then utils.logger.error( stderr )
+        if stderr then utils.logger.error( stderr )              
 
-        if opts.shell then shell( opts )
-
+        if opts.shell and !opts.nonexec then shell( opts ) 
 
 shell = ( opts ) ->
     
@@ -77,7 +87,7 @@ exports.run = ( options ) ->
         default_include = default_include.concat( options.include )
     
     if default_include.length > 0 
-        opts.include = ( "--include #{item}" for item in default_include ).join(' ') 
+        opts.include = ( "--include=#{item}" for item in default_include ).join(' ') 
 
     #------
      
@@ -89,6 +99,6 @@ exports.run = ( options ) ->
         default_exclude = default_exclude.concat( options.exclude )
     
     if default_exclude.length > 0 
-        opts.exclude = ( "--exclude #{item}" for item in default_exclude ).join(' ') 
+        opts.exclude = ( "--exclude=#{item}" for item in default_exclude ).join(' ') 
     
     rsync( opts )

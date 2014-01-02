@@ -28,7 +28,8 @@ _spawn = ( cmd , args = [] , options = {} ) ->
     spawn cmd , args , options
 
 fetch_vendors = () ->
-    
+
+    ###    
     console.info('fetch vendors...')
 
     # vendors npm install 
@@ -39,6 +40,7 @@ fetch_vendors = () ->
 
     process_stdio n , () ->
         console.info('fetch vendors done.')
+    ###
 
 process_stdio = (proc,callback) ->
     proc.stderr.pipe process.stderr, end: false 
@@ -77,11 +79,12 @@ task "bump", 'bump version' , ->
     semver = require('semver')
     pkg = JSON.parse( fs.readFileSync('./package.json').toString() )
     pkg.version = semver.inc( pkg.version , 'patch' )
-    fs.writeFileSync('./package.json', JSON.stringify( pkg , null , 4 ) )
     
     changelog = fs.readFileSync('./CHANGELOG.md').toString()
 
     return console.error("[ERROR] please add change log for v#{pkg.version}") unless ~changelog.indexOf(pkg.version)
+
+    fs.writeFileSync('./package.json', JSON.stringify( pkg , null , 4 ) )
 
     _exec 'git add . ' , ->
         _exec "git commit -m bump\tversion\tv#{pkg.version}" , ->

@@ -13,8 +13,6 @@ exports.set_options = ( optimist ) ->
     
     optimist.usage 'unpublish name[@version]'
 
-    optimist
-
 
 exports.run = ( options ) ->
 
@@ -25,8 +23,7 @@ exports.run = ( options ) ->
     name = spec_pkg.split('@')[0]
     version = spec_pkg.split('@')[1]
 
-    if ~spec_pkg.indexOf('@')
-        return utils.logger.error('请指定正确的版本号.') unless semver.valid(version)
+    return utils.logger.error('请指定正确的版本号.') if !version or !semver.valid(version) 
 
     # ----- 
 
@@ -35,13 +32,12 @@ exports.run = ( options ) ->
     prop = 
         properties:
             ensure:
-                description: 'are you sure? '
-                pattern: /^(y|n|yes|no)$/i
-                default: 'no'
+                description: 'which version u want to unpublish? '
+                pattern: new RegExp( "^" + version.replace(/\./g,'\\.') + "$" , "i" )
 
     prompt.get prop , ( err , result ) ->
 
-        return if /^(n|no)$/i.test( result.ensure )
+        return if version isnt result.ensure
 
         # ----- 
 

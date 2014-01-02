@@ -19,6 +19,7 @@ exports.run = ( options ) ->
             utils.logger.log( "正在处理 #{srcpath}" )
             urlconvert = new utils.UrlConvert( srcpath , options.cwd )
             urlconvert.set_no_version() if opts.no_version 
+            urlconvert.set_extname_type( compiler.getContentType( srcpath ) )
             dest = urlconvert.to_dev()
             _done = ( err , source ) -> 
                     if err 

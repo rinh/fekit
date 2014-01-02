@@ -81,6 +81,8 @@ exports.getExtensions = () ->
     ) , false )
     return list
 
+exports.get_user_pharse_path = () ->
+    return utils.path.join( utils.path.get_user_home() , ".fekit.pas" )
 
 ###
 #  检查当前环境是否登录

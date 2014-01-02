@@ -77,24 +77,48 @@ setupServer = ( options ) ->
     no_combine = ( path , parents , host , params , doneCallback ) ->
         # 根据是否非依赖模式, 生成不同的结果
         if params["no_dependencies"] is "true"
+
             compiler.compile( path , {
                 dependencies_filepath_list : parents  
-                no_dependencies : true
+                no_dependencies : true 
+                root_module_path : params["root"]
             }, doneCallback )
 
         else
-            compiler.compile( path , {
-                dependencies_filepath_list : parents  
-                render_dependencies : () ->
-                    host = host.replace(/:\d+/,"")
-                    port = if options.port and options.port != "80" then ":#{options.port}" else ""
-                    path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
-                    partial = "http://#{host}#{port}#{path}?no_dependencies=true"
+
+            conf = utils.config.parse path 
+            custom_script = conf.root?.development?.custom_render_dependencies
+            custom_script_path = utils.path.join( conf.fekit_root_dirname , custom_script )
+
+            host = host.replace(/:\d+/,"")
+            port = if options.port and options.port != "80" then ":#{options.port}" else ""
+
+            if custom_script and utils.path.exists custom_script_path 
+                ctx = utils.proc.requireScript custom_script_path
+                render_func = () ->
+                    _path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
+                    partial = "http://#{host}#{port}#{_path}?no_dependencies=true&root=#{encodeURIComponent(path)}"                    
+                    return ctx.render({
+                            type : @path.getContentType()
+                            path : @path.getFullPath()
+                            url : partial
+                            base_path : path 
+                            base_params : params 
+                        });
+            else 
+                render_func = () ->
+                    _path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
+                    partial = "http://#{host}#{port}#{_path}?no_dependencies=true&root=#{encodeURIComponent(path)}"                    
                     switch @path.getContentType()
                         when "javascript"
                             return "document.write('<script src=\"#{partial}\"></script>');"
                         when "css"
                             return "@import url('#{partial}');"
+            
+
+            compiler.compile( path , {
+                dependencies_filepath_list : parents  
+                render_dependencies : render_func
             }, doneCallback)
 
 
@@ -121,6 +145,9 @@ setupServer = ( options ) ->
 
                 urlconvert = new utils.UrlConvert(p,ROOT)
                 srcpath = urlconvert.to_src()
+
+                srcpath = compiler.path.findFileWithoutExtname( srcpath )
+                console.info( srcpath )
 
                 utils.logger.trace("由 PRD #{req.url} 解析至 SRC #{srcpath}")
                 

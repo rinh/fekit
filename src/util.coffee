@@ -11,7 +11,7 @@ _ = require 'underscore'
 vm = require 'vm'
 coffee = require 'coffee-script'
 ncp = require('ncp').ncp
-tar = require '../vendors/tar/tar.js'
+tar = require 'rinh-node-tar'
 fstream = require 'fstream'
 zlib = require 'zlib'
 sty = require 'sty'
@@ -313,6 +313,13 @@ class FekitConfig
         else
             return @root.alias?[name] or @root.lib?[name]
 
+    getExportFileConfig : ( fullpath ) ->
+        n = null
+        @each_export_files ( path , parents , opts ) ->
+            n = opts if path is fullpath
+        return n
+
+
     each_export_files : ( cb ) ->
         list = @root["export"] || []
         for file in list
@@ -404,6 +411,8 @@ class FekitConfig
         utillogger.log("自动脚本 #{type} , 执行完毕.")
 
 
+
+
 _runCode = ( path , ctx ) ->
     Module = require('module')
     mod = new Module( path )
@@ -466,10 +475,21 @@ class UrlConvert
 
         @baseuri = baseuri
         @extname = extname
+        @replaced_extname = extname
         @filename = filename
         @fnames = fnames
 
         @has_version = true
+
+    set_extname_type : ( type ) ->
+        type = type or ""
+        switch type.toLowerCase()
+            when "javascript" 
+                @replaced_extname = ".js" 
+            when "css" 
+                @replaced_extname = ".css"
+            else
+                throw "no extname type"
 
     set_no_version : () ->
         @has_version = false
@@ -480,28 +500,28 @@ class UrlConvert
     to_prd: ( md5 ) ->
         prefix = @baseuri.replace( @REPLACE_STRING , "prd" )
         if @has_version
-            name = @fnames[0] + "@" + md5 + @extname
+            name = @fnames[0] + "@" + md5 + @replaced_extname
         else
-            name = @fnames[0] + @extname
+            name = @fnames[0] + @replaced_extname
         return syspath.join( prefix , name )
 
     to_dev: () ->
         prefix = @baseuri.replace( @REPLACE_STRING , "dev" )
         if @has_version
-            name = @fnames[0] + "@dev" + @extname
+            name = @fnames[0] + "@dev" + @replaced_extname
         else 
-            name = @fnames[0] + @extname
+            name = @fnames[0] + @replaced_extname
         return syspath.join( prefix , name )
 
     to_src: () ->
         prefix = @baseuri.replace( @REPLACE_STRING , "src" )
-        name = @fnames[0] + @extname
+        name = @fnames[0] + @replaced_extname
         return syspath.join( prefix , name )
 
     # 转变为对应路径的ver文件
     to_ver: () ->
         prefix = @baseuri.replace( @REPLACE_STRING , "ver" )
-        name = @fnames[0] + @extname + ".ver"
+        name = @fnames[0] + @replaced_extname + ".ver"
         return syspath.join( prefix , name )        
 
 UrlConvert.PRODUCTION_REGEX = /\/prd\//
@@ -520,6 +540,43 @@ exports.proc = utilproc =
         fn = if typeof setImmediate is 'function' then setImmediate else process.nextTick
         fn callback
 
+    spawn : ( cmd , args , cb , options ) ->
+        r = child_process.spawn cmd , args || [] , _.extend({
+            cwd : process.cwd , 
+            env : process.env
+        }, options || {} )
+
+        r.stderr.pipe process.stderr, end: false 
+        r.stdout.pipe process.stdout, end: false 
+        r.on 'exit' , ( code ) ->
+            cb( code )
+
+    requireScript : ( path , ctx = {} ) ->
+        Module = require('module')
+        mod = new Module( path )
+        context = _.extend( {} , global , ctx )
+        context.module = mod
+        context.__filename = path
+        context.__dirname = syspath.dirname( path )
+        context.require = ( path ) ->
+            return mod.require( path )
+        context.exports = {}
+        
+        code = new Reader().read( path )
+        switch syspath.extname( path ) 
+            when ".js"
+                code = code
+            when ".coffee"
+                code = coffee.compile code
+            else
+                throw "没有正确的自动化脚本解析器 #{path}"
+
+        m = vm .createScript( code )
+        m.runInNewContext( context )
+        return context.exports
+
+
+utilproc.run = utilproc.spawn
 
 #---------------------------
 
