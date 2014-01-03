@@ -1,3 +1,6 @@
+# 0.2.52
+* change: 配置为 no version 的文件，在 min 后，将生成空内容的 ver 文件，及 version.mapping 对应项目也为空字符串
+
 # 0.2.51
 * fix: watchr@2.4.3 以上版本，安装后出现问题，故锁定版本在2.4.3
 
