@@ -168,6 +168,7 @@ setupServer = ( options ) ->
                 _render = ( err , txt ) ->
                     if err 
                         res.writeHead( 500 )
+                        utils.logger.error err
                         res.end( err )
                     else
                         # 编译后将内容加入 cache
