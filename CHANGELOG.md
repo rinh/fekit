@@ -1,6 +1,7 @@
 # 0.2.53
 * add: fekit plugin 命令，可以添加或删除插件
 * add: fekit server 500 时，需要在控制台输出错误
+* fix: 修正 fekit server 返回 500 时的 charset 为 UTF-8
 
 # 0.2.52
 * change: 配置为 no version 的文件，在 min 后，将生成空内容的 ver 文件，及 version.mapping 对应项目也为空字符串
