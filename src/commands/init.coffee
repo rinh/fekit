@@ -57,6 +57,10 @@ start = ( opts ) ->
 
         utils.file.mkdirp utils.path.join( base , 'src' )
 
+        utils.file.mkdirp utils.path.join( base , 'html' )
+
+        utils.file.mkdirp utils.path.join( base , 'images' )
+
         utils.file.io.write utils.path.join( base , 'README.md' ) , ""
 
         utils.file.io.write config_path , JSON.stringify( config , {} , 4 )
