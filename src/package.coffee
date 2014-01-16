@@ -43,10 +43,20 @@ class Package
     # 默认入口文件为 src/index， 如果出错则返回 null
     get_local_entry: () ->
         return null if @name is '.' or @name is '..'
-        _fekit_conf_path = utils.path.join @package_installed_path , 'fekit.config'
+        p = @basepath 
+        # 不断向上寻找组件
+        while _fekit_conf_path = @get_fekitconfig_path( p )
+            return null if utils.path.is_root( p )
+            break if utils.path.exists _fekit_conf_path
+            p = utils.path.dirname p 
+        
         return null unless utils.path.exists _fekit_conf_path
         _conf = utils.file.io.readJSON _fekit_conf_path
-        return utils.path.join( @package_installed_path , ( if _conf.main then _conf.main else "src/index" ) )
+        _base = utils.path.join p , Package.FEKIT_MODULE_DIR , @name
+        return utils.path.join( _base , ( if _conf.main then _conf.main else "src/index" ) )
+
+    get_fekitconfig_path : ( base ) ->
+        utils.path.join base , Package.FEKIT_MODULE_DIR , @name , 'fekit.config'
 
     report: () ->
         c = console.info
