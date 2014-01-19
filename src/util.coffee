@@ -15,9 +15,13 @@ tar = require 'rinh-node-tar'
 fstream = require 'fstream'
 zlib = require 'zlib'
 sty = require 'sty'
-
+shell = require "shelljs"
+md5 = require 'MD5'
+os = require 'os'
 
 #----------------------------
+exports.shell = shell 
+
 
 exports.array = utilarray =
     clear_empty : ( array ) ->
@@ -26,6 +30,8 @@ exports.array = utilarray =
             if i isnt "" or i isnt null 
                 n.push(i)
         return n
+
+
 
 #----------------------------
 
@@ -76,6 +82,9 @@ exports.path = utilpath =
     dirname : syspath.dirname
     basename : syspath.basename
     resolve : syspath.resolve
+    extname : syspath.extname
+    tmpdir : os.tmpdir()
+
     join : () ->
         arr = ( ( if typeof i == 'undefined' then '' else i ) for i in arguments )
         syspath.join.apply( syspath , arr )
@@ -141,23 +150,27 @@ exports.path = utilpath =
         return ( /[\w-\.\s]+/i.test(path) ) and ( path isnt '.' ) and ( path isnt '..' ) and ( path isnt '.svn' ) and ( path isnt '.git' )
 
 
-    each_directory: ( path , cb , is_recursion ) ->
+    each_directory: ( path , cb , is_recursion , root = "" ) ->
 
         if !utilpath.is_directory( path )
             path = syspath.dirname( path )
 
+        if root.charAt(root.length - 1) != utilpath.SEPARATOR
+            root += utilpath.SEPARATOR
+
         list = fs.readdirSync( path )
         for f in list 
             p = syspath.join( path , f )
+            _f = p.replace( root , '' )
             if !is_recursion
                 if utilpath.is_normalize_dirname(f) and !utilpath.is_directory( p )
-                    cb( p )
+                    cb( p , _f )
             else 
                 if utilpath.is_normalize_dirname(f)
                     if !utilpath.is_directory( p )
-                        cb( p )
+                        cb( p , _f )
                     else
-                        utilpath.each_directory( p , cb , is_recursion )
+                        utilpath.each_directory( p , cb , is_recursion , root )
 
 
     existsFiles: ( root , filenames ) ->
@@ -218,6 +231,12 @@ utilfile.reader = Reader
 utilfile.writer = Writer
 utilfile.io = _.extend( {}, Reader.prototype , Writer.prototype )
 utilfile.NEWLINE = '\n'
+
+md5_cache = {}
+utilfile.md5 = ( filepath ) ->
+    return md5_cache[filepath] if md5_cache[filepath]
+    buf = fs.readFileSync filepath 
+    return md5(buf)
 
 _watch = ( path , cb ) ->
     if !utilpath.is_directory( path )
@@ -542,20 +561,44 @@ exports.proc = utilproc =
         child_process.exec cmd , ( error , stdout , stderr ) =>
             if error then utillogger.error( error )
 
+    checkEnvironment : ( checklist , cb ) ->
+        n = (cmd) ->
+            return (done) ->
+                done( unless shell.which(cmd) then cmd else null )
+
+        list = ( n(i) for i in checklist )
+
+        async.series list , ( err ) ->
+            if err 
+                utillogger.error "请先安装 #{err} 命令"
+                process.exit(1)
+            else
+                cb && cb()
+
+    hasCommand : ( cmd , cb ) ->
+        child_process.exec cmd , ( error ) ->
+            cb( !!error )
+
     setImmediate : ( callback ) ->
         fn = if typeof setImmediate is 'function' then setImmediate else process.nextTick
         fn callback
 
-    spawn : ( cmd , args , cb , options ) ->
+    spawn : ( cmd , args , cb , options = {} ) ->
+        result = '';
         r = child_process.spawn cmd , args || [] , _.extend({
             cwd : process.cwd , 
             env : process.env
-        }, options || {} )
+        }, options )
 
-        r.stderr.pipe process.stderr, end: false 
-        r.stdout.pipe process.stdout, end: false 
+        unless options.no_output
+            r.stderr.pipe process.stderr, end: false 
+            r.stdout.pipe process.stdout, end: false 
+
+        r.stdout.on 'data' , (data) ->
+            result += data.toString()
+
         r.on 'exit' , ( code ) ->
-            cb( code )
+            cb( code , result )
 
     requireScript : ( path , ctx = {} ) ->
         Module = require('module')
@@ -747,6 +790,24 @@ exports.async = utilasync =
                     iter( item , seriesCallback )
             _list.push( _tmp(item) )
         async.series _list , done
+
+
+exports.rsync = utilrsync = ( opts , cb ) ->
+
+    _args = [ "-rzcv" , "--chmod=a='rX,u+w'" , "--rsync-path='sudo rsync'" , "#{opts.local}" , "#{opts.user||""}#{opts.host}:#{opts.path}" , "#{opts.include||''}" , "#{opts.exclude||''}" , "--temp-dir=/tmp" ]
+
+    if opts.delete then _args.push('--delete')
+
+    args = _args.join(' ')
+
+    utillogger.log "[调用] rsync #{args}"
+
+    child_process.exec "rsync #{args}" , ( err , stdout , stderr ) ->
+        if err then throw err 
+        if stdout then utillogger.log( stdout )
+        if stderr then utillogger.error( stderr )              
+ 
+        cb && cb( err , stdout , stderr )
 
 #---------------------------
 
