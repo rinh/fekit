@@ -1,6 +1,7 @@
 compiler = require "../compiler/compiler"
 utils = require "../util"
 syspath = require "path"
+prerelease = require "../pre-release/index"
 
 exports.usage = "合并项目文件"
 
@@ -34,8 +35,9 @@ exports.run = ( options ) ->
             compiler.compile srcpath , { dependencies_filepath_list : parents } , _done
                 
     done = () -> 
-            conf.doScript "postpack" , script_global
-            utils.logger.log("DONE.")
+            prerelease.exec 'dev' , options , () ->
+                conf.doScript "postpack" , script_global
+                utils.logger.log("DONE.")
 
     conf.each_export_files ( srcpath , parents , opts ) ->
         item = 

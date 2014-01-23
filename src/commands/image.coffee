@@ -6,6 +6,9 @@ SVN = require "node.svn"
 
 exports.usage = "处理项目图片 fekit image [upload]"
 
+
+# =========================================
+
 exports.set_options = ( optimist ) ->
 
     optimist.alias 'd' , 'development'
@@ -19,11 +22,21 @@ exports.run = ( options ) ->
 
     utils.proc.checkEnvironment [ 'rsync' , 'svn' ] , () ->
 
+        options.images_path = utils.path.join( options.cwd , 'images' )
+
         err "请在 fekit 项目中运行该功能" unless utils.path.exists( utils.path.join( options.cwd , 'fekit.config' ) )
 
-        err "项目中必须存在 images 目录才能使用该功能" unless utils.path.exists( utils.path.join( options.cwd , 'images' ) )
+        err "项目中必须存在 images 目录才能使用该功能" unless utils.path.exists( options.images_path )
+
+        conf = utils.config.parse options.cwd 
+
+        err "fekit.config 中必须存在 export_global_config.resource_domain 配置节" unless conf.root?.export_global_config?.resource_domain
+
+        err "fekit.config 中必须存在 export_global_config.resource_pid 配置节" unless conf.root?.export_global_config?.resource_pid
 
         command = options['_'][1]
+
+        options.conf = conf.root
 
         switch command
             when 'upload'
@@ -110,8 +123,8 @@ upload_to_prd = ( options ) ->
     dir = utils.path.join basedir , SVN_ROOT_NAME
     svn = new SVN( dir )
 
-    prjname = utils.path.basename( options.cwd )
-    images_path = utils.path.join( options.cwd , 'images' + utils.path.SEPARATOR )
+    prjname = options.conf.export_global_config.resource_pid
+    images_path = options.images_path + utils.path.SEPARATOR
 
     paths = grep_images_path images_path 
     paths = _.map paths , (i) -> return [prjname].concat i 
@@ -143,8 +156,8 @@ upload_to_prd = ( options ) ->
 # 3. rsync到开发机
 upload_to_dev = ( options ) ->
     
-    prjname = utils.path.basename( options.cwd )
-    images_path = utils.path.join( options.cwd , 'images' + utils.path.SEPARATOR )
+    prjname = options.conf.export_global_config.resource_pid
+    images_path = options.images_path + utils.path.SEPARATOR
 
     create_temp_images_dir options , ( dirpath ) ->
 

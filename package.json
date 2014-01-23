@@ -44,7 +44,8 @@
         "block-stream": "*",
         "rinh-node-tar": "*",
         "shelljs": "0.2.x",
-        "node.svn": "0.1.x"
+        "node.svn": "0.1.x",
+        "find" : "0.1.x"
     },
     "devDependencies": {},
     "optionalDependencies": {},

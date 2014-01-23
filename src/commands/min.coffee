@@ -5,6 +5,7 @@ md5 = require "MD5"
 uglifycss = require("uglifycss")
 jsp = require("uglify-js").parser;
 pro = require("uglify-js").uglify;
+prerelease = require "../pre-release/index"
 
 exports.usage = "压缩/混淆项目文件"
 
@@ -106,8 +107,9 @@ process_directory = ( options ) ->
         () ->
             if vertype is 0 or vertype is 2
                 save_versions_mapping( syspath.join( options.cwd , './ver/versions.mapping' ) , script_global.EXPORT_MAP )
-            conf.doScript "postmin" , script_global 
-            utils.logger.log("DONE.")
+            prerelease.exec 'prd' , options , () ->    
+                conf.doScript "postmin" , script_global 
+                utils.logger.log("DONE.")
     )
 
 save_versions_mapping = ( mapping_file_path , mapping ) ->

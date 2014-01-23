@@ -184,6 +184,7 @@ exports.path = utilpath =
     is_absolute_path: ( path ) ->
         return ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) ) or path.charAt(0) is "/" 
 
+    find: require('find')
 
 #----------------------------
 

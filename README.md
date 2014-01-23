@@ -38,11 +38,44 @@ FEKIT
     npm config set user 0
     npm config set unsafe-perm true
 
-### 使用
+## 如何使用
 
     fekit {命令名} --help 
 
+* config           # 显示 fekit 的配置项
+* convert          # 转换 [qzz项目] 为 [fekit项目] 
+* image            # 处理项目图片 fekit image [upload]
+* init             # 初始化目录为标准[fekit项目]
+* install          # 安装 fekit 组件 
+* login            # 登录至源服务器
+* logout           # 登出
+* min              # 压缩/混淆项目文件
+* pack             # 合并项目文件
+* plugin           # 安装或删除插件
+* publish          # 发布当前项目为组件包
+* server           # 创建本地服务器, 可以基于其进行本地开发
+* sync             # 同步/上传当前目录至远程服务器(依赖rsync)
+* test             # 进行单元测试
+* uninstall        # 删除指定的包
+* unpublish        # 取消发布特定的组件包
+* upgrade          # 更新自身及更新已安装扩展
+
+### 创建一个`fekit`标准目录结构
+
+请使用 fekit init [目录名]，将会生成以下结构
+
+    .
+    ├── README.md               # 当前项目的描述文件, markdown格式
+    ├── fekit.config            # fekit专用配置文件
+    └── src                     # 源码目录
+        ├── html                # html目录 
+        ├── scripts             # javascript目录
+        ├── styles              # css目录
+        └── images              # 图片目录
+
 ### fekit.config
+
+fekit.config 是一个配置文件，请放置于`fekit`标准目录结构的根目录
 
     {
         // 编译方案, 参考 [issue #1](https://github.com/rinh/fekit/issues/1)
@@ -83,9 +116,17 @@ FEKIT
 
         // 配置导出使用的全局参数
         "export_global_config" : {
-
-            // 优先级为 页面 > 全局
-            "domain_mapping" : "domain.com => img1.domain.com img2.domain.com img3.domain.com img4.domain.com"
+            // 静态文件域名，处理资源文件时使用
+            // CSS使用 , 处理本地图片资源在css中的引用域名 , 不设置该项则不进行图片处理
+            // 默认为 source.qunar.com
+            "resource_domain" : "static.demo.com" ,
+            // 静态项目名，处理资源文件时使用
+            // CSS使用 , 在生成图片路径径, 使用domain+pid+以images目录为根的其余路径
+            // IMAGE使用 , 使用prefix+以images目录为根的其余路径
+            // 如果要处理图片，必须有该字段
+            "resource_pid" : "" , 
+            // CSS使用 , 处理 domain_mapping , 优先级为 页面 > 全局
+            "domain_mapping" : "domain.com => img1.domain.com img2.domain.com img3.domain.com img4.domain.com" 
         } ,
 
         // 将要导出至 `prd` 和 `dev` 目录的文件列表

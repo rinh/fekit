@@ -57,9 +57,13 @@ start = ( opts ) ->
 
         utils.file.mkdirp utils.path.join( base , 'src' )
 
-        utils.file.mkdirp utils.path.join( base , 'html' )
+        utils.file.mkdirp utils.path.join( base , 'src' , 'html' )
 
-        utils.file.mkdirp utils.path.join( base , 'images' )
+        utils.file.mkdirp utils.path.join( base , 'src' , 'images' )
+
+        utils.file.mkdirp utils.path.join( base , 'src' , 'scripts' )
+
+        utils.file.mkdirp utils.path.join( base , 'src' , 'styles' )
 
         utils.file.io.write utils.path.join( base , 'README.md' ) , ""
 
