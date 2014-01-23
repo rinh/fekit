@@ -4,6 +4,7 @@
 * fix: 修正 fekit server 返回 500 时的 charset 为 UTF-8
 * fix: 编译时，require 会优先寻找匹配的组件
 * add: init时，增加html,images目录
+* add: 添加 string 文件类型的支持
 
 # 0.2.52
 * change: 配置为 no version 的文件，在 min 后，将生成空内容的 ver 文件，及 version.mapping 对应项目也为空字符串
