@@ -1,3 +1,6 @@
+# 0.2.54
+* change: 修改 string 文件的编译结果为支持 module 模式
+
 # 0.2.53
 * add: fekit plugin 命令，可以添加或删除插件
 * add: fekit server 500 时，需要在控制台输出错误

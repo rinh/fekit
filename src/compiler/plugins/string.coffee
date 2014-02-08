@@ -10,6 +10,6 @@ exports.process = ( ori_txt , path ,module , cb ) ->
     scope = scope.replace syspath.extname(scope) , '' 
     scope = scope.split( syspath.sep )
 
-    code = "String.#{scope.join('.')} = #{s(ori_txt)};"
+    code = "module.exports = #{s(ori_txt)};"
 
     cb( null , code )
