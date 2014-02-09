@@ -1,3 +1,6 @@
+# 0.2.55
+* fix: 修正 windows 下 util.is_root
+
 # 0.2.54
 * change: 修改 string 文件的编译结果为支持 module 模式
 

@@ -96,7 +96,8 @@ exports.path = utilpath =
 
     is_root: ( path ) ->
         if process.platform is 'win32'
-            return ///[a-z]:#{syspath.sep}///i.test( path )
+            p = path.replace syspath.sep , '' 
+            return ///^[a-z]:$///i.test( path )
         else 
             return syspath.sep is path 
 
