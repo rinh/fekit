@@ -81,6 +81,13 @@ FEKIT
             "custom_render_dependencies" : "./build/runtime.js"
         } ,
 
+        // 配置导出使用的全局参数
+        "export_global_config" : {
+
+            // 优先级为 页面 > 全局
+            "domain_mapping" : "domain.com => img1.domain.com img2.domain.com img3.domain.com img4.domain.com"
+        } ,
+
         // 将要导出至 `prd` 和 `dev` 目录的文件列表
         // 其中所有路径, 均相对于 `src` 目录
         "export" : [
@@ -99,6 +106,12 @@ FEKIT
             {
                 "path" : "./scripts/page-c.js" , 
                 "no_version" : true
+            } ,
+
+            // 允许 css 使用 domain_mapping 功能
+            {
+                "path" : "./scripts/page-a.css" , 
+                "domain_mapping" : "domain.com => img1.domain.com img2.domain.com img3.domain.com img4.domain.com"
             }
             
         ] ,

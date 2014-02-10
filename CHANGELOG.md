@@ -1,3 +1,51 @@
+# 0.2.55
+* fix: 修正 windows 下 util.is_root
+
+# 0.2.54
+* change: 修改 string 文件的编译结果为支持 module 模式
+
+# 0.2.53
+* add: fekit plugin 命令，可以添加或删除插件
+* add: fekit server 500 时，需要在控制台输出错误
+* fix: 修正 fekit server 返回 500 时的 charset 为 UTF-8
+* fix: 编译时，require 会优先寻找匹配的组件
+* add: init时，增加html,images目录
+* add: 添加 string 文件类型的支持
+
+# 0.2.52
+* change: 配置为 no version 的文件，在 min 后，将生成空内容的 ver 文件，及 version.mapping 对应项目也为空字符串
+
+# 0.2.51
+* fix: watchr@2.4.3 以上版本，安装后出现问题，故锁定版本在2.4.3
+
+# 0.2.50
+* change: fekit sync 添加 -d 功能，允许删除服务器中的文件
+* change: 首引用文件（export中定义）可为非js,css扩展名。 https://github.com/rinh/fekit/issues/30
+* fix: 组件版本号递归问题 https://github.com/rinh/fekit/issues/31
+* change: 删除源上的组件时加入版本号的输入验证，禁止直接删除组件的全部版本
+* fix: fekit min 单文件模式下报错输出不正确的问题
+* change: less 解析使用 [qless.js](https://github.com/rinh/qless.js)
+
+# 0.2.45 
+* change: 不再使用 vendor 中提供的 tar
+
+# 0.2.44 #
+* change: 修正安装问题
+
+# 0.2.43 #
+* change: 修正安装问题
+
+# 0.2.42 #
+* change: 修正安装问题
+
+# 0.2.41 #
+* change: 修正安装问题
+
+# 0.2.40 #
+* add: 添加 server 的 custom_render_dependencies 其中 context 的 base_params
+* add: 添加 angular.js 支持，可以使用 ng(javascript) 或 ngc(coffee) 进行开发
+* change: domain_mapping 的作用域修改为 全局 及 关联文件
+
 # 0.2.39 #
 * add: 添加 css/less 多域名图片替换方案
 

@@ -37,6 +37,8 @@ mime_config =
     ".js" : "application/javascript"
     ".css" : "text/css"
 
+charset = ";charset=UTF-8"
+
 _routeRules = ( options ) ->
     
     list = []
@@ -77,6 +79,7 @@ setupServer = ( options ) ->
     no_combine = ( path , parents , host , params , doneCallback ) ->
         # 根据是否非依赖模式, 生成不同的结果
         if params["no_dependencies"] is "true"
+
             compiler.compile( path , {
                 dependencies_filepath_list : parents  
                 no_dependencies : true 
@@ -102,6 +105,7 @@ setupServer = ( options ) ->
                             path : @path.getFullPath()
                             url : partial
                             base_path : path 
+                            base_params : params 
                         });
             else 
                 render_func = () ->
@@ -144,6 +148,9 @@ setupServer = ( options ) ->
                 urlconvert = new utils.UrlConvert(p,ROOT)
                 srcpath = urlconvert.to_src()
 
+                srcpath = compiler.path.findFileWithoutExtname( srcpath )
+                console.info( srcpath )
+
                 utils.logger.trace("由 PRD #{req.url} 解析至 SRC #{srcpath}")
                 
                 switch compiler.getContentType(urlconvert.uri) 
@@ -151,7 +158,7 @@ setupServer = ( options ) ->
                     when "css" then ctype = ".css"
                     else ctype = ""
 
-                res.writeHead( 200, { 'Content-Type': mime_config[ctype] });
+                res.writeHead 200, { 'Content-Type': mime_config[ctype] + charset }
 
                 # 判断如果有 cache 则使用，否则进行编译
                 cachekey = srcpath + ( if is_deps then "_deps" else "" ) 
@@ -162,7 +169,8 @@ setupServer = ( options ) ->
 
                 _render = ( err , txt ) ->
                     if err 
-                        res.writeHead( 500 )
+                        res.writeHead 500, { 'Content-Type': mime_config[ctype] + charset }
+                        utils.logger.error err
                         res.end( err )
                     else
                         # 编译后将内容加入 cache

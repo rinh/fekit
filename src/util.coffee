@@ -11,7 +11,7 @@ _ = require 'underscore'
 vm = require 'vm'
 coffee = require 'coffee-script'
 ncp = require('ncp').ncp
-tar = require '../vendors/tar/tar.js'
+tar = require 'rinh-node-tar'
 fstream = require 'fstream'
 zlib = require 'zlib'
 sty = require 'sty'
@@ -92,7 +92,14 @@ exports.path = utilpath =
         else
             return _closest( path , findfilename , filterFunc )
 
-    SEPARATOR : syspath.join('a','a').replace(/a/g,'')
+    SEPARATOR : syspath.sep 
+
+    is_root: ( path ) ->
+        if process.platform is 'win32'
+            p = path.replace syspath.sep , '' 
+            return ///^[a-z]:$///i.test( path )
+        else 
+            return syspath.sep is path 
 
     exists: ( path ) ->
         if fs.existsSync
@@ -475,10 +482,21 @@ class UrlConvert
 
         @baseuri = baseuri
         @extname = extname
+        @replaced_extname = extname
         @filename = filename
         @fnames = fnames
 
         @has_version = true
+
+    set_extname_type : ( type ) ->
+        type = type or ""
+        switch type.toLowerCase()
+            when "javascript" 
+                @replaced_extname = ".js" 
+            when "css" 
+                @replaced_extname = ".css"
+            else
+                throw "no extname type"
 
     set_no_version : () ->
         @has_version = false
@@ -489,28 +507,28 @@ class UrlConvert
     to_prd: ( md5 ) ->
         prefix = @baseuri.replace( @REPLACE_STRING , "prd" )
         if @has_version
-            name = @fnames[0] + "@" + md5 + @extname
+            name = @fnames[0] + "@" + md5 + @replaced_extname
         else
-            name = @fnames[0] + @extname
+            name = @fnames[0] + @replaced_extname
         return syspath.join( prefix , name )
 
     to_dev: () ->
         prefix = @baseuri.replace( @REPLACE_STRING , "dev" )
         if @has_version
-            name = @fnames[0] + "@dev" + @extname
+            name = @fnames[0] + "@dev" + @replaced_extname
         else 
-            name = @fnames[0] + @extname
+            name = @fnames[0] + @replaced_extname
         return syspath.join( prefix , name )
 
     to_src: () ->
         prefix = @baseuri.replace( @REPLACE_STRING , "src" )
-        name = @fnames[0] + @extname
+        name = @fnames[0] + @replaced_extname
         return syspath.join( prefix , name )
 
     # 转变为对应路径的ver文件
     to_ver: () ->
         prefix = @baseuri.replace( @REPLACE_STRING , "ver" )
-        name = @fnames[0] + @extname + ".ver"
+        name = @fnames[0] + @replaced_extname + ".ver"
         return syspath.join( prefix , name )        
 
 UrlConvert.PRODUCTION_REGEX = /\/prd\//

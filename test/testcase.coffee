@@ -48,4 +48,12 @@ describe 'testcase case', ->
                 done()
 
 
+    describe 'export multi type', ->
+
+        it '测试根文件为非js,css的编译', (done) ->
+
+            do_case 'pack', 'export_multi_type' , () ->
+                done()
+
+
 

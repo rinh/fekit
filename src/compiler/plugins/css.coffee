@@ -5,28 +5,25 @@ _.str = require 'underscore.string'
 ###
     分析 background-image 的图片，将其分发到不同的域名中 
     多域名控制格式为
-    (注释)|*@domain_mapping source.qunar.com => img1.qunarzz.com img2.qunarzz.com img3.qunarzz.com img4.qunarzz.com*|
+    @domain_mapping source.qunar.com => img1.qunarzz.com img2.qunarzz.com img3.qunarzz.com img4.qunarzz.com
 ###
 exports.ddns = ( css_code , module ) ->
     
+    root_fekit_config = module.root_module?.config?.config?.root || {}
+
     fileconfig = module.root_module.config.config.getExportFileConfig( module.root_module.path.getFullPath() ) 
 
-    unless fileconfig.domain_mapping
+    if fileconfig?.domain_mapping
 
-        RE_DOMAINS_CONF = /\/\*@domain_mapping(.+)\*\//
+        r = fileconfig?.domain_mapping
 
-        mc = css_code.match(RE_DOMAINS_CONF)
+    else if root_fekit_config?.export_global_config?.domain_mapping
 
-        return css_code unless mc
+        r = root_fekit_config?.export_global_config?.domain_mapping
 
-        return css_code unless ~mc[1].indexOf( "=>" )
+    else
 
-        r = mc[1]
-
-    else 
-
-        r = fileconfig.domain_mapping
-
+        return css_code
 
     conf = r.split('=>')
 
@@ -52,6 +49,15 @@ exports.ddns = ( css_code , module ) ->
             _idx = pathToInt $0 , _dms.length
             _map[$0] = _idx
             return http + _dms[_idx] + path 
+
+###
+exports.omit_protocol = ( css_code , module ) ->
+    
+    root_fekit_config = module.root_module.config.config.root
+
+    return css_code unless root_fekit_config?.export_global_config?.domain_mapping
+
+###
 
 
 exports.contentType = "css"

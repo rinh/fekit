@@ -65,6 +65,7 @@ process_directory = ( options ) ->
             utils.logger.log( "正在处理 #{srcpath}" )
             urlconvert = new utils.UrlConvert( srcpath , options.cwd )
             urlconvert.set_no_version() if opts.no_version 
+            urlconvert.set_extname_type( compiler.getContentType( srcpath ) )
             writer = new utils.file.writer()
 
             _done = (  err , source ) ->
@@ -73,7 +74,7 @@ process_directory = ( options ) ->
                     utils.exit(1)
                     return
 
-                final_code = minCode( urlconvert.extname , source , options , conf.root )
+                final_code = minCode( urlconvert.replaced_extname , source , options , conf.root )
 
                 if final_code isnt null
 
@@ -84,9 +85,9 @@ process_directory = ( options ) ->
                     writer.write( dest , final_code )
                     # 生成对应的 ver 文件
                     if vertype is 0 or vertype is 1
-                        writer.write( urlconvert.to_ver() , md5code ) 
+                        writer.write( urlconvert.to_ver() , if opts.no_version then "" else md5code ) 
 
-                    script_global.EXPORT_MAP[ opts.partial_path ]?.ver = md5code
+                    script_global.EXPORT_MAP[ opts.partial_path ]?.ver = if opts.no_version then "" else md5code
                     script_global.EXPORT_MAP[ opts.partial_path ]?.minpath = dest.replace( options.cwd , "" )
 
                     utils.logger.log( "已经处理 [#{new Date().getTime()-start.getTime()}ms] #{srcpath}  ==> #{dest}" )
@@ -128,20 +129,28 @@ process_single_file = ( options ) ->
 
     # 指定位置保存
     extname = syspath.extname( srcpath )
+    switch compiler.getContentType( srcpath ) 
+        when "javascript"
+            replaced_extname = ".js"
+        when "css"
+            replaced_extname = ".css"
+
     fname = syspath.basename( srcpath ) 
 
     if options.output
         if utils.path.exists( options.output ) and utils.path.is_directory( options.output )
-            dest = utils.path.join( options.output , fname.replace( extname , ".min" + extname ) )
+            dest = utils.path.join( options.output , fname.replace( extname , ".min" + replaced_extname ) )
         else 
             dest = options.output
     else
-        dest = srcpath.replace( extname , ".min" + extname )
+        dest = srcpath.replace( extname , ".min" + replaced_extname )
 
 
     compiler.compile srcpath , ( err , source ) ->
 
-        final_code = minCode( extname , source , options )
+        return utils.logger.error(err) if err 
+
+        final_code = minCode( replaced_extname , source , options )
 
         if final_code isnt null
 

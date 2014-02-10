@@ -21,10 +21,17 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'x' , 'nonexec' 
     optimist.describe 'x' , '上传后禁止执行 shell'
 
+    optimist.alias 'd' , 'delete' 
+    optimist.describe 'd' , '删除服务器上本地不存在的文件'
+
+
 
 rsync = ( opts ) ->
 
     _args = [ "-rzcv" , "--chmod=a='rX,u+w'" , "--rsync-path='sudo rsync'" , "#{opts.local}" , "#{opts.user}#{opts.host}:#{opts.path}" , "#{opts.include||''}" , "#{opts.exclude||''}" , "--temp-dir=/tmp" ]
+
+    if opts.delete then _args.push('--delete')
+
     args = _args.join(' ')
 
     utils.logger.log "[调用] rsync #{args}"

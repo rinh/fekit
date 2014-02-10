@@ -144,4 +144,105 @@ describe 'package #_preinstall fetch dependence package 2', ->
 
 
 
+describe 'issue #31', ->
+    
+
+    it 'section 1' , ( done ) ->
+        reset()
+        Package.prototype._get = ( url , cb ) ->
+            switch @name
+                when 'pkg1'
+                    cb null , null , JSON.stringify({
+                        ret : true 
+                        data : 
+                            versions : 
+                                '0.0.1': 
+                                    config:
+                                        dependencies : 
+                                            'pkg2' : '*'
+                    })
+                when 'pkg2'
+                    cb null , null , JSON.stringify({
+                        ret : true 
+                        data : 
+                            versions : 
+                                '0.0.1': 
+                                    config: {}
+                                '0.0.2': 
+                                    config: {}
+                    })
+
+
+        p = new Package()
+        p.loadConfig( '/home/q/' , {
+                dependencies : {
+                    'pkg1' : '0.0.1' , 
+                    'pkg2' : '0.0.2' 
+                }
+            })
+        p._preinstall ( err ) ->
+            assert.equal err , null
+            assert.equal p.children.length , 2
+            assert.equal p.children[0].name , 'pkg1'
+            assert.equal p.children[0].version , '0.0.1'
+            assert.equal p.children[1].name , 'pkg2'
+            assert.equal p.children[1].version , '0.0.2'
+
+            pkg1 = p.children[0]
+            assert.equal pkg1.children.length , 0
+            done()
+
+
+    it 'section 2' , ( done ) ->
+        reset()
+        Package.prototype._get = ( url , cb ) ->
+            switch @name
+                when 'pkg1'
+                    cb null , null , JSON.stringify({
+                        ret : true 
+                        data : 
+                            versions : 
+                                '0.0.1': 
+                                    config:
+                                        dependencies : 
+                                            'pkg2' : '0.0.1'
+                    })
+                when 'pkg2'
+                    cb null , null , JSON.stringify({
+                        ret : true 
+                        data : 
+                            versions : 
+                                '0.0.1': 
+                                    config: {}
+                                '0.0.2': 
+                                    config: {}
+                    })
+
+
+        p = new Package()
+        p.loadConfig( '/home/q/' , {
+                dependencies : {
+                    'pkg1' : '0.0.1' , 
+                    'pkg2' : '0.0.2' 
+                }
+            })
+
+        p._preinstall ( err ) ->
+            assert.equal err , null
+
+            assert.equal p.children.length , 2
+            assert.equal p.children[0].name , 'pkg1'
+            assert.equal p.children[0].version , '0.0.1'
+            assert.equal p.children[1].name , 'pkg2'
+            assert.equal p.children[1].version , '0.0.2'
+
+            pkg1 = p.children[0]            
+            assert.equal pkg1.children[0].name , 'pkg2'
+            assert.equal pkg1.children[0].version , '0.0.1'
+            assert.equal pkg1.children.length , 1
+            
+            done()
+
+
+
 
