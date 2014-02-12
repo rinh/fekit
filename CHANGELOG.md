@@ -1,3 +1,6 @@
+# 0.2.66
+* fix: 修正 windows 下编译失败的问题
+
 # 0.2.55
 * fix: 修正 windows 下 util.is_root
 
