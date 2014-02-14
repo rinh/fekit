@@ -101,6 +101,7 @@ getSource = ( module , options , callback ) ->
  }
 ###
 exports.compile = ( filepath , options , doneCallback ) ->
+    LOOPS = {}
     if arguments.length is 3 
         options = options or {}
         doneCallback = doneCallback
