@@ -42,7 +42,8 @@
         "astral-angular-annotate": "0.0.2",
         "inherits": "*",
         "block-stream": "*",
-        "rinh-node-tar": "*"
+        "rinh-node-tar": "*",
+        "node-sass": "~0.7.0"
     },
     "devDependencies": {},
     "optionalDependencies": {},
