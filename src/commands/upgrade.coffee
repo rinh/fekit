@@ -10,17 +10,19 @@ exports.set_options = ( optimist ) ->
 
 exports.run = ( options ) ->
     
+    npm = ( if process.platform is "win32" then "npm.cmd" else "npm" )
+
     tasks = []
 
     for i in env.getExtensions()
         tasks.push ((name) ->
                 return ( done ) ->
-                    utils.proc.spawn 'npm' , [ 'install', 'fekit-extension-' + name , '-g' ] , () ->
+                    utils.proc.spawn npm , [ 'install', 'fekit-extension-' + name , '-g' ] , () ->
                         done()
             )(i.name)
 
     tasks.push ( done ) ->
-        utils.proc.spawn 'npm' , [ 'install', 'fekit' , '-g' ] , () ->
+        utils.proc.spawn npm , [ 'install', 'fekit' , '-g' ] , () ->
             done()
 
     async.series tasks , ( err ) ->

@@ -85,9 +85,9 @@ process_directory = ( options ) ->
                     writer.write( dest , final_code )
                     # 生成对应的 ver 文件
                     if vertype is 0 or vertype is 1
-                        writer.write( urlconvert.to_ver() , md5code ) 
+                        writer.write( urlconvert.to_ver() , if opts.no_version then "" else md5code ) 
 
-                    script_global.EXPORT_MAP[ opts.partial_path ]?.ver = md5code
+                    script_global.EXPORT_MAP[ opts.partial_path ]?.ver = if opts.no_version then "" else md5code
                     script_global.EXPORT_MAP[ opts.partial_path ]?.minpath = dest.replace( options.cwd , "" )
 
                     utils.logger.log( "已经处理 [#{new Date().getTime()-start.getTime()}ms] #{srcpath}  ==> #{dest}" )

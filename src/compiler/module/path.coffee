@@ -67,14 +67,29 @@ ModulePath.resolvePath = ( path , parentModule ) ->
 ModulePath.parsePath = ( path , parentModule ) ->
     parts = utils.path.split_path( path , ModulePath.EXTLIST )
     result = []
-
+    
     # 解析全路径
     for part , i in parts
-        if i == 0
+        if i == 0 and parts.length is 1
+
+            ###
+                处理组件名或只写一个当前目录文件且没有扩展名的情况 
+                优先取文件，再取组件
+            ###
             package_path = parentModule.config.getPackage( part ) 
             if package_path
+                # 组件
                 result.push( package_path )
-            else if parentModule.config.isUseAlias( part )
+            else
+                # 相对路径
+                result.push( parentModule.path.dirname() )
+                result.push( part )
+                
+        else if i == 0
+            ###
+                大于1个以上的引用名的情况
+            ###
+            if parentModule.config.isUseAlias( part )
                 # 别名引用路径
                 result.push( parentModule.config.parseAlias( part ) )    
             else

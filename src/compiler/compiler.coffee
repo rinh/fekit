@@ -39,6 +39,10 @@ utils.path.each_directory pluginsDir , ( filepath ) =>
     export
 ###
 
+# 判断是否循环引用
+LOOPS = {}
+MAX_LOOP_COUNT = 70
+
 # 递归处理所有模块
 getSource = ( module , options , callback ) ->
     
@@ -60,6 +64,10 @@ getSource = ( module , options , callback ) ->
             for sub_module in module.depends
                 _tmp = (sub_module) -> 
                     ( seriesCallback ) =>
+                        LOOPS[sub_module.guid] = ( LOOPS[sub_module.guid] || 0 ) + 1
+                        if LOOPS[sub_module.guid] > MAX_LOOP_COUNT 
+                            seriesCallback "出现循环调用，请检查 #{sub_module.path.uri} 的引用" 
+
                         if USED_MODULES[ sub_module.guid ]
                             utils.proc.setImmediate seriesCallback
                             return
@@ -93,6 +101,7 @@ getSource = ( module , options , callback ) ->
  }
 ###
 exports.compile = ( filepath , options , doneCallback ) ->
+    LOOPS = {}
     if arguments.length is 3 
         options = options or {}
         doneCallback = doneCallback

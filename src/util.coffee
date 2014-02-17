@@ -92,7 +92,14 @@ exports.path = utilpath =
         else
             return _closest( path , findfilename , filterFunc )
 
-    SEPARATOR : syspath.join('a','a').replace(/a/g,'')
+    SEPARATOR : syspath.sep 
+
+    is_root: ( path ) ->
+        if process.platform is 'win32'
+            p = path.replace syspath.sep , '' 
+            return ///^[a-z]:\s*$///i.test( p )
+        else 
+            return syspath.sep is path 
 
     exists: ( path ) ->
         if fs.existsSync
