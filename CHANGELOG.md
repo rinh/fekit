@@ -1,5 +1,6 @@
 # 0.2.59
 * add: 增加sass的支持 (from zhiyan)
+* add: 隐藏 server 的长参数
 
 # 0.2.58
 * fix: 修复某些项目的编译问题

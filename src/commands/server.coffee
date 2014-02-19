@@ -9,6 +9,7 @@ qs = require "querystring"
 sysurl = require "url"
 syspath = require "path"
 sysfs = require "fs"
+md5 = require "MD5"
 
 exports.usage = "创建本地服务器, 可以基于其进行本地开发"
 
@@ -38,6 +39,18 @@ mime_config =
     ".css" : "text/css"
 
 charset = ";charset=UTF-8"
+
+
+PARAM_CACHE = {}
+
+
+toMD5 = ( str ) ->
+    m = md5(str).toString().slice(9).slice(0,16)
+    PARAM_CACHE[m] = str
+    return m
+
+toPARAM = ( md5str ) ->
+    return PARAM_CACHE[md5str]
 
 _routeRules = ( options ) ->
     
@@ -99,7 +112,8 @@ setupServer = ( options ) ->
                 ctx = utils.proc.requireScript custom_script_path
                 render_func = () ->
                     _path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
-                    partial = "http://#{host}#{port}#{_path}?no_dependencies=true&root=#{encodeURIComponent(path)}"                    
+                    
+                    partial = "http://#{host}#{port}#{_path}?" + toMD5("no_dependencies=true&root=#{encodeURIComponent(path)}")
                     return ctx.render({
                             type : @path.getContentType()
                             path : @path.getFullPath()
@@ -110,7 +124,7 @@ setupServer = ( options ) ->
             else 
                 render_func = () ->
                     _path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
-                    partial = "http://#{host}#{port}#{_path}?no_dependencies=true&root=#{encodeURIComponent(path)}"                    
+                    partial = "http://#{host}#{port}#{_path}?" + toMD5("no_dependencies=true&root=#{encodeURIComponent(path)}")
                     switch @path.getContentType()
                         when "javascript"
                             return "document.write('<script src=\"#{partial}\"></script>');"
@@ -138,7 +152,7 @@ setupServer = ( options ) ->
                 host = req.headers['host']
                 url = sysurl.parse( req.url )
                 p = syspath.join( ROOT , url.pathname )
-                params = qs.parse( url.query )
+                params = qs.parse( toPARAM(url.query) or url.query )
                 is_deps = params["no_dependencies"] is "true"
 
                 if utils.path.exists(p) and utils.path.is_directory(p)
@@ -149,7 +163,6 @@ setupServer = ( options ) ->
                 srcpath = urlconvert.to_src()
 
                 srcpath = compiler.path.findFileWithoutExtname( srcpath )
-                console.info( srcpath )
 
                 utils.logger.trace("由 PRD #{req.url} 解析至 SRC #{srcpath}")
                 
