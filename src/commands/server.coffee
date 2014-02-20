@@ -36,6 +36,7 @@ exports.set_options = ( optimist ) ->
 mime_config = 
     ".js" : "application/javascript"
     ".css" : "text/css"
+    ".html" : "text/html"
 
 charset = ";charset=UTF-8"
 
@@ -131,6 +132,32 @@ setupServer = ( options ) ->
 
 
     fekitRouter = urlrouter (app) =>
+            # VELOCITY地址
+            app.get /\/vm\// , ( req , res , next ) =>
+
+                host = req.headers['host']
+                url = sysurl.parse( req.url )
+                srcpath = syspath.join( ROOT , url.pathname )
+                if utils.path.exists(srcpath) and utils.path.is_directory(srcpath)
+                    next()
+                    return
+                switch compiler.getContentType(req.url) 
+                    when "javascript" then ctype = ".js"
+                    when "css" then ctype = ".css"
+                    when "html" then ctype = ".html"
+                    else ctype = ""
+
+                res.writeHead 200, { 'Content-Type': mime_config[ctype] + charset }
+                if utils.path.exists(srcpath)
+                    _render = ( err , txt ) =>
+                        if err
+                            res.writeHead 500 , { 'Content-Type' : mime_config[ctype] + charset }
+                            res.end( err )
+                        else
+                            res.end( txt )
+                    compiler.compile srcpath , _render
+                else
+                    res.end( "you must make sure the file #{srcpath} exists" )  
 
             # PRD地址
             app.get utils.UrlConvert.PRODUCTION_REGEX , ( req , res , next ) =>

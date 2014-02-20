@@ -14,6 +14,7 @@ MODULE_COMPILE_TYPE = ModuleConfig.MODULE_COMPILE_TYPE
 MODULE_CONTENT_TYPE = 
     JAVASCRIPT : "javascript" 
     CSS : "css"
+    HTML : "html"
 
 
 ### ---------------------------
@@ -122,7 +123,8 @@ Module.parse = ( path , parentModule , rootModule ) ->
             m = new JSModule( uri )
         when MODULE_CONTENT_TYPE.CSS
             m = new CSSModule( uri )
-
+        when MODULE_CONTENT_TYPE.HTML
+            m = new HTMLModule( uri )
     m.root_module = rootModule if rootModule
     return m
 
@@ -200,8 +202,16 @@ class CSSModule extends Module
     getSourceWithoutDependencies: () ->
         return @ast.print()
 
+class HTMLModule extends Module
+    constructor:( uri ) ->
+        super(uri)
 
+    analyzed:() ->
+        @ast.defineType 'REQUIRE' , ( node ) ->
+            return ""
 
+    getSourceWithoutDependencies: () ->
+        return @ast.print()
 
 exports.Module = Module
 
