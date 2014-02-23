@@ -1,6 +1,9 @@
 # 0.2.59
 * add: 增加sass的支持 (from zhiyan)
 * add: 隐藏 server 的长参数
+* add: 支持handlebars编译类型 (from zhiyan)
+* add: fekit server 增加 velocity(vm) 语法支持 (from Robinlim)
+* modify: 修改 fekit server 实时编译文件 url 过长的问题
 
 # 0.2.58
 * fix: 修复某些项目的编译问题

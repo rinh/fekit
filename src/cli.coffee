@@ -115,12 +115,12 @@ exports.run = ( cmd ) ->
 
     catch err
         
-        if utils.logger.debug is true
+        if ~process.argv.indexOf('--debug')
             throw err
         else
         
-           if typeof err is 'object'
-                err = JSON.stringify err 
+            if typeof err is 'object'
+                err = JSON.stringify( err ) + "\n" + err.toString()
             
             utils.logger.error( err )
             return 1

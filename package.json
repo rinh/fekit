@@ -44,7 +44,8 @@
         "block-stream": "*",
         "rinh-node-tar": "*",
         "node-sass": "0.8.x",
-        "handlebars" : "*"
+        "handlebars" : "2.0.0-alpha.1" , 
+        "velocityjs" : "0.4.x"
     },
     "devDependencies": {},
     "optionalDependencies": {},
