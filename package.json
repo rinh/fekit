@@ -2,7 +2,7 @@
     "author": "hao.lin <hao.lin@qunar.com>",
     "name": "fekit",
     "description": "FE Toolkit",
-    "version": "0.2.58",
+    "version": "0.2.59",
     "bin": "./bin/fekit",
     "repository": {
         "type": "git",
@@ -44,8 +44,8 @@
         "block-stream": "*",
         "rinh-node-tar": "*",
         "node-sass": "0.8.x",
-        "handlebars" : "2.0.0-alpha.1" , 
-        "velocityjs" : "0.4.x"
+        "handlebars": "2.0.0-alpha.1",
+        "velocityjs": "0.4.x"
     },
     "devDependencies": {},
     "optionalDependencies": {},
