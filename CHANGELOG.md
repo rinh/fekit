@@ -1,3 +1,6 @@
+# 0.2.60
+* modify: 对 velocity(vm) 的 parse 扩展支持。默认使用相对路径，可由配置变为绝对路径
+
 # 0.2.59
 * add: 增加sass的支持 (from zhiyan)
 * add: 隐藏 server 的长参数

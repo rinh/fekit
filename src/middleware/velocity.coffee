@@ -25,6 +25,7 @@ module.exports = ( options ) ->
             p = syspath.join( ROOT , url.pathname )
             txt = utils.file.io.read( p )
             dataPath = p.replace( '.vm' , '.json' )
+            conf = utils.config.parse p
 
             _render = ( data , ctx , macros) ->
                 return (new Velocity.Compile(Velocity.Parser.parse( data ))).render( ctx , macros)
@@ -45,7 +46,13 @@ module.exports = ( options ) ->
                     return @jsmacros.parse.call @ , path
                 ,
                 parse: ( path ) ->
-                    _p = utils.path.join( utils.path.dirname(p) , path )
+                    root = conf?.root?.development?.velocity_root
+                    if root
+                        root = utils.path.join( conf.fekit_root_dirname , root )
+                        _p = utils.path.join( root , path.replace(/^\//,'./') )
+                    else 
+                        _p = utils.path.join( utils.path.dirname(p) , path )
+
                     content = utils.file.io.read( _p )
                     return _render content , @context , @macros
                 ,

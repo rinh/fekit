@@ -19,18 +19,6 @@ FEKIT
 * mac: [http://nodejs.org/dist/v0.8.15/node-v0.8.15.pkg](http://nodejs.org/dist/v0.8.15/node-v0.8.15.pkg)
 * linux: 自行使用 apt-get(ubuntu) 或 yum(centos) 安装
 
-##### svn
-* windows: 使用Slik SVN, [http://www.sliksvn.com/en/download](http://www.sliksvn.com/pub/Slik-Subversion-1.7.7-win32.msi)
-* mac: 自带 或使用 port 安装
-* linux: 自行使用 apt-get(ubuntu) 或 yum(centos) 安装
-
-##### rsync(可选) #####
-* 如不安装, 可能会影响 sync 命令的使用 
-* windows: [http://optics.ph.unimelb.edu.au/help/rsync/rsync_pc1.html#install](http://optics.ph.unimelb.edu.au/help/rsync/rsync_pc1.html#install)
-* mac: 自带
-* linux: 自带
-* 请自行配置免密码ssh登录
-
 #### 安装
     
     npm install fekit -g
@@ -78,7 +66,9 @@ FEKIT
             //      url : '..' ,                  当前文件的引用路径
             //      base_path : '..' ,            当前文件的父级物理路径
             // }
-            "custom_render_dependencies" : "./build/runtime.js"
+            "custom_render_dependencies" : "./build/runtime.js" , 
+            // 在 vm 模板使用 parse 解析文件时，如果指定了该配置项，则以该项为根目录解析
+            "velocity_root" : "./vm/" 
         } ,
 
         // 配置导出使用的全局参数
