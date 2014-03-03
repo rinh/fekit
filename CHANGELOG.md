@@ -1,5 +1,7 @@
 # 0.2.60
 * modify: 对 velocity(vm) 的 parse 扩展支持。默认使用相对路径，可由配置变为绝对路径
+* fix: parent module的正确解析
+* fix: server -r 引用错误
 
 # 0.2.59
 * add: 增加sass的支持 (from zhiyan)

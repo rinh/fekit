@@ -1,3 +1,4 @@
+utils = require "../util"
 rewrite = require "connect-url-rewrite"
 
 _routeRules = ( options ) ->

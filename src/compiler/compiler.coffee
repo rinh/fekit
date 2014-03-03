@@ -67,7 +67,7 @@ getSource = ( module , options , callback ) ->
                         LOOPS[sub_module.guid] = ( LOOPS[sub_module.guid] || 0 ) + 1
                         if LOOPS[sub_module.guid] > MAX_LOOP_COUNT 
                             seriesCallback "出现循环调用，请检查 #{sub_module.path.uri} 的引用" 
-
+                        #console.info USED_MODULES[ sub_module.guid ] , sub_module.guid , sub_module.path.uri 
                         if USED_MODULES[ sub_module.guid ]
                             utils.proc.setImmediate seriesCallback
                             return
@@ -113,16 +113,19 @@ exports.compile = ( filepath , options , doneCallback ) ->
     module = Module.parse( filepath , null , Module.parse( options.root_module_path or filepath ) )
 
     _list = ( options.dependencies_filepath_list or [] )
+
     _iter = ( dep_path , seriesCallback ) ->
             parent_module = new Module( dep_path )
-            parent_module.analyze ( err ) ->
-                _.extend( use_modules , parent_module.getDependenciesURI() )
+            parent_module.getDependenciesURI ( err , module_guids ) ->
+                _.extend( use_modules , module_guids ) unless err 
                 utils.proc.setImmediate ()->
                     seriesCallback( err )
+
     _done = ( err ) ->
             if err 
                 doneCallback( err )
                 return
+
             getSource( module , {
                 use_modules : use_modules 
                 no_dependencies : !!options.no_dependencies
