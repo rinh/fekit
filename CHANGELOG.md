@@ -1,3 +1,6 @@
+# 0.2.61
+* modify: 对 velocity(vm) 支持 vmjs(语法同js) , json(语法同json) 的扩展。
+
 # 0.2.60
 * modify: 对 velocity(vm) 的 parse 扩展支持。默认使用相对路径，可由配置变为绝对路径
 * fix: parent module的正确解析

@@ -1,4 +1,5 @@
 # 解析 velocity 模板
+vm = require "vm"
 urlrouter = require "urlrouter"
 Velocity = require "velocityjs"
 utils = require '../util'
@@ -24,14 +25,17 @@ module.exports = ( options ) ->
             url = sysurl.parse( req.url )
             p = syspath.join( ROOT , url.pathname )
             txt = utils.file.io.read( p )
-            dataPath = p.replace( '.vm' , '.json' )
+            vmjs_path = p.replace( '.vm' , '.vmjs' )
+            vmjson_path = p.replace( '.vm' , '.json' )
             conf = utils.config.parse p
 
             _render = ( data , ctx , macros) ->
                 return (new Velocity.Compile(Velocity.Parser.parse( data ))).render( ctx , macros)
 
-            if utils.path.exists( dataPath )
-                ctx = utils.file.io.readJSON( dataPath )
+            if utils.path.exists( vmjs_path )
+                ctx = require( vmjs_path )
+            else if utils.path.exists( vmjson_path )
+                ctx = utils.file.io.readJSON( vmjson_path )
             else 
                 ctx = {}
 
