@@ -33,6 +33,7 @@ module.exports = ( options ) ->
                 return (new Velocity.Compile(Velocity.Parser.parse( data ))).render( ctx , macros)
 
             if utils.path.exists( vmjs_path )
+                delete require.cache[ vmjs_path ]
                 ctx = require( vmjs_path )
             else if utils.path.exists( vmjson_path )
                 ctx = utils.file.io.readJSON( vmjson_path )

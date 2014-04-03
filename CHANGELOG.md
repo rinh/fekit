@@ -1,3 +1,6 @@
+# 0.2.62
+* modify: 修改 vmjs 不需要重启服务器
+
 # 0.2.61
 * modify: 对 velocity(vm) 支持 vmjs(语法同js) , json(语法同json) 的扩展。
 
