@@ -1,6 +1,8 @@
 utils = require "../util"
+fs = require "fs"
 connect = require "connect"
 http = require "http"
+https = require "https"
 middleware = require "../middleware/index"
 
 exports.usage = "创建本地服务器, 可以基于其进行本地开发"
@@ -25,6 +27,9 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'b' , 'boost'
     optimist.describe 'b' , '可以指定目录进行编译加速。格式为 -b 目录名'    
 
+    optimist.alias 's' , 'ssl'
+    optimist.describe 's' , '指定ssl证书文件，后缀为.crt'
+
 
 
 setupServer = ( options ) ->
@@ -40,7 +45,19 @@ setupServer = ( options ) ->
             .use( connect.static( options.cwd , { hidden: true, redirect: true })  ) 
             .use( connect.directory( options.cwd ) ) 
 
-    listenPort( http.createServer(app) , options.port || 80 )
+    if options.ssl
+
+        name = utils.path.fname options.ssl
+        path = utils.path.dirname options.ssl
+        opts = 
+            key : fs.readFileSync utils.path.join( path , name + ".key" )
+            cert : fs.readFileSync utils.path.join( path , name + ".crt" ) 
+
+        listenPort( https.createServer( opts , app ) , options.port || 443 )
+
+    else
+
+        listenPort( http.createServer( app ) , options.port || 80 )
 
 
 
