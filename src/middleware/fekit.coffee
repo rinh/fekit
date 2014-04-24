@@ -38,6 +38,8 @@ module.exports = ( options ) ->
 
     ROOT = options.cwd
 
+    protocol = if options.ssl then "https" else "http"
+
     no_combine = ( path , parents , host , params , doneCallback ) ->
         # 根据是否非依赖模式, 生成不同的结果
         if params["no_dependencies"] is "true"
@@ -62,7 +64,7 @@ module.exports = ( options ) ->
                 render_func = () ->
                     _path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
                     
-                    partial = "http://#{host}#{port}#{_path}?" + toMD5("no_dependencies=true&root=#{encodeURIComponent(path)}")
+                    partial = "#{protocol}://#{host}#{port}#{_path}?" + toMD5("no_dependencies=true&root=#{encodeURIComponent(path)}")
                     return ctx.render({
                             type : @path.getContentType()
                             path : @path.getFullPath()
@@ -73,7 +75,7 @@ module.exports = ( options ) ->
             else 
                 render_func = () ->
                     _path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
-                    partial = "http://#{host}#{port}#{_path}?" + toMD5("no_dependencies=true&root=#{encodeURIComponent(path)}")
+                    partial = "#{protocol}://#{host}#{port}#{_path}?" + toMD5("no_dependencies=true&root=#{encodeURIComponent(path)}")
                     switch @path.getContentType()
                         when "javascript"
                             return "document.write('<script src=\"#{partial}\"></script>');"

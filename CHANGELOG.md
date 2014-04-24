@@ -1,3 +1,6 @@
+# 0.2.64
+* modify: 修改 https 的 document.write
+
 # 0.2.63
 * add: 添加对 https 的支持
 
