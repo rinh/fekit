@@ -73,6 +73,7 @@ _closest_dir = ( p , finddirname , filterFunc ) ->
 
 
 exports.path = utilpath =
+    extname : syspath.extname
     dirname : syspath.dirname
     basename : syspath.basename
     resolve : syspath.resolve

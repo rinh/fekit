@@ -2,6 +2,7 @@ syspath = require 'path'
 utils = require '../../util'
 md5 = require "MD5"
 parser = require '../parser'
+_ = require 'underscore'
 
 ModulePath = require('./path').ModulePath
 ModuleConfig = require('./config').ModuleConfig
@@ -99,14 +100,21 @@ class Module
 
 
     # 返回一个object, 其中是该模块下所有的引用(包含自身)
-    getDependenciesURI: ( parent_uris ) ->
-        uris = parent_uris or {}
-        for m in @depends 
-            uris[ m.guid ] = 1
-            if m.hasDependencies() then m.getDependenciesURI( uris )
-        uris[ @guid ] = 1
-        return uris
-
+    getDependenciesURI: ( cb , parent_uris ) ->
+        self = @
+        @analyze ( err ) ->
+            return cb( err ) if err
+            uris = parent_uris or {}
+            utils.async.series @depends , ( m , done ) -> 
+                    uris[ m.guid ] = 1
+                    m.getDependenciesURI ( err , _uris ) ->
+                        return done( err ) if err 
+                        _.extend uris , _uris 
+                        done()
+                     , uris
+                , ( err ) ->
+                    uris[ self.guid ] = 1
+                    cb( err , uris )
 
 
 # 通过模块引用字符串, 跟据parentModule解析出子模块的真实路径 , 并返回正确的模块

@@ -1,5 +1,26 @@
+# 0.2.64
+* modify: 修改 https 的 document.write
+
+# 0.2.63
+* add: 添加对 https 的支持
+
+# 0.2.62
+* modify: 修改 vmjs 不需要重启服务器
+
+# 0.2.61
+* modify: 对 velocity(vm) 支持 vmjs(语法同js) , json(语法同json) 的扩展。
+
+# 0.2.60
+* modify: 对 velocity(vm) 的 parse 扩展支持。默认使用相对路径，可由配置变为绝对路径
+* fix: parent module的正确解析
+* fix: server -r 引用错误
+
 # 0.2.59
 * add: 增加sass的支持 (from zhiyan)
+* add: 隐藏 server 的长参数
+* add: 支持handlebars编译类型 (from zhiyan)
+* add: fekit server 增加 velocity(vm) 语法支持 (from Robinlim)
+* modify: 修改 fekit server 实时编译文件 url 过长的问题
 
 # 0.2.58
 * fix: 修复某些项目的编译问题
