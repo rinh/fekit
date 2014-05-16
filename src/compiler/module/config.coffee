@@ -49,14 +49,15 @@ class ModuleConfig
             return syspath.join( @config.fekit_root_dirname , path )
 
     getPackage:(aliasName) ->
-        p = new Package( aliasName , null , @config.fekit_root_dirname )
-        return p.get_local_entry()
+        aliasName = aliasName.split("#")
+        p = new Package( aliasName[0] , null , @config.fekit_root_dirname )
+        return p.get_local_entry( aliasName[1] || "" )
 
 
-ModuleConfig.MODULE_COMPILE_TYPE = 
+ModuleConfig.MODULE_COMPILE_TYPE =
     NORMAL : 1
     MODULAR : 2
-    COMPONENT : 3 
+    COMPONENT : 3
     UNKNOWN : 4
 
 exports.ModuleConfig = ModuleConfig

@@ -31,29 +31,29 @@ class Package
     loadConfig: ( @basepath , config ) ->
         @package_installed_path = @basepath
         @_get = ( url , cb ) ->
-            obj = 
-                ret : true 
-                data : 
-                    versions : 
-                        '0.0.0': 
-                            config: config 
+            obj =
+                ret : true
+                data :
+                    versions :
+                        '0.0.0':
+                            config: config
             cb( null , null , obj )
 
     # 获取本地入口文件路径
     # 默认入口文件为 src/index， 如果出错则返回 null
-    get_local_entry: () ->
+    get_local_entry: ( filename ) ->
         return null if @name is '.' or @name is '..'
-        p = @basepath 
+        p = @basepath
         # 不断向上寻找组件
         while _fekit_conf_path = @get_fekitconfig_path( p )
             return null if utils.path.is_root( p )
             break if utils.path.exists _fekit_conf_path
-            p = utils.path.dirname p 
-        
+            p = utils.path.dirname p
+
         return null unless utils.path.exists _fekit_conf_path
         _conf = utils.file.io.readJSON _fekit_conf_path
         _base = utils.path.join p , Package.FEKIT_MODULE_DIR , @name
-        return utils.path.join( _base , ( if _conf.main then _conf.main else "src/index" ) )
+        return utils.path.join( _base , ( if filename then "src/"+filename else if _conf.main then _conf.main else "src/index" ) )
 
     get_fekitconfig_path : ( base ) ->
         utils.path.join base , Package.FEKIT_MODULE_DIR , @name , 'fekit.config'
