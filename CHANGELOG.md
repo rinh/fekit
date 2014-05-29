@@ -1,3 +1,6 @@
+# 0.2.65
+* add: 添加 sass 和 scss 扩展名的支持
+
 # 0.2.64
 * modify: 修改 https 的 document.write
 
