@@ -683,6 +683,11 @@ exports.logger = utillogger =
 
 #---------------------------
 
+
+exports.removeBOM = ( txt ) ->
+    if txt.charAt(0) is "\uFEFF" then return txt.substr(1)  else return txt
+
+
 exports.exit = exit = (exitCode) ->
     if process.stdout._pendingWriteReqs or process.stderr._pendingWriteReqs
         utilproc.setImmediate () ->

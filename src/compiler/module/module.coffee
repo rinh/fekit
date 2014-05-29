@@ -84,7 +84,8 @@ class Module
         ext = syspath.extname( path )
         plugin = ModulePath.getPlugin(ext)
         if plugin
-            plugin.process @source , path , this , ( err , result ) ->
+            source = utils.removeBOM @source 
+            plugin.process source , path , this , ( err , result ) ->
                 if err 
                     cb( "文件编译错误 #{path} , #{err.toString()}" , "" ) 
                 else 
