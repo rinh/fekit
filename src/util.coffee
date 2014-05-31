@@ -208,6 +208,17 @@ class Reader
         catch err
             throw "解析 #{filepath} 时出现错误, 请检查该文件, 该文件必须是标准YAML格式"
 
+    readbymtime:( filepath ) ->
+        mtime = null
+        cache = null
+        return () ->
+            stat = fs.statSync( filepath )
+            if stat.mtime isnt mtime
+                mtime = stat.mtime
+                cache = utilfile.io.read( filepath )
+            return cache 
+
+
 class Writer
     write:( filepath , content ) ->
         if !utilpath.exists( syspath.dirname( filepath ) )
@@ -756,5 +767,19 @@ exports.async = utilasync =
         async.series _list , done
 
 #---------------------------
+
+exports._ = _;
+
+_.compactObject = (o) ->
+    _.each( o, (v, k) ->
+             delete o[k] if v == null )
+    return o
+
+
+exports.extend = () ->
+    list = [].concat( _.map arguments , ( i  ) -> 
+                return _.compactObject( _.extend( {} , i ) ) )
+    return _.extend.apply( _ , list )
+
 
 exports.version = utilfile.io.readJSON( syspath.join( __dirname , "../package.json" ) ).version

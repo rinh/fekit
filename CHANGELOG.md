@@ -1,6 +1,7 @@
-# 0.2.65
+# 0.2.70
 * add: 添加 sass 和 scss 扩展名的支持
 * add: 删除 UTF-8 的 BOM 头
+* add: 添加 fekit server 对于 mock 的支持
 
 # 0.2.64
 * modify: 修改 https 的 document.write

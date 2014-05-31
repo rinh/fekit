@@ -59,7 +59,7 @@ module.exports = ( options ) ->
                         _p = utils.path.join( utils.path.dirname(p) , path )
 
                     content = utils.file.io.read( _p )
-                    return _render content , @context , @macros
+                    return _render content , @context , @jsmacros
                 ,
                 ver: ( path ) ->
                     return ''

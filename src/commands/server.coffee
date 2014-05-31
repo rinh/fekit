@@ -30,6 +30,9 @@ exports.set_options = ( optimist ) ->
     optimist.alias 's' , 'ssl'
     optimist.describe 's' , '指定ssl证书文件，后缀为.crt'
 
+    optimist.alias 'm' , 'mock'
+    optimist.describe 'm' , '指定mock配置文件'
+
 
 
 setupServer = ( options ) ->
@@ -37,6 +40,7 @@ setupServer = ( options ) ->
     app = connect()
             .use( connect.logger( 'tiny' ) ) 
             .use( connect.query() ) 
+            .use( middleware.mock( options ) )
             .use( middleware.rewriteObsoleteUrl( options ) )
             .use( middleware.rewriteRule( options ) ) 
             .use( connect.bodyParser() ) 
