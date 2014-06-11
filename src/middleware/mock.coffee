@@ -23,7 +23,7 @@ mock.json是一个针对域名作的代理服务配置文件,内容为
 ###
 module.exports = ( options ) ->
 
-    return noop unless options.mock or utils.file.exists options.mock
+    return noop unless options.mock or utils.path.exists options.mock
     mock_file = utils.file.io.readbymtime( options.mock )
 
     return ( req , res , next ) ->

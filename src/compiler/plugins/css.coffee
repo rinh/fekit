@@ -14,16 +14,13 @@ exports.ddns = ( css_code , module ) ->
     fileconfig = module.root_module.config.config.getExportFileConfig( module.root_module.path.getFullPath() ) 
 
     if fileconfig?.domain_mapping
-
         r = fileconfig?.domain_mapping
-
     else if root_fekit_config?.export_global_config?.domain_mapping
-
         r = root_fekit_config?.export_global_config?.domain_mapping
-
-    else
-
-        return css_code
+    else 
+        # 强制分布各 css 中的图片到不同域, hardcode
+        r = "@domain_mapping source.qunar.com => simg1.qunarzz.com simg2.qunarzz.com simg3.qunarzz.com simg4.qunarzz.com"
+        #return css_code
 
     conf = r.split('=>')
 
