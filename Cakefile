@@ -77,17 +77,16 @@ install = (cb) ->
 
 task "bump", 'bump version' , ->
     semver = require('semver')
-    pkg = JSON.parse( fs.readFileSync('./package.json').toString() )
-    pkg.version = semver.inc( pkg.version , 'patch' )
+    pkg = JSON.parse( fs.readFileSync('./package.json').toString() ) 
+    lasest_version = fs.readFileSync('./CHANGELOG.md').toString().split('\n')[0].replace("#","").replace(/\s/g,'')
+
+    return console.error("[ERROR] #{lasest_version} is invalid.") if semver.lt lasest_version , pkg.version
     
-    changelog = fs.readFileSync('./CHANGELOG.md').toString()
-
-    return console.error("[ERROR] please add change log for v#{pkg.version}") unless ~changelog.indexOf(pkg.version)
-
+    pkg.version = lasest_version
     fs.writeFileSync('./package.json', JSON.stringify( pkg , null , 4 ) )
 
     _exec 'git add . ' , ->
-        _exec "git commit -m bump\tversion\tv#{pkg.version}" , ->
+        _exec "git commit -m 'bump\tversion\tv#{pkg.version}'" , ->
             _exec "git tag -a v#{pkg.version} -m 'version #{pkg.version}'" , ->
                 _exec 'git push origin master' , ->
                     _exec "git push origin v#{pkg.version}" , ->
