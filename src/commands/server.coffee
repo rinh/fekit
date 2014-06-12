@@ -3,6 +3,9 @@ fs = require "fs"
 connect = require "connect"
 http = require "http"
 https = require "https"
+tinylr = require "tiny-lr"
+compiler = require "../compiler/compiler"
+
 middleware = require "../middleware/index"
 
 exports.usage = "创建本地服务器, 可以基于其进行本地开发"
@@ -64,6 +67,20 @@ setupServer = ( options ) ->
         listenPort( http.createServer( app ) , options.port || 80 )
 
 
+setupLivereload = ( options ) ->
+
+    lrsrv = tinylr()
+    lrsrv.listen 35729, () ->
+        console.log('[LOG]: LiveReload Server Listening ...')
+
+    extlist = compiler.path.EXTLIST.map (ext) ->
+                return "**/*#{ext}"
+
+    require("gaze") extlist , ( err , watcher ) ->
+        @on 'all', (event, filepath) ->
+            lrsrv.changed({ body:{  files:[filepath]  }})
+
+
 
 listenPort = ( server, port ) ->
     # TODO 貌似不能捕获error, 直接抛出异常
@@ -81,6 +98,8 @@ listenPort = ( server, port ) ->
 
 
 exports.run = ( options ) ->
+
+    setupLivereload( options )
 
     setupServer( options )
 

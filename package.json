@@ -45,7 +45,9 @@
         "rinh-node-tar": "*",
         "node-sass": "0.8.x",
         "handlebars": "2.0.0-alpha.1",
-        "velocityjs": "0.4.x"
+        "velocityjs": "0.4.x",
+        "tiny-lr" : "0.0.7",
+        "gaze" : "0.5.1"
     },
     "devDependencies": {},
     "optionalDependencies": {},

@@ -3,6 +3,7 @@
 * add: 删除 UTF-8 的 BOM 头
 * add: 添加 fekit server 对于 mock 的支持
 * modify: 强制分布各 css 中的图片到不同域
+* add: 添加 livereload 支持
 
 # 0.2.64
 * modify: 修改 https 的 document.write
