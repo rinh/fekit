@@ -44,13 +44,13 @@ module.exports = ( options ) ->
             n = key.split "^^^"
             key = new RegExp( n[0] , n[1] ) 
             result = url.match( key ) 
-            return do_actions( result , actions , req , res , next ) if result
+            return do_actions( result , actions , req , res , options ) if result
 
         next()
 
 
 ## 处理所有 action
-do_actions = ( result , actions , req , res , next ) -> 
+do_actions = ( result , actions , req , res , options ) -> 
 
     actions = switch
         when typeof actions is 'string' then get_actions actions 
@@ -63,6 +63,7 @@ do_actions = ( result , actions , req , res , next ) ->
         req : req 
         res : res
         result : result
+        options : options
     
     utils.async.series jobs , ( item , done ) ->
                 item.action( item.user_config , context , done )
@@ -121,7 +122,7 @@ ACTION =
 
         context.res.setHeader "Content-Type", "application/json"
 
-        context.res.write( utils.file.io.read( user_config ) )
+        context.res.write( read( context , user_config ) )
 
         done()
 
@@ -136,7 +137,7 @@ ACTION =
     ###
     "action" : ( user_config , context , done ) ->
 
-        act_file = utils.file.io.read( user_config )
+        act_file = read( context , user_config )
 
         #执行该文件
         sandbox = 
@@ -161,7 +162,13 @@ ACTION =
 
         context.res.setHeader "Content-Type", "application/json"
 
-        context.res.write( JSON.stringify helper_mockjson.mockJSON.generateFromTemplate( json ) )
+        callback = val for key , val of context.req.query when ~key.indexOf('callback')
+
+        jsonstr = JSON.stringify helper_mockjson.mockJSON.generateFromTemplate( json )
+
+        jsonstr = "#{callback}(#{jsonstr})" if callback
+
+        context.res.write( jsonstr )
 
         done()
 
@@ -183,3 +190,7 @@ get_actions = ( actions ) ->
             when utils.path.extname( actions ) is ".mockjson" then { mockjson : actions } 
             when utils.path.extname( actions ) is ".json" then { raw : actions }
             when utils.path.extname( actions ) is ".js" then { action : actions }
+
+read = ( context , partial_path ) ->
+    dir = utils.path.dirname context.options.mock
+    return utils.file.io.read( utils.path.join( dir , partial_path ) )

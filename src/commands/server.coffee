@@ -36,6 +36,8 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'm' , 'mock'
     optimist.describe 'm' , '指定mock配置文件'
 
+    optimist.alias 'l' , 'livereload'
+    optimist.describe 'l' , '是否启用livereload'
 
 
 setupServer = ( options ) ->
@@ -68,6 +70,8 @@ setupServer = ( options ) ->
 
 
 setupLivereload = ( options ) ->
+
+    return unless options.livereload
 
     lrsrv = tinylr()
     lrsrv.listen 35729, () ->

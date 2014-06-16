@@ -119,6 +119,7 @@ ModulePath.getContentTypeList = ( extName ) ->
     return ( k for k , v of ModulePath.EXTTABLE when v.contentType is type )
 
 ModulePath.findFileWithoutExtname = ( uri ) ->
+    return uri if utils.path.exists( uri )
     ext = syspath.extname( uri )
     p = uri.replace( ext , '' )
     list = ModulePath.getContentTypeList( ext )

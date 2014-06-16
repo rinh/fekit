@@ -19,7 +19,7 @@ exports.ddns = ( css_code , module ) ->
         r = root_fekit_config?.export_global_config?.domain_mapping
     else 
         # 强制分布各 css 中的图片到不同域, hardcode
-        r = "@domain_mapping source.qunar.com => simg1.qunarzz.com simg2.qunarzz.com simg3.qunarzz.com simg4.qunarzz.com"
+        r = "@domain_mapping source.qunar.com => simg1.qunarzz.com"
         #return css_code
 
     conf = r.split('=>')

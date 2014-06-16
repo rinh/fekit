@@ -1,3 +1,10 @@
+# 0.2.71
+* modify: livereload 改为非默认开启，使用 server -l 开启
+* add: mock jsonp 支持
+* fix: mock 的配置文件路径修正
+* fix: 同名且不同后缀名引用问题
+* fix: 修正强制分布为 simg1
+
 # 0.2.70
 * add: 添加 sass 和 scss 扩展名的支持
 * add: 删除 UTF-8 的 BOM 头

@@ -279,6 +279,7 @@ utilfile.mkdirp = mkdirp.sync
 
 # 按照给定的后缀名列表找到文件
 utilfile.findify = ( path_without_extname , ext_list ) ->
+    return path_without_extname if utilpath.exists( path_without_extname ) and !utilpath.is_directory( path_without_extname )
     list = [ "" ].concat( ext_list )
     for ext in list
         path = path_without_extname + ext 
