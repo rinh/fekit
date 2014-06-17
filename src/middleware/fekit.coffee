@@ -47,7 +47,8 @@ module.exports = ( options ) ->
             compiler.compile( path , {
                 dependencies_filepath_list : parents  
                 no_dependencies : true 
-                root_module_path : params["root"]
+                root_module_path : params["root"] 
+                environment : 'local'
             }, doneCallback )
 
         else
@@ -86,12 +87,14 @@ module.exports = ( options ) ->
             compiler.compile( path , {
                 dependencies_filepath_list : parents  
                 render_dependencies : render_func
+                environment : 'local'
             }, doneCallback)
 
 
     combine = ( path , parents , doneCallback ) ->
         compiler.compile( path , {
             dependencies_filepath_list : parents  
+            environment : 'local'
         } , doneCallback)
 
 

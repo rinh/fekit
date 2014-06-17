@@ -1,3 +1,7 @@
+# 0.2.72
+* fix: tag 添加脚本
+* add: 添加环境变量功能
+
 # 0.2.71
 * modify: livereload 改为非默认开启，使用 server -l 开启
 * add: mock jsonp 支持

@@ -87,9 +87,9 @@ task "bump", 'bump version' , ->
 
     _exec 'git add . ' , ->
         _exec "git commit -m 'bump\tversion\tv#{pkg.version}'" , ->
-            _exec "git tag -a v#{pkg.version} -m 'version #{pkg.version}'" , ->
+            _exec "git tag v#{pkg.version}" , ->
                 _exec 'git push origin master' , ->
-                    _exec "git push origin v#{pkg.version}" , ->
+                    _exec "git push origin --tags" , ->
                         _exec 'npm publish' , ->
                             console.info "[success] BUMP done."
 

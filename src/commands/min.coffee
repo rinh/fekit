@@ -100,6 +100,7 @@ process_directory = ( options ) ->
 
             compiler.compile( srcpath , {
                 dependencies_filepath_list : parents 
+                environment : 'prd'
             }, _done )
  
 
@@ -146,7 +147,7 @@ process_single_file = ( options ) ->
         dest = srcpath.replace( extname , ".min" + replaced_extname )
 
 
-    compiler.compile srcpath , ( err , source ) ->
+    compiler.compile srcpath , { environment : 'prd' } , ( err , source ) ->
 
         return utils.logger.error(err) if err 
 

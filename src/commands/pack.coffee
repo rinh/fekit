@@ -31,7 +31,7 @@ exports.run = ( options ) ->
                     utils.logger.log( "已经处理 #{srcpath}  ==> #{dest}" )
                     doneCallback()
 
-            compiler.compile srcpath , { dependencies_filepath_list : parents } , _done
+            compiler.compile srcpath , { dependencies_filepath_list : parents , environment : 'dev' } , _done
                 
     done = () -> 
             conf.doScript "postpack" , script_global

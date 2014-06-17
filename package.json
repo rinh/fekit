@@ -23,7 +23,7 @@
         "uglifycss": "0.0.5",
         "MD5": "1.0.x",
         "qless": "1.5.x",
-        "yaml": "0.2.x",
+        "js-yaml": "3.0.2",
         "cjson": "0.2.x",
         "connect-url-rewrite": "0.1.0",
         "rimraf": "2.1.4",

@@ -59,6 +59,19 @@ start = ( opts ) ->
 
         utils.file.io.write utils.path.join( base , 'README.md' ) , ""
 
+        environment = """
+local:
+    DEBUG: true
+
+dev:
+    DEBUG: true
+
+prd:
+    DEBUG: false
+        """
+
+        utils.file.io.write utils.path.join( base , 'environment.yaml' ) , environment
+
         utils.file.io.write config_path , JSON.stringify( config , {} , 4 )
 
         utils.logger.log("初始化成功.")

@@ -3,6 +3,7 @@ utils = require '../../util'
 md5 = require "MD5"
 parser = require '../parser'
 _ = require 'underscore'
+util = require 'util'
 
 ModulePath = require('./path').ModulePath
 ModuleConfig = require('./config').ModuleConfig
@@ -65,7 +66,7 @@ class Module
             self.ast = parser.parseAST( source )
             self.ast.find 'REQUIRE' , ( node ) ->
                 try 
-                    module = Module.parse( node.value , self , self.root_module )
+                    module = Module.parse( node.value , self.options , self , self.root_module )
                     module.parent_module = module
                     node.module = module
                     self.depends.push( module )
@@ -78,13 +79,24 @@ class Module
     # override
     analyzed:()->
 
+
+    _doMacro:( source , config ) ->
+        reg = ///
+            /\*\[([^\]]+?)\]\*/
+        ///ig
+        return source.replace reg , ( $0 , $1 ) ->
+                return util.inspect( config[$1] ) or ""
  
     _process:( path , cb ) ->
         #txt = new utils.file.reader().read( path )
         ext = syspath.extname( path )
         plugin = ModulePath.getPlugin(ext)
         if plugin
+            # 去除 BOM 头
             source = utils.removeBOM @source 
+            # 处理宏
+            source = @_doMacro source , @config.config.getEnvironmentConfig()[ @options.environment ]
+
             plugin.process source , path , this , ( err , result ) ->
                 if err 
                     cb( "文件编译错误 #{path} , #{err.toString()}" , "" ) 
@@ -120,7 +132,7 @@ class Module
 
 # 通过模块引用字符串, 跟据parentModule解析出子模块的真实路径 , 并返回正确的模块
 # 从一行代码中解析出模块引用的路径
-Module.parse = ( path , parentModule , rootModule ) ->
+Module.parse = ( path , options , parentModule , rootModule ) ->
 
     if parentModule
         uri = ModulePath.resolvePath( path , parentModule )
@@ -133,6 +145,7 @@ Module.parse = ( path , parentModule , rootModule ) ->
             m = new CSSModule( uri )
 
     m.root_module = rootModule if rootModule
+    m.options = options 
     return m
 
 

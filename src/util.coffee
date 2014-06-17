@@ -5,7 +5,7 @@ child_process = require 'child_process'
 syspath = require 'path'
 fs = require 'fs'
 mkdirp = require 'mkdirp'
-yaml = require 'yaml'
+yaml = require 'js-yaml'
 cjson = require 'cjson'
 _ = require 'underscore'
 vm = require 'vm'
@@ -193,18 +193,8 @@ class Reader
             throw "解析 #{filepath} 时出现错误, 请检查该文件, 该文件必须是标准JSON格式"
 
     readYAML:( filepath ) ->
-        # 必须将冒号后面的内容用单引号括起来
-        lines = @readlines(filepath)
-        s = []
-        for line in lines
-            if /.*?:\s*[^\s]+/.test( line )
-                s.push( line.replace( /^(.*?):\s*(.*?)\s*$/ , "$1: '$2'" ) )
-            else
-                s.push( line )
-        code = s.join( utilfile.NEWLINE )
-
         try
-            return yaml.eval( code )
+            return yaml.load( fs.readFileSync( filepath ).toString() )
         catch err
             throw "解析 #{filepath} 时出现错误, 请检查该文件, 该文件必须是标准YAML格式"
 
@@ -414,7 +404,6 @@ class FekitConfig
         cb( null , [] ) unless hit
 
     doScript : ( type , context ) ->
-
         ctx = context || {} 
         ctx.path = utilpath
         ctx.io = 
@@ -431,6 +420,22 @@ class FekitConfig
         utillogger.log("自动脚本 #{type} , 执行完毕.")
 
 
+    getEnvironmentConfig : () ->
+        j = utilpath.join 
+        has = utilpath.exists
+
+        p = j( @fekit_root_dirname , "environment.yaml" )
+        return utilfile.io.readYAML(p) if has p 
+
+        p = j( @fekit_root_dirname , "environment.json" )
+        return utilfile.io.readJSON(p) if has p 
+
+        default_json = 
+            dev: {}
+            beta: {}
+            prd: {}
+
+        return @root?.environment or default_json
 
 
 _runCode = ( path , ctx ) ->

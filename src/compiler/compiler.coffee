@@ -98,6 +98,8 @@ getSource = ( module , options , callback ) ->
     render_dependencies : function , 
     // 根模块文件路径(可有可无,如果没有则默认当前处理文件为root_module)
     root_module_path : ""
+    // 开发环境
+    environment : "local" / "dev" / "prd"
  }
 ###
 exports.compile = ( filepath , options , doneCallback ) ->
@@ -110,7 +112,7 @@ exports.compile = ( filepath , options , doneCallback ) ->
         options = {}
 
     use_modules = {}
-    module = Module.parse( filepath , null , Module.parse( options.root_module_path or filepath ) )
+    module = Module.parse( filepath , options , null , Module.parse( options.root_module_path or filepath ) )
 
     _list = ( options.dependencies_filepath_list or [] )
 
