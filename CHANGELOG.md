@@ -1,3 +1,6 @@
+# 0.2.74
+* fix: server environment 的 bug 问题
+
 # 0.2.73
 * fix: server 的 bug 问题
 

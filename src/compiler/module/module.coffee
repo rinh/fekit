@@ -99,7 +99,11 @@ class Module
             # 去除 BOM 头
             source = utils.removeBOM @source 
             # 处理宏
-            source = @_doMacro source , @config.config.getEnvironmentConfig()[ @options.environment ]
+            try 
+                source = @_doMacro source , @config.config.getEnvironmentConfig()[ @options.environment ]
+            catch err 
+                utils.logger.error "在 environment 配置中找不到 #{@options.environment} 项"
+                source = source
 
             plugin.process source , path , this , ( err , result ) ->
                 if err 
