@@ -81,11 +81,15 @@ class Module
 
 
     _doMacro:( source , config ) ->
+        config = config or {}
         reg = ///
             /\*\[([^\]]+?)\]\*/
         ///ig
         return source.replace reg , ( $0 , $1 ) ->
-                return util.inspect( config[$1] ) or ""
+                if config[$1] isnt null and typeof config[$1] isnt 'undefined'
+                    return util.inspect( config[$1] ) 
+                else 
+                    return ""
  
     _process:( path , cb ) ->
         #txt = new utils.file.reader().read( path )
