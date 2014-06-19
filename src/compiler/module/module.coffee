@@ -24,7 +24,7 @@ MODULE_CONTENT_TYPE =
 class Module
     
     # @uri 模块真实物理路径
-    constructor:( uri ) ->
+    constructor:( uri , @options ) ->
         @path = new ModulePath(uri)
         @config = new ModuleConfig(uri)
         @source = utils.file.io.read( @path.getFullPath() )

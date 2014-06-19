@@ -117,7 +117,7 @@ exports.compile = ( filepath , options , doneCallback ) ->
     _list = ( options.dependencies_filepath_list or [] )
 
     _iter = ( dep_path , seriesCallback ) ->
-            parent_module = new Module( dep_path )
+            parent_module = new Module( dep_path , options )
             parent_module.getDependenciesURI ( err , module_guids ) ->
                 _.extend( use_modules , module_guids ) unless err 
                 utils.proc.setImmediate ()->
