@@ -1,3 +1,6 @@
+# 0.2.76
+* fix: mock 时使用正则的多路径的问题
+
 # 0.2.75
 * fix: server environment 的 bug 问题
 
