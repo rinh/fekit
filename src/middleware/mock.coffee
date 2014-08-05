@@ -183,8 +183,8 @@ noop = ( req , res , next ) ->
 exjson = module.exports.exjson = ( txt ) ->
     def = ""
     count = 0
-    return txt.replace new RegExp( "/(.*)/([ig]*)(.*?:)" , "ig") , ( $0 , $1 , $2 , $3 ) ->
-            return util.inspect( $1 + "^^^" + $2 ) + $3
+    return txt.replace new RegExp( "\/(.*)\/([ig]*)(\\s*:\\s*)(.*)" , "ig") , ( $0 , $1 , $2 , $3 , $4 ) ->
+            return util.inspect( $1 + "^^^" + $2 ) + $3 + $4
 
 get_actions = ( actions ) ->
     return switch

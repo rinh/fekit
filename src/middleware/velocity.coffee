@@ -28,9 +28,15 @@ module.exports = ( options ) ->
             vmjs_path = p.replace( '.vm' , '.vmjs' )
             vmjson_path = p.replace( '.vm' , '.json' )
             conf = utils.config.parse p
+            vmc = null
 
             _render = ( data , ctx , macros) ->
-                return (new Velocity.Compile(Velocity.Parser.parse( data ))).render( ctx , macros)
+                asts = Velocity.Parser.parse( data )
+                unless vmc 
+                    vmc = new Velocity.Compile( asts )
+                else 
+                    return vmc._render( asts )
+                return vmc.render( ctx , macros)
 
             if utils.path.exists( vmjs_path )
                 delete require.cache[ vmjs_path ]
