@@ -20,7 +20,7 @@ FEKIT
 * linux: 自行使用 apt-get(ubuntu) 或 yum(centos) 安装
 
 #### 安装
-    
+
     npm install fekit -g
 
     npm config set user 0
@@ -28,7 +28,7 @@ FEKIT
 
 ### 使用
 
-    fekit {命令名} --help 
+    fekit {命令名} --help
 
 ### fekit.config
 
@@ -42,12 +42,12 @@ FEKIT
         "author" : "rinh" ,         // 作者名
         "email" : "rinh@abc.com" ,  // 作者邮箱
         "description" : "" ,        // 组件描述
-        "main" : "home" ,           //指定某个文件作为包入口, 该路径以src目录为根.  默认使用 src/index  
+        "main" : "home" ,           //指定某个文件作为包入口, 该路径以src目录为根.  默认使用 src/index
 
         // 依赖的组件
         "dependencies" : {
-               "dialog" : "1.2.*"    
-         } , 
+               "dialog" : "1.2.*"
+         } ,
 
         // 别名的配置, 该库作为编译时, @import url 和 require 使用
         "alias" : {
@@ -66,9 +66,9 @@ FEKIT
             //      url : '..' ,                  当前文件的引用路径
             //      base_path : '..' ,            当前文件的父级物理路径
             // }
-            "custom_render_dependencies" : "./build/runtime.js" , 
+            "custom_render_dependencies" : "./build/runtime.js" ,
             // 在 vm 模板使用 parse 解析文件时，如果指定了该配置项，则以该项为根目录解析
-            "velocity_root" : "./vm/" 
+            "velocity_root" : "./vm/"
         } ,
 
         // 配置导出使用的全局参数
@@ -83,27 +83,27 @@ FEKIT
         "export" : [
 
             // 第一种配置方式, 直接写出要导出的文件相对路径
-            "./scripts/page-a.js" ,   
+            "./scripts/page-a.js" ,
 
             // 第二种配置方式, 当要导出的文件, 在实际使用时有上级依赖, 则可以将上级依赖的文件加入`parents`节点
-            { 
+            {
                 "path" : "./scripts/page-b.js" ,
                 "parents" : [ "./scripts/page-a.js" ]
-            } , 
+            } ,
 
-            // 允许某个文件不含版本号信息 
+            // 允许某个文件不含版本号信息
             // 参考: https://github.com/rinh/fekit/issues/11
             {
-                "path" : "./scripts/page-c.js" , 
+                "path" : "./scripts/page-c.js" ,
                 "no_version" : true
             } ,
 
             // 允许 css 使用 domain_mapping 功能
             {
-                "path" : "./scripts/page-a.css" , 
+                "path" : "./scripts/page-a.css" ,
                 "domain_mapping" : "domain.com => img1.domain.com img2.domain.com img3.domain.com img4.domain.com"
             }
-            
+
         ] ,
 
         // 自动化hook脚本, 请参考 https://github.com/rinh/fekit/issues/10 , https://github.com/rinh/fekit/issues/12
@@ -111,7 +111,7 @@ FEKIT
             "premin" : "./build/premin.js" ,
             "postmin" : "./build/premin.js" ,
             "prepack" : "./build/premin.js" ,
-            "postpack" : "./build/premin.js" , 
+            "postpack" : "./build/premin.js" ,
             "prepublish" : "./build/prepublish.js"
         } ,
 
@@ -119,10 +119,10 @@ FEKIT
         "min" : {
             "config" : {
                 // 参数名及含义见: https://github.com/fmarcia/UglifyCSS
-                "uglifycss" : {} , 
+                "uglifycss" : {} ,
                 // 参数名及含义见: https://github.com/mishoo/UglifyJS
                 "uglifyjs" : {
-                    "ast_mangle" : {} , 
+                    "ast_mangle" : {} ,
                     "ast_squeeze" : {} ,
                     "gen_code" : {}
                 }
@@ -149,14 +149,14 @@ fekit所有源码全部使用coffeescript开发
 
 请在`src/commands`增加文件 {命令名}.coffee
 
-一个命令请包含如下内容 
+一个命令请包含如下内容
 
     # 命令的使用说明
     exports.usage = "使用说明"
-    
+
     # 命令的参数定义, 请参考optimist的使用方法
     exports.set_options = (optimist) ->
-    
+
     # 命令入口
     exports.run = (options) ->
 
@@ -168,11 +168,11 @@ fekit所有源码全部使用coffeescript开发
 
     # 决定该编译方式是用于哪类处理
     exports.contentType = "javascript 或 css"
-    
+
     # 处理方法
     # @source 待处理文件的内容
     # @path 待处理文件的路径
     # @callback( err , result ) 处理完成的回调
-    # 返回结果应该编译结果 
+    # 返回结果应该编译结果
     exports.process = ( source , path , callback ) ->
 

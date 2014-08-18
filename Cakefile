@@ -11,17 +11,17 @@ _exec = ( cmd , callback ) ->
     n1 = n[0]
     n2 = ( i.replace(/\t/g,' ') for i in n.slice(1) )
     c = spawn( n1 , n2 , {
-            cwd : process.cwd() , 
+            cwd : process.cwd() ,
             env : process.env
         })
 
     console.info("---------------------------")
-    c.stderr.pipe process.stderr, end: false 
-    c.stdout.pipe process.stdout, end: false 
+    c.stderr.pipe process.stderr, end: false
+    c.stdout.pipe process.stdout, end: false
     c.on 'exit' , ( code ) ->
         console.info("")
         callback()
-        
+
 
 _spawn = ( cmd , args = [] , options = {} ) ->
     cmd = if process.platform is "win32" then cmd + ".cmd" else cmd
@@ -29,10 +29,10 @@ _spawn = ( cmd , args = [] , options = {} ) ->
 
 fetch_vendors = () ->
 
-    ###    
+    ###
     console.info('fetch vendors...')
 
-    # vendors npm install 
+    # vendors npm install
     n = _spawn 'npm' , ['install'] , {
         cwd : path.resolve( process.cwd() , './vendors/tar/' )
         env : process.env
@@ -43,8 +43,8 @@ fetch_vendors = () ->
     ###
 
 process_stdio = (proc,callback) ->
-    proc.stderr.pipe process.stderr, end: false 
-    proc.stdout.pipe process.stdout, end: false 
+    proc.stderr.pipe process.stderr, end: false
+    proc.stdout.pipe process.stdout, end: false
     proc.on 'exit', (code) ->
         callback?() if code is 0
 
@@ -77,11 +77,11 @@ install = (cb) ->
 
 task "bump", 'bump version' , ->
     semver = require('semver')
-    pkg = JSON.parse( fs.readFileSync('./package.json').toString() ) 
+    pkg = JSON.parse( fs.readFileSync('./package.json').toString() )
     lasest_version = fs.readFileSync('./CHANGELOG.md').toString().split('\n')[0].replace("#","").replace(/\s/g,'')
 
     return console.error("[ERROR] #{lasest_version} is invalid.") if semver.lt lasest_version , pkg.version
-    
+
     pkg.version = lasest_version
     fs.writeFileSync('./package.json', JSON.stringify( pkg , null , 4 ) )
 
@@ -104,8 +104,3 @@ task 'test', 'Test all case', ->
     test();
 
 task "install", "Install, build, and test repo", install
-
-
-
-
-
