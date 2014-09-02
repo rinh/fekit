@@ -1,3 +1,8 @@
+# 0.2.78
+* add: mock jsonp 回调名称的配置
+* add: mock raw 处理方式的 jsonp 功能
+* add: mock 操作文档
+
 # 0.2.77
 * fix: mock 的端口问题
 
