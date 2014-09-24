@@ -2,23 +2,22 @@ syspath = require 'path'
 sysfs = require 'fs'
 utils = require '../util'
 
-exports.usage = "自动化生成fekit.config"
+exports.usage = "自动化生成 fekit.config 'export' 列表"
+config_object = {}
 
-CONFIG = null
-
-load_config = () ->
-    content = new utils.file.reader().read( "fekit.config" )
-    CONFIG = JSON.parse(content);
 
 do_clean = (dir) ->
-    new_export = []
-    new_export.push(path) for path in CONFIG.export when utils.path.exists("#{dir}/#{path}")
-    new_export.push(path) for path in CONFIG.export when utils.path.exists("#{dir}/#{path.path}")
-    CONFIG.export = new_export
+    nu = []
+    exists = (path) ->
+        path = path.path if path.path?
+        return utils.path.exists (utils.path.join dir, path)
+
+    nu.push i for i in config_object.export when exists i
+    config_object.export = nu
 
 start_export = (dir) ->
     utils.path.each_directory dir, (file) ->
-            if utils.path.is_directory(file) 
+            if utils.path.is_directory(file)
                 start_export(file, dir)
                 return
             if ~file.indexOf(".js") or ~file.indexOf(".css") then do_export(file)
@@ -31,7 +30,7 @@ do_export = (file, dir) ->
     file = file.replace(/\\/g, "/")
     file = file.replace("#{dir}/", "")
 
-    if lines[0] is "/*[export]*/"    
+    if lines[0] is "/*[export]*/"
         exist = true for path in CONFIG.export when path is file
         if not exist
             CONFIG.export.push(file)
@@ -42,12 +41,21 @@ do_export = (file, dir) ->
             CONFIG.export.push({path: file, no_version: true})
 
 
-exports.run = ( options ) ->
-    if options.dir
-        load_config()
-        do_clean(options.dir)
-        start_export(options.dir)
-        str = JSON.stringify( CONFIG , null , 4 )
-        new utils.file.writer().write( "fekit.config" , str )
-    else
-        utils.logger.error( "必须使用 --dir 来指定要扫描的文件目录" )
+exports.run = (options) ->
+    base = options.cwd
+    dir = options._[1] || 'src'
+    dir = utils.path.join base, dir
+
+    config_file = utils.path.join base, 'fekit.config'
+    reader = new utils.file.reader()
+
+    try
+        config_object = reader.readJSON config_file
+    catch err
+        return utils.logger.error err
+
+    do_clean dir
+        # start_export(options.dir)
+    str = JSON.stringify config_object, null, 4
+    writer = new utils.file.writer()
+    writer.write config_file, str
