@@ -1,4 +1,5 @@
 syspath = require 'path'
+sysutil = require 'util'
 utils = require '../util'
 
 exports.usage = "自动化生成 fekit.config 'export' 列表"
@@ -10,7 +11,8 @@ do_clean = (dir) ->
         path = path.path if path.path?
         return utils.path.exists (utils.path.join dir, path)
 
-    nu.push i for i in config_object.export when exists i
+    if sysutil.isArray config_object.export
+        nu.push i for i in config_object.export when exists i
     config_object.export = nu
 
 start_export = (dir) ->
