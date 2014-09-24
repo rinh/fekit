@@ -38,16 +38,7 @@ do_export = (file, dir) ->
         if index < 0
             index = i for i, j of config_object.export when j.path is file
 
-    console.log index
-    # if lines[0] is "/*[export]*/"
-    #     exist = true for path in CONFIG.export when path is file
-    #     if not exist
-    #         CONFIG.export.push(file)
-
-    # if lines[0] is "/*[export noversion]*/"
-    #     exist = true for path in CONFIG.export when path.path is file
-    #     if not exist
-    #         CONFIG.export.push({path: file, no_version: true})
+        # TODO
 
 
 exports.run = (options) ->
