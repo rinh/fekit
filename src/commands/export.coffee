@@ -70,3 +70,4 @@ exports.run = (options) ->
     str = JSON.stringify config_object, null, 4
     writer = new utils.file.writer()
     writer.write config_file, str
+    utils.logger.log "'fekit.config' 写入完成"
