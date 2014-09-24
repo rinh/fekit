@@ -38,6 +38,7 @@ do_export = (file, dir) ->
     if result?
         index = config_object.export.indexOf file
         if index < 0
+            index = null
             index = i for i, j of config_object.export when j.path is file
 
         item =
