@@ -4,14 +4,13 @@ utils = require '../util'
 exports.usage = "自动化生成 fekit.config 'export' 列表"
 config_object = {}
 
+exists = (base, path) ->
+    path = path.path if path.path?
+    return utils.path.exists (utils.path.join base, path)
 
 do_clean = (dir) ->
     nu = []
-    exists = (path) ->
-        path = path.path if path.path?
-        return utils.path.exists (utils.path.join dir, path)
-
-    nu.push i for i in config_object.export when exists i
+    nu.push i for i in config_object.export when exists dir, i
     config_object.export = nu
 
 start_export = (dir) ->
@@ -26,9 +25,8 @@ start_export = (dir) ->
 do_export = (file, dir) ->
     reader = new utils.file.reader()
     content = reader.read file
-    lines = content.split "\n"
-
     file = syspath.relative dir, file
+    lines = content.split "\n"
 
     # if lines[0] is "/*[export]*/"
     #     exist = true for path in CONFIG.export when path is file
