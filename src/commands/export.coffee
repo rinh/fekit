@@ -38,7 +38,17 @@ do_export = (file, dir) ->
         if index < 0
             index = i for i, j of config_object.export when j.path is file
 
-        # TODO
+        item =
+            path: file
+            no_version: result[1] is 'no_version'
+
+        if index?
+            if config_object.export[index]['path']?
+                config_object.export[index]['no_version'] = item.no_version
+            else
+                config_object.export[index] = item
+        else
+            config_object.export.push item
 
 
 exports.run = (options) ->
