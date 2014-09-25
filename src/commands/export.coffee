@@ -2,7 +2,8 @@ syspath = require 'path'
 sysutil = require 'util'
 utils = require '../util'
 
-exports.usage = "自动化生成 fekit.config 'export' 列表"
+exports.usage = "文件首行添加 '/* [export] */' 或 '/* [export no_version] */'\n\
+      将被自动添加 fekit.config 'export' 列表中"
 config_object = {}
 
 do_clean = (dir) ->
