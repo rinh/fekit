@@ -1,3 +1,7 @@
+# 0.2.79
+* add: export 指令
+* add: mustache 预编译添加模块导出
+
 # 0.2.78
 * add: mock jsonp 回调名称的配置
 * add: mock raw 处理方式的 jsonp 功能
