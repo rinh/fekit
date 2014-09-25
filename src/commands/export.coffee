@@ -22,7 +22,7 @@ start_export = (dir) ->
             start_export file, dir
             return null
 
-        if ~file.indexOf ".js" or ~file.indexOf ".css" then do_export file, dir
+        if (~file.indexOf ".js") or (~file.indexOf ".css") then do_export file, dir
     ,true
 
 do_export = (file, dir) ->
