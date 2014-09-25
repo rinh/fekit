@@ -36,6 +36,7 @@ do_export = (file, dir) ->
     re = /^\/\*\s*\[export(?: (no_version))?\]\s*\*\/$/
     result = line.match re
 
+    file = file.replace /\\/g, '/' if syspath.sep is '\\'
     if result?
         index = config_object.export.indexOf file
         if index < 0
