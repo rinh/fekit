@@ -22,7 +22,8 @@ start_export = (dir) ->
             start_export file, dir
             return null
 
-        if (~file.indexOf ".js") or (~file.indexOf ".css") then do_export file, dir
+        ext = syspath.extname file
+        if ext is ".js" or ext is ".css" then do_export file, dir
     ,true
 
 do_export = (file, dir) ->
@@ -31,7 +32,7 @@ do_export = (file, dir) ->
     file = syspath.relative dir, file
     lines = content.split "\n"
 
-    line = lines[0] || ""
+    line = lines[0] or ""
     line = line.trim()
     re = /^\/\*\s*\[export(?: (no_version))?\]\s*\*\/$/
     result = line.match re
@@ -58,7 +59,7 @@ do_export = (file, dir) ->
 
 exports.run = (options) ->
     base = options.cwd
-    dir = options._[1] || 'src'
+    dir = options._[1] or 'src'
     dir = utils.path.join base, dir
 
     config_file = utils.path.join base, 'fekit.config'
