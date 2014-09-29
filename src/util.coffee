@@ -121,15 +121,19 @@ exports.path = utilpath =
             parts = path.split( "\\" )
         else
             parts = path.split( "." )
-            last = parts.pop() # 处理文件名含有多个 '.' 的情况
-            parts = [(parts.join '.'), last]
+            splitby = '.'
 
         parts = utilarray.clear_empty( parts )
         ext = "." + parts[ parts.length - 1 ]
         if ~ext_list.indexOf( ext )
             # 合并最后2个元素为真正文件名
-            parts = parts.slice( 0 , parts.length - 1 )
-            parts[ parts.length - 1 ] = parts[ parts.length - 1 ] + ext
+            if splitby is '.'  # 处理文件名含有多个 '.' 的情况
+                parts = [parts.join '.']
+            else
+                last = parts.length - 1
+                parts = parts.slice 0, last
+                last = parts.length - 1
+                parts[last] = parts[last] + ext
 
         return parts
 
