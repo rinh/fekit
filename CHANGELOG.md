@@ -1,3 +1,8 @@
+# 0.2.80
+* fix: require 文件名中含有多个 '.' 时的 bug
+* fix: mustache 预编译，在非模块编译时的 bug
+* add: 添加部分文档
+
 # 0.2.79
 * add: export 指令
 * add: mustache 预编译添加模块导出
