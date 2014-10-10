@@ -9,7 +9,7 @@ exports.process = (txt, path, module, cb) ->
         builded = """
             if (typeof window.QTMPL === "undefined") window.QTMPL = {};
             window.QTMPL.#{name} = new window.Hogan.Template(#{txt});
-            module.exports = window.QTMPL.#{name};
+            if (typeof module !== "undefined") module.exports = window.QTMPL.#{name};
         """
         cb null, builded
     catch err
