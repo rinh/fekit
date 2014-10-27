@@ -39,9 +39,18 @@ rsync = (opts) ->
     if opts.delete then _args.push '--delete'
     args = _args.join(' ')
 
+    if utils.sys.isWindows then process.env['HOME'] = process.env.USERPROFILE
     utils.logger.log "[调用] rsync #{args}"
     child_process.exec "rsync #{args}", (err, stdout, stderr) ->
-        if err then throw err
+        if err
+            if utils.sys.isWindows
+                utils.logger.error "出错了！"
+                utils.logger.log "[提示] 1. 请确认 'rsync' 指令是否存在"
+                utils.logger.log "[提示]    如不存在，下载 http://wiki.corp.qunar.com/download/attachments/42273573/rsync.rar?version=1&modificationDate=1402624229000，解压将存放路径添加到环境变量 'PATH' 中，如 set PATH=C:\\rsync;%PATH%"
+                utils.logger.log "[提示] 2. 请确认是否可以免密登录相应开发机"
+                utils.logger.log "[提示]    如不可以，根据 http://gitlab.corp.qunar.com/fed/qzz-copy-id/tree/master，配置免密登录开发机"
+            else
+                throw err
         if stdout then utils.logger.log stdout
         if stderr then utils.logger.error stderr
 
