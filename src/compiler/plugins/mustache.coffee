@@ -8,8 +8,8 @@ exports.process = (txt, path, module, cb) ->
         txt = hogan.compile txt, asString: 1
         builded = """
             if (typeof window.QTMPL === "undefined") window.QTMPL = {};
-            window.QTMPL.#{name} = new window.Hogan.Template(#{txt});
-            if (typeof module !== "undefined") module.exports = window.QTMPL.#{name};
+            window.QTMPL["#{name}"] = new window.Hogan.Template(#{txt});
+            if (typeof module !== "undefined") module.exports = window.QTMPL["#{name}"];
         """
         cb null, builded
     catch err

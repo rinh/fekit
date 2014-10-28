@@ -9,8 +9,8 @@ exports.process = (txt, path, module, cb) ->
         txt = handlebars.precompile txt
         builded = """
             if (typeof window.QTMPL === "undefined") window.QTMPL = {};
-            window.QTMPL.#{name} = new window.Handlebars.template(#{txt});
-            if (typeof module !== "undefined") module.exports = window.QTMPL.#{name};
+            window.QTMPL["#{name}"] = new window.Handlebars.template(#{txt});
+            if (typeof module !== "undefined") module.exports = window.QTMPL["#{name}"];
         """
         cb null, builded
     catch err

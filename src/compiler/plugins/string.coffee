@@ -7,7 +7,7 @@ exports.process = (ori_txt, path, module, cb) ->
     txt = JSON.stringify ori_txt
     code = """
         if (typeof window.QTMPL === "undefined") window.QTMPL = {};
-        window.QTMPL.#{name} = #{txt};
-        if (typeof module !== "undefined") module.exports = window.QTMPL.#{name};
+        window.QTMPL["#{name}"] = #{txt};
+        if (typeof module !== "undefined") module.exports = window.QTMPL["#{name}"];
     """
     cb null, code
