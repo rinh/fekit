@@ -27,14 +27,17 @@ exports.run = ( options ) ->
                         utils.exit(1)
                         return
 
-                    new utils.file.writer().write( dest , source )
+                    writer = new utils.file.writer()
+                    writer.write( dest , source )
+                    writer.write( urlconvert.to_ver() , "dev" ) unless opts.no_version 
                     utils.logger.log( "已经处理 #{srcpath}  ==> #{dest}" )
                     doneCallback()
 
             compiler.compile srcpath , { dependencies_filepath_list : parents , environment : 'dev' } , _done
                 
     done = () -> 
-            conf.doScript "postpack" , script_global
+            conf.doRefs()
+            conf.doScript "postpack" , script_global 
             utils.logger.log("DONE.")
 
     conf.each_export_files ( srcpath , parents , opts ) ->

@@ -127,6 +127,16 @@ FEKIT
                     "gen_code" : {}
                 }
             }
+        } , 
+
+        // 发布其它文件
+        "refs" : {
+            // copy 命令 , 将 ver 目录复制到 refs 中
+            "cp" : [ "ver" ]
+            // 自定义脚本, 当前目录为项目目录, 可以制定任意内容
+            // 全局对象可以使用 
+            // path , file , cwd , refs_path 
+            "sh" : "./auto.js"
         }
     }
 

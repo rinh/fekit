@@ -1,3 +1,5 @@
+##### 该功能已废弃
+
 syspath = require 'path'
 sysfs = require 'fs'
 utils = require '../util'

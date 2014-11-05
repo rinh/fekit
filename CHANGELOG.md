@@ -1,3 +1,7 @@
+# 0.2.84
+* add: pack 时添加 ver 处理
+* add: 配置中加入 refs， refs用于js/css之外的文件发布目录内容，在 pack 与 min 后执行
+
 # 0.2.83
 * fix: 修复模板文件名包含多 '.' 问题
 

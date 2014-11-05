@@ -4,6 +4,7 @@ async = require 'async'
 child_process = require 'child_process'
 syspath = require 'path'
 fs = require 'fs'
+fse = require 'fs-extra'
 mkdirp = require 'mkdirp'
 yaml = require 'js-yaml'
 cjson = require 'cjson'
@@ -15,7 +16,7 @@ tar = require 'rinh-node-tar'
 fstream = require 'fstream'
 zlib = require 'zlib'
 sty = require 'sty'
-
+sysutil = require 'util'
 
 #----------------------------
 
@@ -257,12 +258,15 @@ utilfile.copy = (srcFile, destFile) ->
 utilfile.cpr = ( src , dest , cb ) ->
     ncp src , dest , cb
 
+utilfile.cprSync = fse.copySync
 
 utilfile.rmrf = ( dest , cb ) ->
     if cb
         rimraf dest , cb
     else
         rimraf.sync dest
+
+utilfile.rmrfSync = fse.removeSync
 
 utilfile.mkdirp = mkdirp.sync
 
@@ -418,6 +422,44 @@ class FekitConfig
         utillogger.log("检测到自动脚本 #{type} , 开始执行.")
         _runCode( path , ctx )
         utillogger.log("自动脚本 #{type} , 执行完毕.")
+
+
+    doRefs : () ->
+        @refs_path = utilpath.join @baseUri , "refs"
+        utilfile.rmrfSync @refs_path
+        utilfile.mkdirp @refs_path
+        utillogger.log "[refs] start"
+        for k , v of ( @root.refs || {} )
+            fn = @["_doRefs_"+k]
+            if fn
+                fn.apply @ , ( unless sysutil.isArray(v) then [v] else v )
+            else 
+                utillogger.error "[refs] 构建任务失败, 找不到命令 #{k}"
+
+    _doRefs_cp : () ->
+        
+        for dir in arguments
+            from = utilpath.join @baseUri , dir 
+            to = utilpath.join @refs_path , dir 
+            utillogger.log "\t >>> #{from} -> #{to}"
+            if utilpath.exists from 
+                utilfile.cprSync from , to
+            else
+                utillogger.error "\t#{from} 不存在"
+
+    _doRefs_sh : ( script ) ->
+        script_path = utilpath.join @baseUri , script
+        return unless utilpath.exists script_path
+
+        utillogger.log "\t >>> run script [#{script}]"
+        ctx = {}
+        ctx.path = utilpath
+        ctx.file = utilfile
+        ctx.cwd = @baseUri
+        ctx.refs_path = @refs_path
+
+        _runCode script_path , ctx 
+
 
 
     getEnvironmentConfig : () ->
