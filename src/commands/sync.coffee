@@ -23,6 +23,8 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'd', 'delete'
     optimist.describe 'd', '删除服务器上本地不存在的文件'
 
+    optimist.alias 'i' , 'init'
+    optimist.describe 'i', '初始化 .dev 文件'
 
 rsync = (opts) ->
     _args = [
@@ -49,9 +51,15 @@ rsync = (opts) ->
         if stdout then utils.logger.log stdout
         if stderr then utils.logger.error stderr
 
-        if opts.shell and (not opts.nonexec) then shell opts
+        unless opts.nonexec
+            common_shell = 
+                user : opts.user
+                host : opts.host
+                shell : "sudo /home/q/tools/bin/fekit_common_shell.sh \"#{opts.path}\""
+            shell common_shell , () ->
+                if opts.shell then shell opts
 
-shell = (opts) ->
+shell = (opts,cb) ->
     cmd = opts.shell.replace /'/g, "\\'"
     args = "#{opts.user}#{opts.host} '#{cmd}'"
 
@@ -61,9 +69,22 @@ shell = (opts) ->
         if err then throw err
         if stdout then utils.logger.log stdout
         if stderr then utils.logger.error stderr
+        cb()
+
+init = (options) ->
+    code = 
+        dev : 
+            host : ""
+            path : ""
+    code_path = utils.path.join options.cwd , ".dev"
+    utils.logger.log "[sync] 已创建 .dev 配置"
+    utils.file.io.write code_path , JSON.stringify(code,null,4)
 
 
 exports.run = (options) ->
+
+    return init(options) if options.init 
+
     files = [
         options.file || '.dev',
         'fekit.config'
