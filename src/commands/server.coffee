@@ -28,7 +28,7 @@ exports.set_options = ( optimist ) ->
     optimist.describe 't' , '当指定该选项后，会识别以前的 qzz 项目 url'
 
     optimist.alias 'b' , 'boost'
-    optimist.describe 'b' , '可以指定目录进行编译加速。格式为 -b 目录名'    
+    optimist.describe 'b' , '可以指定目录进行编译加速。格式为 -b 目录名'
 
     optimist.alias 's' , 'ssl'
     optimist.describe 's' , '指定ssl证书文件，后缀为.crt'
@@ -39,28 +39,31 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'l' , 'livereload'
     optimist.describe 'l' , '是否启用livereload'
 
+    optimist.alias 'o' , 'opposite'
+    optimist.describe 'o' , '将本地不存在的资源反向代理到线上'
+
 
 setupServer = ( options ) ->
 
     app = connect()
-            .use( connect.logger( 'tiny' ) ) 
-            .use( connect.query() ) 
+            .use( connect.logger( 'tiny' ) )
+            .use( connect.query() )
             .use( middleware.mock( options ) )
             .use( middleware.rewriteObsoleteUrl( options ) )
-            .use( middleware.rewriteRule( options ) ) 
-            .use( connect.bodyParser() ) 
+            .use( middleware.rewriteRule( options ) )
+            .use( connect.bodyParser() )
             .use( middleware.velocity(options) )
             .use( middleware.fekit(options) )
-            .use( connect.static( options.cwd , { hidden: true, redirect: true })  ) 
-            .use( connect.directory( options.cwd ) ) 
+            .use( connect.static( options.cwd , { hidden: true, redirect: true })  )
+            .use( connect.directory( options.cwd ) )
 
     if options.ssl
 
         name = utils.path.fname options.ssl
         path = utils.path.dirname options.ssl
-        opts = 
+        opts =
             key : fs.readFileSync utils.path.join( path , name + ".key" )
-            cert : fs.readFileSync utils.path.join( path , name + ".crt" ) 
+            cert : fs.readFileSync utils.path.join( path , name + ".crt" )
 
         listenPort( https.createServer( opts , app ) , options.port || 443 )
 
@@ -95,7 +98,7 @@ listenPort = ( server, port ) ->
 
     server.on "listening", (e) ->
         console.log "[LOG]: fekit server 运行成功, 端口为 #{port}."
-        console.log "[LOG]: 按 Ctrl + C 结束进程." 
+        console.log "[LOG]: 按 Ctrl + C 结束进程."
 
     server.listen( port )
 
@@ -106,8 +109,3 @@ exports.run = ( options ) ->
     setupLivereload( options )
 
     setupServer( options )
-
-
-
-
-
