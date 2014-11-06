@@ -107,6 +107,7 @@ process_directory = ( options ) ->
         () ->
             if vertype is 0 or vertype is 2
                 save_versions_mapping( syspath.join( options.cwd , './ver/versions.mapping' ) , script_global.EXPORT_MAP )
+            conf.doRefs()
             conf.doScript "postmin" , script_global 
             utils.logger.log("DONE.")
     )

@@ -2,14 +2,12 @@ syspath = require 'path'
 
 exports.contentType = "javascript"
 
-exports.process = ( ori_txt , path ,module , cb ) ->
-    
-    s = JSON.stringify
-
-    scope = path.replace( syspath.join( module.config.config.fekit_root_dirname , 'src/' ) , '' )
-    scope = scope.replace syspath.extname(scope) , '' 
-    scope = scope.split( syspath.sep )
-
-    code = "module.exports = #{s(ori_txt)};"
-
-    cb( null , code )
+exports.process = (ori_txt, path, module, cb) ->
+    name = syspath.basename path, '.string'
+    txt = JSON.stringify ori_txt
+    code = """
+        if (typeof window.QTMPL === "undefined") window.QTMPL = {};
+        window.QTMPL["#{name}"] = #{txt};
+        if (typeof module !== "undefined") module.exports = window.QTMPL["#{name}"];
+    """
+    cb null, code

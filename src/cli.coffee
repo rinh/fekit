@@ -14,10 +14,11 @@ each_commands = ( cb ) ->
     for f in list 
         if typeof f is 'string'
             if f isnt "." or f isnt ".."
-                fullpath = syspath.resolve( cmddir , f )
-                continue if utils.path.is_directory( fullpath )
-                command = utils.path.fname( fullpath )
-                cb( command , require(fullpath) )
+                if f.charAt(0) isnt "_"
+                    fullpath = syspath.resolve( cmddir , f )
+                    continue if utils.path.is_directory( fullpath )
+                    command = utils.path.fname( fullpath )
+                    cb( command , require(fullpath) )
         else if f.name && f.path
             cb( "#{f.name}(#{f.version})" , require(f.path) )
 
