@@ -168,4 +168,4 @@ module.exports = ( options ) ->
                             if !error and response.statusCode == 200
                                 res.end(body)
                     else
-                        res.end( "alert('文件不存在 #{url.pathname}');" )
+                        res.end( "文件不存在 #{url.pathname}" )
