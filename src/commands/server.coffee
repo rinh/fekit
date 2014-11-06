@@ -40,7 +40,7 @@ exports.set_options = ( optimist ) ->
     optimist.describe 'l' , '是否启用livereload'
 
     optimist.alias 'o' , 'opposite'
-    optimist.describe 'o' , '将本地不存在的资源反向代理到线上'
+    optimist.describe 'o' , '是否启用反向代理，将本地不存在的资源反向代理到线上资源'
 
 
 setupServer = ( options ) ->
