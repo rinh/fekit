@@ -131,10 +131,14 @@ module.exports = ( options ) ->
                     when "css" then ctype = ".css"
                     else ctype = ""
 
-                _setHead = ( code ) ->
-                    res.writeHead code, { 'Content-Type': mime_config[ctype] + charset }
+                _setHead = ( code , remote ) ->
+                    res.writeHead code , {
+                        'Content-Type': mime_config[ctype] + charset
+                        'Server': 'Fekit ( ' + (if remote then 'Remote' else 'Local') + ' )'
+                    }
 
-                _setHead( 200 )
+
+                _setHead 200
 
                 # 判断如果有 cache 则使用，否则进行编译
                 cachekey = srcpath + ( if is_deps then "_deps" else "" )
@@ -172,10 +176,10 @@ module.exports = ( options ) ->
                     if options.opposite and onlineServerIP
                         request 'http://' + onlineServerIP + url.pathname, (error, response, body) =>
                             if !error
-                                _setHead response.statusCode
+                                _setHead response.statusCode , true
                                 res.end body
                             else
-                                _setHead 500
+                                _setHead 500 , true
                                 err = "获取线上资源失败"
                                 utils.logger.error err
                                 res.end err
