@@ -43,10 +43,10 @@ class ModulePath
         省略后缀名方式, 该方式会认为子模块后缀名默认与parentModule相同
             a/b/c
             a.b.c
-            
+
             后缀名默认匹配顺序为, 如果都找不到就会报错
             [javascript]
-            .js / .coffee / .mustache 
+            .js / .coffee / .mustache
             [css]
             .css / .less
 
@@ -67,16 +67,16 @@ ModulePath.resolvePath = ( path , parentModule ) ->
 ModulePath.parsePath = ( path , parentModule ) ->
     parts = utils.path.split_path( path , ModulePath.EXTLIST )
     result = []
-    
+
     # 解析全路径
     for part , i in parts
         if i == 0 and parts.length is 1
 
             ###
-                处理组件名或只写一个当前目录文件且没有扩展名的情况 
+                处理组件名或只写一个当前目录文件且没有扩展名的情况
                 优先取文件，再取组件
             ###
-            package_path = parentModule.config.getPackage( part ) 
+            package_path = parentModule.config.getPackage( part )
             if package_path
                 # 组件
                 result.push( package_path )
@@ -84,14 +84,14 @@ ModulePath.parsePath = ( path , parentModule ) ->
                 # 相对路径
                 result.push( parentModule.path.dirname() )
                 result.push( part )
-                
+
         else if i == 0
             ###
                 大于1个以上的引用名的情况
             ###
             if parentModule.config.isUseAlias( part )
                 # 别名引用路径
-                result.push( parentModule.config.parseAlias( part ) )    
+                result.push( parentModule.config.parseAlias( part ) )
             else
                 # 相对路径
                 result.push( parentModule.path.dirname() )
@@ -115,7 +115,7 @@ ModulePath.getPlugin = ( extName ) ->
     ModulePath.EXTTABLE[ extName ]
 
 ModulePath.getContentTypeList = ( extName ) ->
-    type = ModulePath.EXTTABLE[ extName ].contentType 
+    type = ModulePath.EXTTABLE[ extName ]?.contentType 
     return ( k for k , v of ModulePath.EXTTABLE when v.contentType is type )
 
 ModulePath.findFileWithoutExtname = ( uri ) ->
@@ -124,11 +124,11 @@ ModulePath.findFileWithoutExtname = ( uri ) ->
     p = uri.replace( ext , '' )
     list = ModulePath.getContentTypeList( ext )
     for extname in list
-        n = p + extname 
+        n = p + extname
         return n if utils.path.exists( n )
     return null
 
-# 后缀列表 
+# 后缀列表
 ModulePath.EXTLIST = []
 ModulePath.EXTTABLE = {}
 

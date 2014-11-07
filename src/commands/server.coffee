@@ -39,6 +39,9 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'l' , 'livereload'
     optimist.describe 'l' , '是否启用livereload'
 
+    optimist.alias 'o' , 'opposite'
+    optimist.describe 'o' , '是否启用反向代理，将通过指定域名访问的本地不存在的资源反向代理到线上资源，格式为 -o domain(:address)[,domain]'
+
 
 setupServer = ( options ) ->
 
@@ -103,11 +106,9 @@ listenPort = ( server, port ) ->
 
 exports.run = ( options ) ->
 
+    if options.opposite is true
+        console.log "[WARN]: -o(--opposite) 需要指定需要反向代理的域名，否则无效"
+
     setupLivereload( options )
 
     setupServer( options )
-
-
-
-
-
