@@ -34,10 +34,22 @@ module.exports = ( options ) ->
     domains_dns = {}
 
     if options.opposite and options.opposite isnt true
-        options.opposite.split(',').forEach ( domain ) =>
-            dns.resolve4 domain, (err, addresses) =>
-                if !err
-                    domains_dns[domain] = addresses[0]
+        options.opposite.split(',').forEach ( domainAndAddress ) =>
+            map = domainAndAddress.split(':')
+            domain = map[0]
+            if map[1]
+                domains_dns[domain] = {
+                    custom : true,
+                    address : map[1]
+                }
+            else
+                dns.resolve4 domain, (err, addresses) =>
+                    if !err
+                        domains_dns[domain] = {
+                            custom : false,
+                            address : addresses[0]
+                        }
+
 
     compiler.boost({
         cwd : process.cwd() ,
@@ -136,7 +148,7 @@ module.exports = ( options ) ->
                 _setHead = ( code , remote ) ->
                     res.writeHead code , {
                         'Content-Type': mime_config[ctype] + charset
-                        'Server': 'Fekit ( ' + (if remote then 'Remote' else 'Local') + ' )'
+                        'Server': 'Fekit ' + (if remote then 'Remote ' + remote.address + ' ( ' + ( if remote.custom then 'Custom' else 'DNS') + ' ) ' else 'Local')
                     }
 
 
@@ -176,12 +188,12 @@ module.exports = ( options ) ->
 
                 else
                     if domains_dns[host]
-                        request "#{protocol}://#{domains_dns[host]}#{port}#{url.pathname}", (error, response, body) =>
+                        request "#{protocol}://#{domains_dns[host].address}#{port}#{url.pathname}", (error, response, body) =>
                             if !error
-                                _setHead response.statusCode , true
+                                _setHead response.statusCode , domains_dns[host]
                                 res.end body
                             else
-                                _setHead 500 , true
+                                _setHead 500 , domains_dns[host]
                                 err = "获取线上资源失败"
                                 utils.logger.error err
                                 res.end err
