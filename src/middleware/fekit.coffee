@@ -131,7 +131,10 @@ module.exports = ( options ) ->
                     when "css" then ctype = ".css"
                     else ctype = ""
 
-                res.writeHead 200, { 'Content-Type': mime_config[ctype] + charset }
+                _setHead = ( code ) ->
+                    res.writeHead code, { 'Content-Type': mime_config[ctype] + charset }
+
+                _setHead( 200 )
 
                 # 判断如果有 cache 则使用，否则进行编译
                 cachekey = srcpath + ( if is_deps then "_deps" else "" )
@@ -142,9 +145,9 @@ module.exports = ( options ) ->
 
                 _render = ( err , txt ) ->
                     if err
-                        res.writeHead 500, { 'Content-Type': mime_config[ctype] + charset }
+                        _setHead 500
                         utils.logger.error err
-                        res.end( err )
+                        res.end err
                     else
                         # 编译后将内容加入 cache
                         compiler.booster.set_compiled_cache( cachekey , txt )
@@ -160,12 +163,24 @@ module.exports = ( options ) ->
                             else
                                 no_combine path , parents , host , params , _render
                         else
-                            res.end( "请确认文件 #{url.pathname} 存在于 fekit.config 的 export 中。" )
+                            _setHead 404
+                            err = "请确认文件 #{url.pathname} 存在于 fekit.config 的 export 中。"
+                            utils.logger.error err
+                            res.end err
 
                 else
                     if options.opposite and onlineServerIP
                         request 'http://' + onlineServerIP + url.pathname, (error, response, body) =>
-                            if !error and response.statusCode == 200
-                                res.end(body)
+                            if !error
+                                _setHead response.statusCode
+                                res.end body
+                            else
+                                _setHead 500
+                                err = "获取线上资源失败"
+                                utils.logger.error err
+                                res.end err
                     else
-                        res.end( "文件不存在 #{url.pathname}" )
+                        _setHead 404
+                        err = "文件不存在 #{url.pathname}"
+                        utils.logger.error err
+                        res.end err
