@@ -31,12 +31,13 @@ toPARAM = ( md5str ) ->
 
 module.exports = ( options ) ->
 
-    onlineServerIP = null
+    domains_dns = {}
 
     if options.opposite and options.opposite isnt true
-        dns.resolve4 options.opposite, (err, addresses) =>
-            if !err
-                onlineServerIP = addresses[0]
+        options.opposite.split(',').forEach ( domain ) =>
+            dns.resolve4 domain, (err, addresses) =>
+                if !err
+                    domains_dns[domain] = addresses[0]
 
     compiler.boost({
         cwd : process.cwd() ,
@@ -46,6 +47,7 @@ module.exports = ( options ) ->
     ROOT = options.cwd
 
     protocol = if options.ssl then "https" else "http"
+    port = if options.port and options.port != "80" then ":#{options.port}" else ""
 
     no_combine = ( path , parents , host , params , doneCallback ) ->
         # 根据是否非依赖模式, 生成不同的结果
@@ -65,7 +67,6 @@ module.exports = ( options ) ->
             custom_script_path = utils.path.join( conf.fekit_root_dirname , custom_script )
 
             host = host.replace(/:\d+/,"")
-            port = if options.port and options.port != "80" then ":#{options.port}" else ""
 
             if custom_script and utils.path.exists custom_script_path
                 ctx = utils.proc.requireScript custom_script_path
@@ -174,8 +175,8 @@ module.exports = ( options ) ->
                             res.end err
 
                 else
-                    if host is options.opposite and onlineServerIP
-                        request 'http://' + onlineServerIP + url.pathname, (error, response, body) =>
+                    if domains_dns[host]
+                        request "#{protocol}://#{domains_dns[host]}#{port}#{url.pathname}", (error, response, body) =>
                             if !error
                                 _setHead response.statusCode , true
                                 res.end body
