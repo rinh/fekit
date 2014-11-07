@@ -20,12 +20,6 @@ charset = ";charset=UTF-8"
 
 PARAM_CACHE = {}
 
-onlineServerIP = null
-
-dns.resolve4 'qunarzz.com', (err, addresses) =>
-    if !err
-        onlineServerIP = addresses[0]
-
 toMD5 = ( str ) ->
     m = md5(str).toString().slice(9).slice(0,16)
     PARAM_CACHE[m] = str
@@ -36,6 +30,13 @@ toPARAM = ( md5str ) ->
 
 
 module.exports = ( options ) ->
+
+    onlineServerIP = null
+
+    if options.opposite and options.opposite isnt true
+        dns.resolve4 options.opposite, (err, addresses) =>
+            if !err
+                onlineServerIP = addresses[0]
 
     compiler.boost({
         cwd : process.cwd() ,
@@ -173,7 +174,7 @@ module.exports = ( options ) ->
                             res.end err
 
                 else
-                    if options.opposite and onlineServerIP
+                    if host is options.opposite and onlineServerIP
                         request 'http://' + onlineServerIP + url.pathname, (error, response, body) =>
                             if !error
                                 _setHead response.statusCode , true

@@ -106,6 +106,9 @@ listenPort = ( server, port ) ->
 
 exports.run = ( options ) ->
 
+    if options.opposite is true
+        console.log "[WARN]: -o(--opposite) 需要指定需要反向代理的域名，否则无效"
+
     setupLivereload( options )
 
     setupServer( options )
