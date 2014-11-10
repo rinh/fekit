@@ -9,7 +9,7 @@ show = () ->
         r ";   #{key}  =  \"#{value}\""
     r "\n"
 
-
+ 
 exports.usage = "显示 fekit 的配置项"
 
 

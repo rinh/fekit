@@ -5,6 +5,7 @@ http = require "http"
 https = require "https"
 tinylr = require "tiny-lr"
 compiler = require "../compiler/compiler"
+http_proxy = require "./_server_http_proxy" 
 
 middleware = require "../middleware/index"
 
@@ -15,17 +16,11 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'p' , 'port'
     optimist.describe 'p' , '服务端口号, 一般无法使用 80 时设置, 并且需要自己做端口转发'
 
-    optimist.alias 'r' , 'route'
-    optimist.describe 'r' , '路由,将指定路径路由到其它地址, 物理地址需要均在当前执行目录下。格式为 -r 原路径名:路由后的物理目录名'
-
     optimist.alias 'c' , 'combine'
     optimist.describe 'c' , '指定所有文件以合并方式进行加载, 启动该参数则请求文件不会将依赖展开'
 
     optimist.alias 'n' , 'noexport'
     optimist.describe 'n' , '默认情况下，/prd/的请求需要加入export中才可以识别。 指定此选项则可以无视export属性'
-
-    optimist.alias 't' , 'transfer'
-    optimist.describe 't' , '当指定该选项后，会识别以前的 qzz 项目 url'
 
     optimist.alias 'b' , 'boost'
     optimist.describe 'b' , '可以指定目录进行编译加速。格式为 -b 目录名'
@@ -39,6 +34,14 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'l' , 'livereload'
     optimist.describe 'l' , '是否启用livereload'
 
+    optimist.alias 'o' , 'proxy'
+    optimist.describe 'o' , '是否启用代理服务器, 默认端口为13180'    
+
+
+setupProxyServer = ( options ) ->
+    
+    http_proxy.run( options )
+    
 
 setupServer = ( options ) ->
 
@@ -46,13 +49,13 @@ setupServer = ( options ) ->
             .use( connect.logger( 'tiny' ) )
             .use( connect.query() )
             .use( middleware.mock( options ) )
-            .use( middleware.rewriteObsoleteUrl( options ) )
-            .use( middleware.rewriteRule( options ) )
             .use( connect.bodyParser() )
             .use( middleware.velocity(options) )
             .use( middleware.fekit(options) )
             .use( connect.static( options.cwd , { hidden: true, redirect: true })  )
             .use( connect.directory( options.cwd ) )
+
+
 
     if options.ssl
 
@@ -94,8 +97,8 @@ listenPort = ( server, port ) ->
         process.exit 1
 
     server.on "listening", (e) ->
-        console.log "[LOG]: fekit server 运行成功, 端口为 #{port}."
-        console.log "[LOG]: 按 Ctrl + C 结束进程."
+        utils.logger.log "fekit server 运行成功, 端口为 #{port}."
+        utils.logger.log "按 Ctrl + C 结束进程."
 
     server.listen( port )
 
@@ -106,6 +109,8 @@ exports.run = ( options ) ->
     setupLivereload( options )
 
     setupServer( options )
+
+    setupProxyServer( options )
 
 
 
