@@ -66,15 +66,12 @@ class Matcher
     constructor: ( @uri ) ->
 
     getURL:()->
-        ret = ''
+        ret = null
         if @regmatcher and @ret
             $ = @regmatcher.slice(1)
             ret = @ret
             for val , idx in $
                 ret = ret.replace new RegExp("\\$" + (idx+1)) , val
-        else if @to
-            ret = @to
-            
         return ret
 
     getFullHost:() ->

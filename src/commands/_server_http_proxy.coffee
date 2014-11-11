@@ -26,8 +26,8 @@ exports.run = (options) ->
     server = http.createServer (req, res) ->
         u = sysurl.parse( req.url )
         r = rule.match u
-        if r
-            req.url = r.getURL()
+        if r 
+            req.url = r.getURL() if r.getURL()
             proxy.web req, res, { target: r.getFullHost() }
         else
             proxy.web req, res, { target: u.protocol + "//" + u.host }
