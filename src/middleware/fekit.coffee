@@ -31,7 +31,7 @@ toPARAM = ( md5str ) ->
 writeHeader = ( res, code, type ) ->
     res.writeHead code, {
         'Content-Type': mime_config[type] + charset,
-        'Server': 'Fekit Local'
+        'Server': 'Fekit - Local File'
     }
 
 module.exports = ( options ) ->

@@ -13,7 +13,7 @@ charset = ";charset=UTF-8"
 writeHeader = ( res, code, type , domain) ->
     res.writeHead code, {
         'Content-Type': mime_config[type] + charset,
-        'Server': "Fekit Remote #{domain.address} (" + (if domain.custom then 'Custom' else 'Online') + ")"
+        'Server': "Fekit - Remote File From #{domain.address} (" + (if domain.custom then 'Custom' else 'Online') + ")"
     }
 
 module.exports = {
