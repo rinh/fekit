@@ -6,6 +6,7 @@ https = require "https"
 tinylr = require "tiny-lr"
 compiler = require "../compiler/compiler"
 http_proxy = require "./_server_http_proxy"
+host_rule = require "./_server_host_rule"
 
 middleware = require "../middleware/index"
 
@@ -108,6 +109,9 @@ listenPort = ( server, port ) ->
 
 
 exports.run = ( options ) ->
+
+    if options.proxy or options.reverse
+        options.rule = host_rule.load( if typeof options.proxy is 'string' then options.proxy else options.reverse )
 
     setupLivereload( options )
 

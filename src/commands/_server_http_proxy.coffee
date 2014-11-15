@@ -2,13 +2,12 @@ utils = require "../util"
 sysurl = require('url')
 http = require 'http'
 httpProxy = require 'http-proxy'
-host_rule = require './_server_host_rule'
 
 exports.run = (options) ->
 
     return unless options.proxy
 
-    rule = host_rule.load options.proxy 
+    rule = options.rule
 
     return unless rule
 
@@ -26,7 +25,7 @@ exports.run = (options) ->
     server = http.createServer (req, res) ->
         u = sysurl.parse( req.url )
         r = rule.match u
-        if r 
+        if r
             req.url = r.getURL() if r.getURL()
             proxy.web req, res, { target: r.getFullHost() }
         else

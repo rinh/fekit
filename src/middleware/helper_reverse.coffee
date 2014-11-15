@@ -18,22 +18,23 @@ writeHeader = ( res, code, type , domain) ->
 
 module.exports = {
     load: ( options ) ->
-        return unless options.reverse and options.reverse isnt true
-        for rule in options.reverse.split(',')
-            [domain, address] = rule.split(':')
-            if domain
-                if address
-                    domains[domain] = {
-                        custom: true,
-                        address: address
-                    }
-                else
-                    dns.resolve4 domain , ( err , addresses ) ->
-                        if !err
-                            domains[domain] = {
-                                custom: false,
-                                address: addresses[0]
-                            }
+        console.log( options )
+        return unless options.reverse
+
+        for domain,address of options.rule.reverse_hosts
+            console.log(domain, address)
+            if address
+                domains[domain] = {
+                    custom: true,
+                    address: address
+                }
+            else
+                dns.resolve4 domain , ( err , addresses ) ->
+                    if !err
+                        domains[domain] = {
+                            custom: false,
+                            address: addresses[0]
+                        }
 
     exists: ( domain ) ->
         return !!domains[domain]
