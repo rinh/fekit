@@ -18,11 +18,9 @@ writeHeader = ( res, code, type , domain) ->
 
 module.exports = {
     load: ( options ) ->
-        console.log( options )
         return unless options.reverse
 
         for domain,address of options.rule.reverse_hosts
-            console.log(domain, address)
             if address
                 domains[domain] = {
                     custom: true,
