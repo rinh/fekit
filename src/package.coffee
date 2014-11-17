@@ -175,16 +175,20 @@ class Package
                                 utils.file.rmrf tarfile_path
 
                                 # install hook
-                                parent_config_path = syspath.join( self.package_installed_path, '../../fekit.config' )
                                 self_config = utils.file.io.readJSON syspath.join( self.package_installed_path, 'fekit.config' )
-                                parent_config = if utils.path.exists parent_config_path then utils.file.io.readJSON parent_config_path else {}
 
                                 if self_config.scripts?.postinstall and utils.path.exists syspath.join( self.package_installed_path, self_config.scripts.postinstall )
-                                     utils.proc.requireScript syspath.join( self.package_installed_path, self_config.scripts.postinstall ), {
-                                         config: parent_config.module_options?[self.name] || {},
-                                         process_end: () ->
-                                             self._each_dependencies_install done
-                                     }
+                                    parent_config_path = syspath.join( self.package_installed_path, '../../fekit.config' )
+                                    parent_config = {};
+                                    try
+                                        parent_config = utils.file.io.readJSON parent_config_path
+                                    catch error
+
+                                    utils.proc.requireScript syspath.join( self.package_installed_path, self_config.scripts.postinstall ), {
+                                        config: parent_config.module_options?[self.name] || {},
+                                        process_end: () ->
+                                            self._each_dependencies_install done
+                                    }
                                 else
                                     self._each_dependencies_install done
 
