@@ -5,7 +5,8 @@ http = require "http"
 https = require "https"
 tinylr = require "tiny-lr"
 compiler = require "../compiler/compiler"
-http_proxy = require "./_server_http_proxy" 
+http_proxy = require "./_server_http_proxy"
+host_rule = require "./_server_host_rule"
 
 middleware = require "../middleware/index"
 
@@ -35,13 +36,16 @@ exports.set_options = ( optimist ) ->
     optimist.describe 'l' , '是否启用livereload'
 
     optimist.alias 'o' , 'proxy'
-    optimist.describe 'o' , '是否启用代理服务器, 默认端口为13180'    
+    optimist.describe 'o' , '是否启用代理服务器, 默认端口为13180'
+
+    optimist.alias 'r' , 'reverse'
+    optimist.describe 'r' , '是否启用反向代理服务。格式为 -r domain(:address)[,domain(:address)]'
 
 
 setupProxyServer = ( options ) ->
-    
+
     http_proxy.run( options )
-    
+
 
 setupServer = ( options ) ->
 
@@ -106,13 +110,11 @@ listenPort = ( server, port ) ->
 
 exports.run = ( options ) ->
 
+    if options.proxy or options.reverse
+        options.rule = host_rule.load( if typeof options.proxy is 'string' then options.proxy else options.reverse )
+
     setupLivereload( options )
 
     setupServer( options )
 
     setupProxyServer( options )
-
-
-
-
-

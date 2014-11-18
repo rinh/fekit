@@ -4,6 +4,7 @@ semver = require 'semver'
 async = require 'async'
 env = require './env'
 utils = require './util'
+syspath = require 'path'
 
 class Package
 
@@ -15,13 +16,13 @@ class Package
 
         # @schema : fekit_package_server GET /pkgname 返回结果
         @schema = null
-        # @version 最终选定的版本号 
+        # @version 最终选定的版本号
         @version = null
         # @config 最终选定版本号的 config 内容
         @version_config = null
         # @config 最终选定版本号的 config 内容(fekit.config)
         @fekit_config = null
-        
+
         @semverstr = unless @semverstr then "*" else @semverstr
         @parent = null
         @children = []
@@ -31,25 +32,25 @@ class Package
     loadConfig: ( @basepath , config ) ->
         @package_installed_path = @basepath
         @_get = ( url , cb ) ->
-            obj = 
-                ret : true 
-                data : 
-                    versions : 
-                        '0.0.0': 
-                            config: config 
+            obj =
+                ret : true
+                data :
+                    versions :
+                        '0.0.0':
+                            config: config
             cb( null , null , obj )
 
     # 获取本地入口文件路径
     # 默认入口文件为 src/index， 如果出错则返回 null
     get_local_entry: () ->
         return null if @name is '.' or @name is '..'
-        p = @basepath 
+        p = @basepath
         # 不断向上寻找组件
         while _fekit_conf_path = @get_fekitconfig_path( p )
             return null if utils.path.is_root( p )
             break if utils.path.exists _fekit_conf_path
-            p = utils.path.dirname p 
-        
+            p = utils.path.dirname p
+
         return null unless utils.path.exists _fekit_conf_path
         _conf = utils.file.io.readJSON _fekit_conf_path
         _base = utils.path.join p , Package.FEKIT_MODULE_DIR , @name
@@ -63,6 +64,7 @@ class Package
         c ""
 
         unless @is_root
+            c "----#{@name}"
             c "#{@name}@#{@version} #{Package.FEKIT_MODULE_DIR}/#{@name}"
 
         last = @children.length - 1
@@ -86,7 +88,7 @@ class Package
 
         @_fetch_remote_package_info ( err , schema ) =>
 
-            return done( err ) if err 
+            return done( err ) if err
 
             @schema = schema
 
@@ -103,11 +105,11 @@ class Package
 
     # 递归检查父级是否包含该组件（版本号包含）
     _contain: ( name , semverstr ) ->
-        return false unless @parent 
+        return false unless @parent
         for pkg in @parent.children
-            if name is pkg.name 
-                if semver.satisfies( pkg.version || pkg.semverstr , semverstr ) 
-                    return true 
+            if name is pkg.name
+                if semver.satisfies( pkg.version || pkg.semverstr , semverstr )
+                    return true
         return @parent._contain( name , semverstr )
 
     _each_dependencies_preinstall: ( done ) ->
@@ -118,18 +120,18 @@ class Package
 
         return done() if _.size( _deps ) is 0
 
-        _basepath = utils.path.join @package_installed_path 
+        _basepath = utils.path.join @package_installed_path
         deps = []
         for _name , _ver of _deps
-            unless @_contain( _name , _ver ) 
+            unless @_contain( _name , _ver )
                 _p = new Package( _name , _ver , _basepath )
                 _p.parent = self
                 deps.push _p
 
         @children = deps
 
-        async.eachSeries deps 
-                        , ( pkg , pkg_done ) -> 
+        async.eachSeries deps
+                        , ( pkg , pkg_done ) ->
                             pkg._preinstall ( err ) ->
                                 pkg_done err
                         , ( err ) ->
@@ -141,7 +143,7 @@ class Package
         pkgname = @name
         version = @version
 
-        async.eachSeries @children 
+        async.eachSeries @children
                         , ( pkg , pkg_done ) ->
                             pkg.install ( err ) ->
                                 pkg_done( err )
@@ -156,11 +158,11 @@ class Package
 
         utils.file.rmrf self.package_installed_path , ( err ) ->
 
-            return done( err ) if err 
+            return done( err ) if err
 
-            tarfile_path = self.package_installed_path + ".tgz" 
+            tarfile_path = self.package_installed_path + ".tgz"
 
-            utils.file.mkdirp utils.path.dirname( tarfile_path )        
+            utils.file.mkdirp utils.path.dirname( tarfile_path )
 
             utils.http.get {
                             url : self.version_config.dist.tarball
@@ -171,26 +173,41 @@ class Package
                             utils.tar.unpack tarfile_path , self.package_installed_path , ( err ) ->
 
                                 utils.file.rmrf tarfile_path
-                                
-                                self._each_dependencies_install done
+
+                                # install hook
+                                self_config = utils.file.io.readJSON syspath.join( self.package_installed_path, 'fekit.config' )
+
+                                if self_config.scripts?.postinstall and utils.path.exists syspath.join( self.package_installed_path, self_config.scripts.postinstall )
+                                    parent_config_path = syspath.join( self.package_installed_path, '../../fekit.config' )
+                                    parent_config = {};
+                                    try
+                                        parent_config = utils.file.io.readJSON parent_config_path
+                                    catch error
+
+                                    utils.proc.requireScript syspath.join( self.package_installed_path, self_config.scripts.postinstall ), {
+                                        config: parent_config.module_options?[self.name] || {},
+                                        process_end: () ->
+                                            self._each_dependencies_install done
+                                    }
+                                else
+                                    self._each_dependencies_install done
 
 
-                                            
     _fetch_remote_package_info: ( done ) ->
 
-        url = env.getPackageUrl( @name ) 
+        url = env.getPackageUrl( @name )
 
         @_get url , ( err , res , body ) ->
 
-            return done( err ) if err 
+            return done( err ) if err
 
             switch typeof body
                 when 'string'
-                    try 
+                    try
                         json = JSON.parse( body )
-                    catch err 
-                        return done( err ) if err 
-                when 'object' 
+                    catch err
+                        return done( err ) if err
+                when 'object'
                     json = body
 
             return done( json.errmsg ) unless json.ret
@@ -200,7 +217,7 @@ class Package
 
     _get: ( url , cb ) ->
 
-        utils.http.get url , cb 
+        utils.http.get url , cb
 
 
     _check_local_package: () ->
