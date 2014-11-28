@@ -23,7 +23,7 @@ start_export = (dir) ->
             return null
 
         ext = syspath.extname file
-        if ext is ".js" or ext is ".css" then do_export file, dir
+        if ext in ['.js', '.css', '.scss'] then do_export file, dir
     ,true
 
 do_export = (file, dir) ->
