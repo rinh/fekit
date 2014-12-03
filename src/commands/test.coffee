@@ -8,9 +8,9 @@ exports.set_options = ( optimist ) ->
 
 exports.run = ( options ) ->
     
-    p = utils.path.join( __dirname , '../../node_modules/.bin/mocha' )
+    p = utils.path.join( __dirname , '../../node_modules/mocha/bin/mocha' )
 
-    c = spawn 'node' , [ p , '--colors', '--recursive', '--compilers', 'coffee:coffee-script' ] , 
+    c = spawn 'node' , [ p , '--colors', '--recursive', '--compilers', 'coffee:coffee-script' ] ,
         cwd : options.cwd , 
         env : process.env
 
