@@ -45,6 +45,7 @@
         "rinh-node-tar": "*",
         "node-sass": "1.2.x",
         "handlebars": "2.0.0-alpha.1",
+        "jade": "1.8.*",
         "velocityjs": "0.4.x",
         "tiny-lr": "0.0.7",
         "gaze": "0.5.1",
