@@ -1,0 +1,24 @@
+body { border:1px solid #000; }
+body { border:2px solid #000; }
+body { border:3px solid #000; }
+
+
+
+/* this is page-a.css */
+.foo {
+  bar: foo;
+}
+.bar {
+  opacity: 0.5;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  filter: alpha(opacity=50);
+  -webkit-transform: 1s all;
+  -moz-transform: 1s all;
+  -o-transform: 1s all;
+  -ms-transform: 1s all;
+  transform: 1s all;
+  -webkit-box-shadow: 10px;
+  box-shadow: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
