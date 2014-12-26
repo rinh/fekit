@@ -55,7 +55,7 @@ module.exports = ( options ) ->
             
                 load: ( path ) ->
                     return @jsmacros.parse.call @ , path
-                ,
+
                 parse: ( path ) ->
                     root = conf?.root?.development?.velocity_root
                     if root
@@ -66,7 +66,16 @@ module.exports = ( options ) ->
 
                     content = utils.file.io.read( _p )
                     return _render content , @context , @jsmacros
-                ,
+
+                include: ( path ) ->
+                    root = conf?.root?.development?.velocity_root
+                    if root
+                        root = utils.path.join( conf.fekit_root_dirname , root )
+                        _p = utils.path.join( root , path.replace(/^\//,'./') )
+                    else 
+                        _p = utils.path.join( utils.path.dirname(p) , path )
+                    return utils.file.io.read( _p )
+
                 ver: ( path ) ->
                     return ''
 

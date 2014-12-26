@@ -1,3 +1,6 @@
+# 0.2.88
+* add: vm 支持 include
+
 # 0.2.87
 * fix: ip代理
 
