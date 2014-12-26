@@ -1,5 +1,6 @@
 # 0.2.88
 * add: vm 支持 include
+* add: vmjs 中可以使用 request , response 
 
 # 0.2.87
 * fix: ip代理

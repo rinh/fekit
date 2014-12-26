@@ -627,20 +627,22 @@ exports.proc = utilproc =
         context.__dirname = syspath.dirname( path )
         context.require = ( path ) ->
             return mod.require( path )
-        context.exports = {}
+        context.exports = context.module.exports
 
         code = new Reader().read( path )
         switch syspath.extname( path )
             when ".js"
+                code = code
+            when ".vmjs"
                 code = code
             when ".coffee"
                 code = coffee.compile code
             else
                 throw "没有正确的自动化脚本解析器 #{path}"
 
-        m = vm .createScript( code )
+        m = vm.createScript( code )
         m.runInNewContext( context )
-        return context.exports
+        return context.module.exports
 
 
 utilproc.run = utilproc.spawn
