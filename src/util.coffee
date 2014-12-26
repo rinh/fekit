@@ -73,6 +73,17 @@ _closest_dir = ( p , finddirname , filterFunc ) ->
     return _closest_dir( syspath.dirname( dir ) , finddirname , filterFunc )
 
 
+_fileExistsWithCaseSync = (filepath) ->
+    return false unless fs.existsSync( filepath )
+    dir = syspath.dirname(filepath)
+    if dir is '/' or dir is '.' 
+        return true
+    filenames = fs.readdirSync(dir)
+    if filenames.indexOf(syspath.basename(filepath)) is -1 
+        return false 
+    return _fileExistsWithCaseSync(dir)
+
+
 exports.path = utilpath =
     extname : syspath.extname
     dirname : syspath.dirname
@@ -104,11 +115,7 @@ exports.path = utilpath =
             return syspath.sep is path
 
     exists: ( path ) ->
-        if fs.existsSync
-            return fs.existsSync( path )
-        # 为了0.6版以前的node兼容
-        if syspath.existsSync
-            return syspath.existsSync( path )
+        return _fileExistsWithCaseSync( path )
 
 
     # 分割路径为数组

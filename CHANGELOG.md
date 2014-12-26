@@ -1,6 +1,7 @@
 # 0.2.89
 * add: vm 支持 include
 * add: vmjs 中可以使用 request , response 
+* fix: 开发时 require 区分大小写
 
 # 0.2.88
 * update: sass升级到`1.2.3`支持`BEM`等特性
