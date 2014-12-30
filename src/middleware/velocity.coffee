@@ -24,19 +24,32 @@ module.exports = ( options ) ->
 
             url = sysurl.parse( req.url )
             p = syspath.join( ROOT , url.pathname )
-            txt = utils.file.io.read( p )
             vmjs_path = p.replace( '.vm' , '.vmjs' )
             vmjson_path = p.replace( '.vm' , '.json' )
             conf = utils.config.parse p
             vmc = null
 
-            _render = ( data , ctx , macros) ->
-                asts = Velocity.Parser.parse( data )
-                unless vmc 
-                    vmc = new Velocity.Compile( asts )
+            _get_path = ( path ) ->
+                return path if utils.path.is_absolute_path( path )
+                root = conf?.root?.development?.velocity_root
+                if root
+                    root = utils.path.join( conf.fekit_root_dirname , root )
+                    _p = utils.path.join( root , path.replace(/^\//,'./') )
                 else 
-                    return vmc._render( asts )
-                return vmc.render( ctx , macros)
+                    _p = utils.path.join( utils.path.dirname(p) , path )
+                return _p
+
+            _render = ( path , ctx , macros , is_layout ) ->
+                content = utils.file.io.read( _get_path( path ) )
+                asts = Velocity.Parser.parse( content )
+                vmc = new Velocity.Compile( asts )
+                s = vmc.render( ctx , macros )
+                if ctx.layout and !is_layout
+                    _layout_path = ctx.layout
+                    ctx.layout = null
+                    ctx.screen_content = s 
+                    s = _render( _layout_path , ctx , macros , true )
+                return s
 
             if utils.path.exists( vmjs_path )
                 delete require.cache[ vmjs_path ]
@@ -61,30 +74,16 @@ module.exports = ( options ) ->
                     return @jsmacros.parse.call @ , path
 
                 parse: ( path ) ->
-                    root = conf?.root?.development?.velocity_root
-                    if root
-                        root = utils.path.join( conf.fekit_root_dirname , root )
-                        _p = utils.path.join( root , path.replace(/^\//,'./') )
-                    else 
-                        _p = utils.path.join( utils.path.dirname(p) , path )
-
-                    content = utils.file.io.read( _p )
-                    return _render content , @context , @jsmacros
+                    return  _render path , @context , @jsmacros
 
                 include: ( path ) ->
-                    root = conf?.root?.development?.velocity_root
-                    if root
-                        root = utils.path.join( conf.fekit_root_dirname , root )
-                        _p = utils.path.join( root , path.replace(/^\//,'./') )
-                    else 
-                        _p = utils.path.join( utils.path.dirname(p) , path )
-                    return utils.file.io.read( _p )
+                    return utils.file.io.read( _get_path( path ) )
 
                 ver: ( path ) ->
                     return ''
 
             res.writeHead 200, contentType
-            res.end _render( txt , ctx , macros )
+            res.end _render( p , ctx , macros )
 
 
 # ----------------------
