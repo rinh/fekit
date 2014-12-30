@@ -5,6 +5,7 @@
 * fix: fekit test 命令找不到测试用例时的提示不够友好且无法找到命令 Fixes #57
 * add: fekit vm 添加 layout Fixes #64
 * fix: 编译非标准js/css文件生成的version.mapping扩展名修正为js/css Fixes #72
+* fix: fekit 预编译 sass 文件模块去重 Fixes #54
 
 # 0.2.88
 * update: sass升级到`1.2.3`支持`BEM`等特性
