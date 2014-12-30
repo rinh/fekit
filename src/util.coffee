@@ -606,6 +606,13 @@ exports.UrlConvert = UrlConvert
 
 
 exports.proc = utilproc =
+    
+    npmbin : ( cmdname ) ->
+        p = utilpath.join( __dirname , '..' , 'node_modules' , '.bin' , cmdname )
+        if utilsys.isWindows
+            p = p + ".cmd"
+        return p
+
     exec : ( cmd ) ->
         child_process.exec cmd , ( error , stdout , stderr ) =>
             if error then utillogger.error( error )

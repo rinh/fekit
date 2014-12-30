@@ -2,6 +2,7 @@
 * add: vm 支持 include
 * add: vmjs 中可以使用 request , response 
 * fix: 开发时 require 区分大小写
+* fix: fekit test 命令找不到测试用例时的提示不够友好且无法找到命令 Fixes #57
 
 # 0.2.88
 * update: sass升级到`1.2.3`支持`BEM`等特性
