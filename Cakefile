@@ -52,11 +52,11 @@ build = (option,callback) ->
 
     fetch_vendors()
 
-    coffee = _spawn './node_modules/.bin/coffee', option
+    coffee = _spawn path.join('.', 'node_modules', '.bin', 'coffee'), option
     process_stdio coffee , callback
 
 test = () ->
-    mocha = _spawn './node_modules/.bin/mocha' , [ '--colors', '--recursive', '--compilers', 'coffee:coffee-script' ]
+    mocha = _spawn path.join('.', 'node_modules', '.bin', 'mocha') , [ '--colors', '--recursive', '--compilers', 'coffee:coffee-script' ]
     process_stdio mocha
 
 
@@ -70,7 +70,7 @@ install = (cb) ->
 
     fetch_vendors()
 
-    echo child = _spawn "./node_modules/.bin/coffee", ["-c", "-o", "lib", "src"]
+    echo child = _spawn path.join(".", "node_modules", ".bin", "coffee"), ["-c", "-o", "lib", "src"]
     child.on "exit", (status) -> cb?() if status is 0
 
 #-------------------

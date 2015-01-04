@@ -1,0 +1,52 @@
+body { border:1px solid #000; }
+body { border:2px solid #000; }
+body { border:3px solid #000; }
+
+
+
+/* this is page-a.css */
+.foo {
+  bar: foo;
+}
+.opacity {
+  opacity: 0.5;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  filter: alpha(opacity=50);
+}
+.transform {
+  -webkit-transform: 1s all;
+  -moz-transform: 1s all;
+  -o-transform: 1s all;
+  -ms-transform: 1s all;
+  transform: 1s all;
+}
+.box-shadow {
+  -webkit-box-shadow: 10px;
+  box-shadow: 10px;
+}
+.border-radius {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+.clearfix {
+  zoom: 1;
+}
+.clearfix:before,
+.clearfix:after {
+  content: "";
+  display: table;
+}
+.clearfix:after {
+  clear: both;
+}
+.position {
+  position: absolute;
+  top: 10px;
+  right: 0;
+}
