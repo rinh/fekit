@@ -1,3 +1,6 @@
+# 0.2.90
+* fix: mock 支持 post
+
 # 0.2.89
 * add: vm 支持 include
 * add: vmjs 中可以使用 request , response 
