@@ -76,11 +76,11 @@ _closest_dir = ( p , finddirname , filterFunc ) ->
 _fileExistsWithCaseSync = (filepath) ->
     return false unless fs.existsSync( filepath )
     dir = syspath.dirname(filepath)
-    if dir is '/' or dir is '.' 
+    if dir is '/' or dir is '.' or (/^\w:\\$/.test dir)
         return true
     filenames = fs.readdirSync(dir)
-    if filenames.indexOf(syspath.basename(filepath)) is -1 
-        return false 
+    if filenames.indexOf(syspath.basename(filepath)) is -1
+        return false
     return _fileExistsWithCaseSync(dir)
 
 
@@ -440,16 +440,16 @@ class FekitConfig
             fn = @["_doRefs_"+k]
             if fn
                 fn.apply @ , ( unless sysutil.isArray(v) then [v] else v )
-            else 
+            else
                 utillogger.error "[refs] 构建任务失败, 找不到命令 #{k}"
 
     _doRefs_cp : () ->
-        
+
         for dir in arguments
-            from = utilpath.join @baseUri , dir 
-            to = utilpath.join @refs_path , dir 
+            from = utilpath.join @baseUri , dir
+            to = utilpath.join @refs_path , dir
             utillogger.log "\t >>> #{from} -> #{to}"
-            if utilpath.exists from 
+            if utilpath.exists from
                 utilfile.cprSync from , to
             else
                 utillogger.error "\t#{from} 不存在"
@@ -465,7 +465,7 @@ class FekitConfig
         ctx.cwd = @baseUri
         ctx.refs_path = @refs_path
 
-        _runCode script_path , ctx 
+        _runCode script_path , ctx
 
 
 
@@ -606,7 +606,7 @@ exports.UrlConvert = UrlConvert
 
 
 exports.proc = utilproc =
-    
+
     npmbin : ( cmdname ) ->
         p = utilpath.join( __dirname , '..' , 'node_modules' , '.bin' , cmdname )
         if utilsys.isWindows
