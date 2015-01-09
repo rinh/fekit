@@ -1,3 +1,6 @@
+# 0.2.91
+* fix: fileExistsWithCaseSync 在 Windows 平台错误
+
 # 0.2.90
 * fix: mock 支持 post
 
