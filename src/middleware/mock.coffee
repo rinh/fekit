@@ -136,6 +136,7 @@ ACTION =
             when 'GET'
                 r = request.get(proxy_option).pipe(context.res)
             when 'POST'
+                proxy_option.form = req.body 
                 r = request.post(proxy_option).pipe(context.res)
 
         r.on 'end', () ->

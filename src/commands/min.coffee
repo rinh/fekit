@@ -48,6 +48,17 @@ process_directory = ( options ) ->
         EXPORT_LIST : []
         EXPORT_MAP : {}
 
+    _get_dist_filename = ( srcpath ) ->
+        t = compiler.getContentType( srcpath )
+        switch t.toLowerCase()
+            when "javascript"
+                ext = ".js"
+            when "css"
+                ext = ".css"
+        _extname = utils.path.extname( srcpath )
+        _basename = utils.path.basename( srcpath , _extname )
+        return _basename + ext
+
     conf = utils.config.parse( options.cwd )
 
     conf.each_export_files ( srcpath , parents , opts ) ->
@@ -55,7 +66,7 @@ process_directory = ( options ) ->
             url : srcpath 
             path : syspath.join( "src" , opts.partial_path )
         script_global.EXPORT_LIST.push( iter )
-        script_global.EXPORT_MAP[ opts.partial_path ] = iter
+        script_global.EXPORT_MAP[ _get_dist_filename( opts.partial_path ) ] = iter
 
     conf.doScript "premin" , script_global 
 
@@ -87,8 +98,9 @@ process_directory = ( options ) ->
                     if vertype is 0 or vertype is 1
                         writer.write( urlconvert.to_ver() , if opts.no_version then "" else md5code ) 
 
-                    script_global.EXPORT_MAP[ opts.partial_path ]?.ver = if opts.no_version then "" else md5code
-                    script_global.EXPORT_MAP[ opts.partial_path ]?.minpath = dest.replace( options.cwd , "" )
+                    n = _get_dist_filename( opts.partial_path )
+                    script_global.EXPORT_MAP[ n ]?.ver = if opts.no_version then "" else md5code
+                    script_global.EXPORT_MAP[ n ]?.minpath = dest.replace( options.cwd , "" )
 
                     utils.logger.log( "已经处理 [#{new Date().getTime()-start.getTime()}ms] #{srcpath}  ==> #{dest}" )
 

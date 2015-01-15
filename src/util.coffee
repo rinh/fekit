@@ -73,6 +73,17 @@ _closest_dir = ( p , finddirname , filterFunc ) ->
     return _closest_dir( syspath.dirname( dir ) , finddirname , filterFunc )
 
 
+_fileExistsWithCaseSync = (filepath) ->
+    return false unless fs.existsSync( filepath )
+    dir = syspath.dirname(filepath)
+    if dir is '/' or dir is '.' or (/^\w:\\$/.test dir)
+        return true
+    filenames = fs.readdirSync(dir)
+    if filenames.indexOf(syspath.basename(filepath)) is -1
+        return false
+    return _fileExistsWithCaseSync(dir)
+
+
 exports.path = utilpath =
     extname : syspath.extname
     dirname : syspath.dirname
@@ -104,11 +115,7 @@ exports.path = utilpath =
             return syspath.sep is path
 
     exists: ( path ) ->
-        if fs.existsSync
-            return fs.existsSync( path )
-        # 为了0.6版以前的node兼容
-        if syspath.existsSync
-            return syspath.existsSync( path )
+        return _fileExistsWithCaseSync( path )
 
 
     # 分割路径为数组
@@ -433,16 +440,16 @@ class FekitConfig
             fn = @["_doRefs_"+k]
             if fn
                 fn.apply @ , ( unless sysutil.isArray(v) then [v] else v )
-            else 
+            else
                 utillogger.error "[refs] 构建任务失败, 找不到命令 #{k}"
 
     _doRefs_cp : () ->
-        
+
         for dir in arguments
-            from = utilpath.join @baseUri , dir 
-            to = utilpath.join @refs_path , dir 
+            from = utilpath.join @baseUri , dir
+            to = utilpath.join @refs_path , dir
             utillogger.log "\t >>> #{from} -> #{to}"
-            if utilpath.exists from 
+            if utilpath.exists from
                 utilfile.cprSync from , to
             else
                 utillogger.error "\t#{from} 不存在"
@@ -458,7 +465,7 @@ class FekitConfig
         ctx.cwd = @baseUri
         ctx.refs_path = @refs_path
 
-        _runCode script_path , ctx 
+        _runCode script_path , ctx
 
 
 
@@ -599,6 +606,13 @@ exports.UrlConvert = UrlConvert
 
 
 exports.proc = utilproc =
+
+    npmbin : ( cmdname ) ->
+        p = utilpath.join( __dirname , '..' , 'node_modules' , '.bin' , cmdname )
+        if utilsys.isWindows
+            p = p + ".cmd"
+        return p
+
     exec : ( cmd ) ->
         child_process.exec cmd , ( error , stdout , stderr ) =>
             if error then utillogger.error( error )
@@ -627,20 +641,22 @@ exports.proc = utilproc =
         context.__dirname = syspath.dirname( path )
         context.require = ( path ) ->
             return mod.require( path )
-        context.exports = {}
+        context.exports = context.module.exports
 
         code = new Reader().read( path )
         switch syspath.extname( path )
             when ".js"
+                code = code
+            when ".vmjs"
                 code = code
             when ".coffee"
                 code = coffee.compile code
             else
                 throw "没有正确的自动化脚本解析器 #{path}"
 
-        m = vm .createScript( code )
+        m = vm.createScript( code )
         m.runInNewContext( context )
-        return context.exports
+        return context.module.exports
 
 
 utilproc.run = utilproc.spawn
