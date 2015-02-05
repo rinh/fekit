@@ -179,7 +179,7 @@ exports.path = utilpath =
         throw "找不到文件列表中的任一文件 #{root} 下的 [#{filenames.join()}]"
 
     is_absolute_path: ( path ) ->
-        return ( process.platform is "win32" and p.match(/^[a-zA-Z]:(\\|\/)?$/) ) or path.charAt(0) is "/"
+        return ( process.platform is "win32" and path.match(/^[a-zA-Z]:(\\|\/)?$/) ) or path.charAt(0) is "/"
 
 
 #----------------------------
