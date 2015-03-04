@@ -122,9 +122,12 @@ FEKIT
                 "uglifycss" : {} , 
                 // 参数名及含义见: https://github.com/mishoo/UglifyJS
                 "uglifyjs" : {
-                    "ast_mangle" : {} , 
-                    "ast_squeeze" : {} ,
-                    "gen_code" : {}
+                    "compressor" : {
+                        // 参考 https://www.npmjs.com/package/uglify-js#compressor-options
+                    } , 
+                    "beautifier" : {
+                        // 参考 https://www.npmjs.com/package/uglify-js#beautifier-options
+                    }
                 }
             }
         } , 

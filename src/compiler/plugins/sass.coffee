@@ -37,7 +37,7 @@ exports.process = (txt, path, module, cb) ->
     
     dir = syspath.dirname path
 
-    txt = grep_import( txt , dir )
+    #txt = grep_import( txt , dir )
 
     succ = (code) -> 
         cb null, (css.ddns code, module)
@@ -45,13 +45,15 @@ exports.process = (txt, path, module, cb) ->
     fail = (err) ->
         cb err
 
-    sass.render {
-            data: txt,
-            includePaths: [dir],
-            success: succ , 
-            error: fail 
-        }
-
+    try 
+        result = sass.renderSync {
+                data: txt,
+                includePaths: [dir]
+            }
+        succ( result.css.toString() )
+    catch err
+        fail( err )
+            
 
 
 

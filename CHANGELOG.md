@@ -1,3 +1,7 @@
+# 0.2.92
+* add: 更新 node-sass 版本为 2.0.1
+* add: 更新 uglify 2.0
+
 # 0.2.91
 * fix: fileExistsWithCaseSync 在 Windows 平台错误
 

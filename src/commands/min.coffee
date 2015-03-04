@@ -3,8 +3,7 @@ compiler = require "../compiler/compiler"
 utils = require "../util"
 md5 = require "MD5"
 uglifycss = require("uglifycss")
-jsp = require("uglify-js").parser;
-pro = require("uglify-js").uglify;
+ujs = require("uglify-js")
 
 exports.usage = "压缩/混淆项目文件"
 
@@ -190,14 +189,30 @@ exports.minCode = minCode = ( extname , source , options = {} , fekitconfig = {}
             else 
                 final_code = uglifycss.processString( source , fekitconfig?.min?.config?.uglifycss ).replace( /}/g , "}\n" )
         when ".js"
-            try 
-                ast = jsp.parse( source )
-                ast = pro.ast_mangle( ast , fekitconfig?.min?.config?.uglifyjs?.ast_mangle ) 
-                ast = pro.ast_squeeze( ast , fekitconfig?.min?.config?.uglifyjs?.ast_squeeze ) if fekitconfig?.minconfig?.uglifyjs?.ast_squeeze
-                final_code = pro.gen_code( ast , fekitconfig?.min?.config?.uglifyjs?.gen_code ) 
-            catch err 
-                console.info( err )
-                return null
+            #try 
+                toplevel = ujs.parse( source )
+                toplevel.figure_out_scope()
+
+                CompressorOptions = fekitconfig?.min?.config?.uglifyjs?.compressor or {
+                    drop_console : true
+                    drop_debugger : true
+                    warnings : false
+                }
+                compressor = ujs.Compressor( CompressorOptions )
+                compressed_ast = toplevel.transform(compressor)
+                compressed_ast.figure_out_scope()
+                compressed_ast.compute_char_frequency()
+                compressed_ast.mangle_names()
+
+                BeautifierOptions = fekitconfig?.min?.config?.uglifyjs?.beautifier or {}
+
+                stream = ujs.OutputStream(BeautifierOptions)
+                compressed_ast.print(stream);
+
+                final_code = stream.toString()
+            #catch err 
+            #    console.info( err )
+            #    return null
 
     return final_code
 
