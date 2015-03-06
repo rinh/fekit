@@ -36,11 +36,6 @@ writeHeader = ( res, code, type ) ->
 
 module.exports = ( options ) ->
 
-    compiler.boost({
-        cwd : process.cwd() ,
-        directories : [].concat( options.boost || [] )
-    })
-
     ROOT = options.cwd
 
     protocol = if options.ssl then "https" else "http"
@@ -123,7 +118,6 @@ module.exports = ( options ) ->
 
                 urlconvert = new utils.UrlConvert(p,ROOT)
                 srcpath = urlconvert.to_src()
-
                 srcpath = compiler.path.findFileWithoutExtname( srcpath )
 
                 utils.logger.trace("由 PRD #{req.url} 解析至 SRC #{srcpath}")
@@ -134,14 +128,13 @@ module.exports = ( options ) ->
                     else ctype = ""
 
                 # 判断如果有 cache 则使用，否则进行编译
-                cachekey = srcpath + ( if is_deps then "_deps" else "" )
-                cache = compiler.booster.get_compiled_cache( cachekey )
+                cache = compiler.booster.get_compiled_cache( srcpath , is_deps )
                 if cache
                     writeHeader res , 200 , ctype
                     res.end cache
                     return
 
-                _render = ( err , txt ) ->
+                _render = ( err , txt , module ) ->
                     if err
                         writeHeader res , 500 , ctype
                         utils.logger.error err
@@ -149,7 +142,8 @@ module.exports = ( options ) ->
                     else
                         # 编译后将内容加入 cache
                         writeHeader res , 200 , ctype
-                        compiler.booster.set_compiled_cache( cachekey , txt )
+                        compiler.booster.watch module
+                        compiler.booster.set_compiled_cache( srcpath , txt , is_deps )
                         res.end txt
 
                 if utils.path.exists( srcpath )

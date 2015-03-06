@@ -1,3 +1,6 @@
+# 0.2.94
+* add: server 增加缓存机制
+
 # 0.2.93
 * add: 更新 node-sass 版本为 2.0.1
 * add: 更新 uglify 2.0
