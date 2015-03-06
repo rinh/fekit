@@ -31,7 +31,9 @@ class Module
         @source = utils.file.io.read( @path.getFullPath() )
         @depends = []
         @ast = null
-        @guid = md5( @source )
+        Module.booster.init_cached( @path.uri ) if Module.booster
+        checksum = Module.booster && Module.booster.get_checksum_cache( @path.uri )
+        @guid = checksum or md5( @source )
         @root_module = null
         @parent = null
 

@@ -48,3 +48,19 @@ exports.set_compiled_cache = ( filename , source , is_deps ) ->
         COMPILED_CACHED_DEPEND[filename] = source
     else 
         COMPILED_CACHED[filename] = source
+
+
+CHECKSUM_CACHED = exports.CHECKSUM_CACHED = {}
+
+cached = (filename) ->
+    try
+        CHECKSUM_CACHED[filename] = md5( utils.file.io.read( filename ) )
+    catch err
+
+exports.get_checksum_cache = ( filename ) ->
+    return CHECKSUM_CACHED[filename]
+
+# 初始化缓存
+exports.init_cached = ( filename ) ->
+    return if CHECKSUM_CACHED[ filename ]
+    cached( filename )
