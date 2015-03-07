@@ -1,0 +1,7 @@
+logout
+=======
+
+###usage
+
+    fekit logout
+    

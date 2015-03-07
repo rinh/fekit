@@ -1,5 +1,5 @@
 
 exports.contentType = "javascript"
 
-exports.process = ( txt , path , cb ) ->
+exports.process = ( txt , path ,module , cb ) ->
     cb( null , txt )

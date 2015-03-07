@@ -1,14 +1,14 @@
-compiler = require "../compiler/compiler"
 utils = require "../util"
+fs = require "fs"
 connect = require "connect"
-rewrite = require "connect-url-rewrite"
-urlrouter = require "urlrouter"
-dns = require "dns"
 http = require "http"
-qs = require "querystring"
-sysurl = require "url"
-syspath = require "path"
-sysfs = require "fs"
+https = require "https"
+tinylr = require "tiny-lr"
+compiler = require "../compiler/compiler"
+http_proxy = require "./_server_http_proxy"
+host_rule = require "./_server_host_rule"
+
+middleware = require "../middleware/index"
 
 exports.usage = "创建本地服务器, 可以基于其进行本地开发"
 
@@ -17,107 +17,79 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'p' , 'port'
     optimist.describe 'p' , '服务端口号, 一般无法使用 80 时设置, 并且需要自己做端口转发'
 
-    optimist.alias 'r' , 'route'
-    optimist.describe 'r' , '路由,将指定路径路由到其它地址, 物理地址需要均在当前执行目录下. 格式为 项目名:路由后的物理目录名'
-
     optimist.alias 'c' , 'combine'
     optimist.describe 'c' , '指定所有文件以合并方式进行加载, 启动该参数则请求文件不会将依赖展开'
 
-mime_config = 
-    ".js" : "application/javascript"
-    ".css" : "text/css"
+    optimist.alias 'n' , 'noexport'
+    optimist.describe 'n' , '默认情况下，/prd/的请求需要加入export中才可以识别。 指定此选项则可以无视export属性'
 
-_routeRules = ( options ) ->
+    optimist.alias 'b' , 'boost'
+    optimist.describe 'b' , '可以指定目录进行编译加速。格式为 -b 目录名'
 
-    if !options.route then return []
+    optimist.alias 's' , 'ssl'
+    optimist.describe 's' , '指定ssl证书文件，后缀为.crt'
 
-    r = options.route.split(":")
+    optimist.alias 'm' , 'mock'
+    optimist.describe 'm' , '指定mock配置文件'
 
-    return [ "\/#{r[0]}\/ \/#{r[1]}\/" ]
+    optimist.alias 'l' , 'livereload'
+    optimist.describe 'l' , '是否启用livereload'
+
+    optimist.alias 'o' , 'proxy'
+    optimist.describe 'o' , '是否启用代理服务器, 默认端口为13180'
+
+    optimist.alias 'r' , 'reverse'
+    optimist.describe 'r' , '是否启用反向代理服务。格式为 -r domain(:address)[,domain(:address)]'
+
+
+setupProxyServer = ( options ) ->
+
+    http_proxy.run( options )
+
 
 setupServer = ( options ) ->
 
-    ROOT = options.cwd
-
-    no_combine = ( path , parents , host , params , doneCallback ) ->
-        # 根据是否非依赖模式, 生成不同的结果
-        if params["no_dependencies"] is "true"
-            compiler.compile( path , {
-                dependencies_filepath_list : parents  
-                no_dependencies : true
-            }, doneCallback )
-
-        else
-            compiler.compile( path , {
-                dependencies_filepath_list : parents  
-                render_dependencies : () ->
-                    host = host.replace(/:\d+/,"")
-                    port = if options.port and options.port != "80" then ":#{options.port}" else ""
-                    path = @path.getFullPath().replace( ROOT , "" ).replace(/\\/g,'/').replace('/src/','/prd/')
-                    partial = "http://#{host}#{port}#{path}?no_dependencies=true"
-                    switch @path.getContentType()
-                        when "javascript"
-                            return "document.write('<script src=\"#{partial}\"></script>');"
-                        when "css"
-                            return "@import url('#{partial}');"
-            }, doneCallback)
-
-
-    combine = ( path , parents , doneCallback ) ->
-        compiler.compile( path , {
-            dependencies_filepath_list : parents  
-        } , doneCallback)
-
-
-    fekitRouter = urlrouter (app) =>
-
-            # PRD地址
-            app.get utils.UrlConvert.PRODUCTION_REGEX , ( req , res , next ) =>
-
-                host = req.headers['host']
-                url = sysurl.parse( req.url )
-                p = syspath.join( ROOT , url.pathname )
-                params = qs.parse( url.query )
-
-                if utils.path.exists(p) and utils.path.is_directory(p)
-                    next()
-                    return
-
-                urlconvert = new utils.UrlConvert(p,ROOT)
-                srcpath = urlconvert.to_src()
-
-                utils.logger.info("由 PRD #{req.url} 解析至 SRC #{srcpath}")
-
-                res.writeHead( 200, { 'Content-Type': mime_config[urlconvert.extname] });
-
-                _render = ( err , txt ) ->
-                    if err 
-                        res.writeHead( 500 )
-                        res.end( err )
-                    else
-                        res.end( txt ) 
-
-                if utils.path.exists( srcpath ) 
-                    config = new utils.config.parse( srcpath )
-                    config.findExportFile srcpath , ( path , parents ) =>
-                        if options.combine 
-                            combine path , parents , _render
-                        else 
-                            no_combine path , parents , host , params , _render
-
-                else
-                    res.end( "文件不存在 #{srcpath}" )
-
     app = connect()
-            .use( connect.logger( 'tiny' ) ) 
-            .use( rewrite( _routeRules( options ) ) )
-            .use( connect.bodyParser() ) 
-            .use( fekitRouter )
-            .use( connect.static( options.cwd , { hidden: true, redirect: true })  ) 
-            .use( connect.query()  ) 
-            .use( connect.directory( options.cwd ) ) 
+            .use( connect.logger( 'tiny' ) )
+            .use( connect.query() )
+            .use( connect.bodyParser() )
+            .use( middleware.mock( options ) )
+            .use( middleware.velocity(options) )
+            .use( middleware.fekit(options) )
+            .use( connect.static( options.cwd , { hidden: true, redirect: true })  )
+            .use( connect.directory( options.cwd ) )
 
-    listenPort( http.createServer(app) , options.port || 80 )
+
+
+    if options.ssl
+
+        name = utils.path.fname options.ssl
+        path = utils.path.dirname options.ssl
+        opts =
+            key : fs.readFileSync utils.path.join( path , name + ".key" )
+            cert : fs.readFileSync utils.path.join( path , name + ".crt" )
+
+        listenPort( https.createServer( opts , app ) , options.port || 443 )
+
+    else
+
+        listenPort( http.createServer( app ) , options.port || 80 )
+
+
+setupLivereload = ( options ) ->
+
+    return unless options.livereload
+
+    lrsrv = tinylr()
+    lrsrv.listen 35729, () ->
+        console.log('[LOG]: LiveReload Server Listening ...')
+
+    extlist = compiler.path.EXTLIST.map (ext) ->
+                return "**/*#{ext}"
+
+    require("gaze") extlist , ( err , watcher ) ->
+        @on 'all', (event, filepath) ->
+            lrsrv.changed({ body:{  files:[filepath]  }})
 
 
 
@@ -129,13 +101,20 @@ listenPort = ( server, port ) ->
         process.exit 1
 
     server.on "listening", (e) ->
-        console.log "[LOG]: fekit server 运行成功, 端口为 #{port}."
-        console.log "[LOG]: 按 Ctrl + C 结束进程." 
+        utils.logger.log "fekit server 运行成功, 端口为 #{port}."
+        utils.logger.log "按 Ctrl + C 结束进程."
 
     server.listen( port )
 
 
 
-
 exports.run = ( options ) ->
+
+    if options.proxy or options.reverse
+        options.rule = host_rule.load( if typeof options.proxy is 'string' then options.proxy else options.reverse )
+
+    setupLivereload( options )
+
     setupServer( options )
+
+    setupProxyServer( options )
