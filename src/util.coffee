@@ -340,51 +340,52 @@ class FekitConfig
             n = opts if path is fullpath
         return n
 
+    get_export_list : () ->
+        return @root["export"] || []
+
+    get_export_info : ( file ) ->
+        opts = {}
+        if _.isObject( file )
+            path = syspath.join( @fekit_root_dirname , "src" , file.path )
+            parents = _.map file.parents or [] , ( ppath ) =>
+                            syspath.join( @fekit_root_dirname , "src" , ppath )
+            opts = file
+            opts.partial_path = file.path
+        else
+            path = syspath.join( @fekit_root_dirname , "src" , file )
+            parents = []
+            opts.path = path
+            opts.partial_path = file
+
+        return {
+            path : path 
+            parents : parents 
+            opts : opts 
+        }
+
 
     each_export_files : ( cb ) ->
+        self = @
         list = @root["export"] || []
         for file in list
-            opts = {}
-            if _.isObject( file )
-                path = syspath.join( @fekit_root_dirname , "src" , file.path )
-                parents = _.map file.parents or [] , ( ppath ) =>
-                                syspath.join( @fekit_root_dirname , "src" , ppath )
-                opts = file
-                opts.partial_path = file.path
+            o = self.get_export_info( file )
+            if utilpath.exists( o.path )
+                cb( o.path , o.parents , o.opts )
             else
-                path = syspath.join( @fekit_root_dirname , "src" , file )
-                parents = []
-                opts.path = path
-                opts.partial_path = file
-
-            if utilpath.exists( path )
-                cb( path , parents , opts )
-            else
-                utillogger.error("找不到文件 #{path}")
+                utillogger.error("找不到文件 #{o.path}")
 
     each_export_files_async : ( cb , doneCallback ) ->
+        self = @
         tasks = []
         list = @root["export"] || []
         for file in list
             _tmp = (file) =>
                 ( seriesCallback ) =>
-                    opts = {}
-                    if _.isObject( file )
-                        path = syspath.join( @fekit_root_dirname , "src" , file.path )
-                        parents = _.map file.parents or [] , ( ppath ) =>
-                                        syspath.join( @fekit_root_dirname , "src" , ppath )
-                        opts = file
-                        opts.partial_path = file.path
+                    o = self.get_export_info( file )
+                    if utilpath.exists( o.path )
+                        cb( o.path , o.parents , o.opts , seriesCallback )
                     else
-                        path = syspath.join( @fekit_root_dirname , "src" , file )
-                        parents = []
-                        opts.path = file
-                        opts.partial_path = file
-
-                    if utilpath.exists( path )
-                        cb( path , parents , opts , seriesCallback )
-                    else
-                        utillogger.error("找不到文件 #{path}")
+                        utillogger.error("找不到文件 #{o.path}")
                         utilproc.setImmediate seriesCallback
 
             tasks.push _tmp(file)

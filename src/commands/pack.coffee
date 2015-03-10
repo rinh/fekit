@@ -1,6 +1,11 @@
 compiler = require "../compiler/compiler"
 utils = require "../util"
 syspath = require "path"
+computecluster = require('compute-cluster');
+cc = new computecluster({
+  module: utils.path.join( __dirname , '_pack_worker.js' )
+  max_backlog: -1
+});
 
 exports.usage = "合并项目文件"
 
@@ -14,26 +19,6 @@ exports.run = ( options ) ->
         EXPORT_MAP : {}
 
     conf = utils.config.parse( options.cwd )
-
-    iter = (srcpath, parents, opts, doneCallback) ->
-            utils.logger.log( "正在处理 #{srcpath}" )
-            urlconvert = new utils.UrlConvert( srcpath , options.cwd )
-            urlconvert.set_no_version() if opts.no_version 
-            urlconvert.set_extname_type( compiler.getContentType( srcpath ) )
-            dest = urlconvert.to_dev()
-            _done = ( err , source ) -> 
-                    if err 
-                        utils.logger.error( err.toString() )
-                        utils.exit(1)
-                        return
-
-                    writer = new utils.file.writer()
-                    writer.write( dest , source )
-                    writer.write( urlconvert.to_ver() , "dev" ) unless opts.no_version 
-                    utils.logger.log( "已经处理 #{srcpath}  ==> #{dest}" )
-                    doneCallback()
-
-            compiler.compile srcpath , { dependencies_filepath_list : parents , environment : 'dev' } , _done
                 
     done = () -> 
             conf.doRefs()
@@ -50,4 +35,18 @@ exports.run = ( options ) ->
 
     conf.doScript "prepack" , script_global 
 
-    conf.each_export_files_async iter , done
+    list = conf.get_export_list()
+    toRun = list.length
+    for i in list 
+        cc.enqueue {
+            cwd : options.cwd
+            file : i 
+        } , (err,r) ->
+            if err
+                utils.logger.error err 
+                cc.exit()
+                utils.exit(1)
+                
+            if --toRun is 0 
+                done() 
+                utils.exit(0)
