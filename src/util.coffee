@@ -17,6 +17,7 @@ fstream = require 'fstream'
 zlib = require 'zlib'
 sty = require 'sty'
 sysutil = require 'util'
+ignore = require 'ignore'
 
 #----------------------------
 
@@ -779,6 +780,8 @@ exports.tar =
 
     pack : ( source , dest , callback ) ->
 
+        ig = ignore().addIgnoreFile(syspath.join( source, '.fekitignore' ))
+
         fs.stat source, (err, stat) ->
 
             utilproc.setImmediate ->
@@ -793,6 +796,7 @@ exports.tar =
                     filter : (entry) ->
                         if this.basename.match(/^fekit_modules$/) then return false
                         if this.basename.match(/^\..+$/) then return false
+                        if ig.filter([this.basename]).length is 0 then return false
                         # Make sure readable directories have execute permission
                         if entry.props.type is "Directory" then entry.props.mode |= (entry.props.mode >>> 2) & 0o0111;
                         return true
@@ -847,4 +851,3 @@ exports.extend = () ->
 
 
 exports.version = utilfile.io.readJSON( syspath.join( __dirname , "../package.json" ) ).version
-
