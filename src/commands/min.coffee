@@ -3,8 +3,7 @@ compiler = require "../compiler/compiler"
 utils = require "../util"
 md5 = require "MD5"
 uglifycss = require("uglifycss")
-jsp = require("uglify-js").parser;
-pro = require("uglify-js").uglify;
+ujs = require("uglify-js")
 
 exports.usage = "压缩/混淆项目文件"
 
@@ -48,6 +47,17 @@ process_directory = ( options ) ->
         EXPORT_LIST : []
         EXPORT_MAP : {}
 
+    _get_dist_filename = ( srcpath ) ->
+        t = compiler.getContentType( srcpath )
+        switch t.toLowerCase()
+            when "javascript"
+                ext = ".js"
+            when "css"
+                ext = ".css"
+        _extname = utils.path.extname( srcpath )
+        _basename = utils.path.basename( srcpath , _extname )
+        return _basename + ext
+
     conf = utils.config.parse( options.cwd )
 
     conf.each_export_files ( srcpath , parents , opts ) ->
@@ -55,7 +65,7 @@ process_directory = ( options ) ->
             url : srcpath 
             path : syspath.join( "src" , opts.partial_path )
         script_global.EXPORT_LIST.push( iter )
-        script_global.EXPORT_MAP[ opts.partial_path ] = iter
+        script_global.EXPORT_MAP[ _get_dist_filename( opts.partial_path ) ] = iter
 
     conf.doScript "premin" , script_global 
 
@@ -87,8 +97,9 @@ process_directory = ( options ) ->
                     if vertype is 0 or vertype is 1
                         writer.write( urlconvert.to_ver() , if opts.no_version then "" else md5code ) 
 
-                    script_global.EXPORT_MAP[ opts.partial_path ]?.ver = if opts.no_version then "" else md5code
-                    script_global.EXPORT_MAP[ opts.partial_path ]?.minpath = dest.replace( options.cwd , "" )
+                    n = _get_dist_filename( opts.partial_path )
+                    script_global.EXPORT_MAP[ n ]?.ver = if opts.no_version then "" else md5code
+                    script_global.EXPORT_MAP[ n ]?.minpath = dest.replace( options.cwd , "" )
 
                     utils.logger.log( "已经处理 [#{new Date().getTime()-start.getTime()}ms] #{srcpath}  ==> #{dest}" )
 
@@ -178,14 +189,30 @@ exports.minCode = minCode = ( extname , source , options = {} , fekitconfig = {}
             else 
                 final_code = uglifycss.processString( source , fekitconfig?.min?.config?.uglifycss ).replace( /}/g , "}\n" )
         when ".js"
-            try 
-                ast = jsp.parse( source )
-                ast = pro.ast_mangle( ast , fekitconfig?.min?.config?.uglifyjs?.ast_mangle ) 
-                ast = pro.ast_squeeze( ast , fekitconfig?.min?.config?.uglifyjs?.ast_squeeze ) if fekitconfig?.minconfig?.uglifyjs?.ast_squeeze
-                final_code = pro.gen_code( ast , fekitconfig?.min?.config?.uglifyjs?.gen_code ) 
-            catch err 
-                console.info( err )
-                return null
+            #try 
+                toplevel = ujs.parse( source )
+                toplevel.figure_out_scope()
+
+                CompressorOptions = fekitconfig?.min?.config?.uglifyjs?.compressor or {
+                    drop_console : true
+                    drop_debugger : true
+                    warnings : false
+                }
+                compressor = ujs.Compressor( CompressorOptions )
+                compressed_ast = toplevel.transform(compressor)
+                compressed_ast.figure_out_scope()
+                compressed_ast.compute_char_frequency()
+                compressed_ast.mangle_names()
+
+                BeautifierOptions = fekitconfig?.min?.config?.uglifyjs?.beautifier or {}
+
+                stream = ujs.OutputStream(BeautifierOptions)
+                compressed_ast.print(stream);
+
+                final_code = stream.toString()
+            #catch err 
+            #    console.info( err )
+            #    return null
 
     return final_code
 

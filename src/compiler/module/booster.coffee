@@ -1,51 +1,64 @@
 utils = require '../../util'
 md5 = require 'MD5'
-watchr = require 'watchr'
+fs = require 'fs'
 
-directories = []
+MODULES = {}
+COMPILED_CACHED = {}
+COMPILED_CACHED_DEPEND = {}
+
+
+# 监控模块所对应的文件 
+# 如果文件发生变化则触发 change
+watch = exports.watch = ( module ) ->
+
+    filepath = module.path.uri
+
+    key = module.path.uri + "__" + module.root_module.path.uri 
+
+    return if MODULES[key]
+    MODULES[ key ] = module
+
+    module.cleanCache = () ->
+        utils.logger.trace "缓存失效 #{@.path.uri}"
+        delete COMPILED_CACHED[@.path.uri]
+        delete COMPILED_CACHED_DEPEND[@.path.uri]
+        if @parent then @parent.cleanCache()
+
+    fs.watchFile filepath , () ->
+        module.emit 'change'
+
+    module.on 'change' , () ->
+        @cleanCache()
+
+    for m in module.depends
+        watch( m )
+
+
+exports.get_compiled_cache = ( filename , is_deps ) ->
+    utils.logger.trace "获取缓存 #{filename}"
+    if is_deps
+        return COMPILED_CACHED_DEPEND[filename]
+    else
+        return COMPILED_CACHED[filename]
+
+
+exports.set_compiled_cache = ( filename , source , is_deps ) ->
+    utils.logger.trace "增加缓存 #{filename}"
+    if is_deps
+        COMPILED_CACHED_DEPEND[filename] = source
+    else 
+        COMPILED_CACHED[filename] = source
+
 
 CHECKSUM_CACHED = exports.CHECKSUM_CACHED = {}
-COMPILED_CACHED = exports.COMPILED_CACHED = {}
 
 cached = (filename) ->
     try
         CHECKSUM_CACHED[filename] = md5( utils.file.io.read( filename ) )
     catch err
-        
-###
-    加速方案
-    * 将指定目录 opts.directories 的文件按路径缓存 checksum , 在 module 初始化的时候使用该缓存
-    * 
-###
-exports.init = ( options ) ->
-    
-    for dir in options.directories 
-        _dir = utils.path.resolve( options.cwd , dir )
-        directories.push( _dir )
-        if utils.path.exists(_dir) and utils.path.is_directory(_dir)
-            utils.logger.log "已对 #{_dir} 进行加速"
-            watchr.watch
-                paths: [ _dir ] , 
-                listeners:
-                    change: ( evt , filepath , fstat , fprevstat ) ->
-                        # 当修改文件内容时，对 checksum 缓存
-                        cached(filepath)
-                        # 当修改文件内容时，清除编译缓存
-                        delete COMPILED_CACHED[filepath]
-                        # 为了 server 里使用的缓存数据
-                        delete COMPILED_CACHED[filepath+"_deps"]
 
 exports.get_checksum_cache = ( filename ) ->
     return CHECKSUM_CACHED[filename]
-
-
-exports.get_compiled_cache = ( filename ) ->
-    return COMPILED_CACHED[filename]
-
-exports.set_compiled_cache = ( filename , source ) ->
-    for dir in directories 
-        if ~dir.indexOf( dir )
-            COMPILED_CACHED[filename] = source
 
 # 初始化缓存
 exports.init_cached = ( filename ) ->

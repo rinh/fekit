@@ -1,3 +1,35 @@
+# 0.2.95
+* add: server 增加缓存机制
+
+# 0.2.94
+* add: server 增加缓存机制
+
+# 0.2.93
+* add: 更新 node-sass 版本为 2.0.1
+* add: 更新 uglify 2.0
+
+# 0.2.92
+* none
+
+# 0.2.91
+* fix: fileExistsWithCaseSync 在 Windows 平台错误
+
+# 0.2.90
+* fix: mock 支持 post
+
+# 0.2.89
+* add: vm 支持 include
+* add: vmjs 中可以使用 request , response 
+* fix: 开发时 require 区分大小写
+* fix: fekit test 命令找不到测试用例时的提示不够友好且无法找到命令 Fixes #57
+* add: fekit vm 添加 layout Fixes #64
+* fix: 编译非标准js/css文件生成的version.mapping扩展名修正为js/css Fixes #72
+* fix: fekit 预编译 sass 文件模块去重 Fixes #54
+* add: stylus支持 from netwjx
+
+# 0.2.88
+* update: sass升级到`1.2.3`支持`BEM`等特性
+
 # 0.2.87
 * fix: ip代理
 

@@ -133,13 +133,8 @@ exports.compile = ( filepath , options , doneCallback ) ->
                 no_dependencies : !!options.no_dependencies
                 render_dependencies : options.render_dependencies
             } , ( err , result ) ->
-                doneCallback( err , result )
+                doneCallback( err , result , module )
             ) 
 
     utils.async.series _list , _iter , _done
-
-
-exports.boost = ( opts ) ->
-
-    booster.init( opts )
 

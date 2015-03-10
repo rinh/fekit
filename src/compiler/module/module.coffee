@@ -4,6 +4,7 @@ md5 = require "MD5"
 parser = require '../parser'
 _ = require 'underscore'
 util = require 'util'
+events = require('events')
 
 ModulePath = require('./path').ModulePath
 ModuleConfig = require('./config').ModuleConfig
@@ -30,10 +31,11 @@ class Module
         @source = utils.file.io.read( @path.getFullPath() )
         @depends = []
         @ast = null
-
         Module.booster.init_cached( @path.uri ) if Module.booster
         checksum = Module.booster && Module.booster.get_checksum_cache( @path.uri )
         @guid = checksum or md5( @source )
+        @root_module = null
+        @parent = null
 
     hasDependencies: () ->
         return @depends.length > 0
@@ -137,6 +139,7 @@ class Module
                     uris[ self.guid ] = 1
                     cb( err , uris )
 
+Module.prototype.__proto__ = events.EventEmitter.prototype
 
 # 通过模块引用字符串, 跟据parentModule解析出子模块的真实路径 , 并返回正确的模块
 # 从一行代码中解析出模块引用的路径
@@ -153,6 +156,7 @@ Module.parse = ( path , options , parentModule , rootModule ) ->
             m = new CSSModule( uri )
 
     m.root_module = rootModule if rootModule
+    m.parent = parentModule
     m.options = options 
     return m
 
