@@ -1,3 +1,9 @@
+# 0.2.96
+* fixed: 修改了 versions.mapping 文件名一致会被覆盖的问题，将文件路径恢复
+
+# 0.2.95
+* add: server 增加缓存机制
+
 # 0.2.94
 * add: server 增加缓存机制
 
