@@ -1,3 +1,6 @@
+# 0.2.97
+* fixed: 修正 utils.path.is_absolute_path 对 windows 的判断错误
+
 # 0.2.96
 * fixed: 修改了 versions.mapping 文件名一致会被覆盖的问题，将文件路径恢复
 
