@@ -1,5 +1,9 @@
+# 0.2.97
+* fixed: 修正 utils.path.is_absolute_path 对 windows 的判断错误
+
 # 0.2.96
 * add: 优化 pack 及 min 的编译速度
+* fixed: 修改了 versions.mapping 文件名一致会被覆盖的问题，将文件路径恢复
 
 # 0.2.95
 * add: server 增加缓存机制
