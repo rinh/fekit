@@ -42,6 +42,9 @@ module.exports = ( options ) ->
 
     port = if options.port and options.port != "80" then ":#{options.port}" else ""
 
+    if options.boost
+        utils.logger.log "已启动加速模式"
+
     helper_reverse.load options
 
     no_combine = ( path , parents , host , params , doneCallback ) ->
@@ -128,11 +131,12 @@ module.exports = ( options ) ->
                     else ctype = ""
 
                 # 判断如果有 cache 则使用，否则进行编译
-                cache = compiler.booster.get_compiled_cache( srcpath , is_deps )
-                if cache
-                    writeHeader res , 200 , ctype
-                    res.end cache
-                    return
+                if options.boost
+                    cache = compiler.booster.get_compiled_cache( srcpath , is_deps )
+                    if cache
+                        writeHeader res , 200 , ctype
+                        res.end cache
+                        return
 
                 _render = ( err , txt , module ) ->
                     if err

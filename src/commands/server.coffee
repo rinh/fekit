@@ -24,7 +24,7 @@ exports.set_options = ( optimist ) ->
     optimist.describe 'n' , '默认情况下，/prd/的请求需要加入export中才可以识别。 指定此选项则可以无视export属性'
 
     optimist.alias 'b' , 'boost'
-    optimist.describe 'b' , '可以指定目录进行编译加速。格式为 -b 目录名'
+    optimist.describe 'b' , '可以对编译结果缓存，以进行加速'
 
     optimist.alias 's' , 'ssl'
     optimist.describe 's' , '指定ssl证书文件，后缀为.crt'
@@ -40,7 +40,6 @@ exports.set_options = ( optimist ) ->
 
     optimist.alias 'r' , 'reverse'
     optimist.describe 'r' , '是否启用反向代理服务。格式为 -r domain(:address)[,domain(:address)]'
-
 
 setupProxyServer = ( options ) ->
 

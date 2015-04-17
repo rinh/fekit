@@ -1,3 +1,6 @@
+# 0.2.98
+* add: 增加 server 的 boost 选项，默认情况不开启
+
 # 0.2.97
 * fixed: 修正 utils.path.is_absolute_path 对 windows 的判断错误
 
