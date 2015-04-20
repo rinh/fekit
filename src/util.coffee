@@ -17,7 +17,8 @@ fstream = require 'fstream'
 zlib = require 'zlib'
 sty = require 'sty'
 sysutil = require 'util'
-
+find = require 'find'
+utilself = module.exports
 #----------------------------
 
 exports.array = utilarray =
@@ -432,20 +433,21 @@ class FekitConfig
         utillogger.log("自动脚本 #{type} , 执行完毕.")
 
 
-    doRefs : () ->
+    doRefs : ( options ) ->
         @refs_path = utilpath.join @baseUri , "refs"
         utilfile.rmrfSync @refs_path
         utilfile.mkdirp @refs_path
         utillogger.log "[refs] start"
-        for k , v of ( @root.refs || {} )
+        list = @root.refs || {}
+        for k , v of list
             fn = @["_doRefs_"+k]
             if fn
                 fn.apply @ , ( unless sysutil.isArray(v) then [v] else v )
             else
                 utillogger.error "[refs] 构建任务失败, 找不到命令 #{k}"
+        @_doRefs_env( options )
 
     _doRefs_cp : () ->
-
         for dir in arguments
             from = utilpath.join @baseUri , dir
             to = utilpath.join @refs_path , dir
@@ -468,7 +470,12 @@ class FekitConfig
 
         _runCode script_path , ctx
 
-
+    _doRefs_env : ( options ) ->
+        for k , fn of _filters
+            reg = new RegExp(k,"i")
+            files = find.fileSync( reg , @refs_path )
+            for file in files 
+                @_do_filter( fn.bind( @ ) , file , options , @ )
 
     getEnvironmentConfig : () ->
         j = utilpath.join
@@ -486,6 +493,28 @@ class FekitConfig
             prd: {}
 
         return @root?.environment or default_json
+
+
+    _do_filter : ( fn, filepath , options , conf ) ->
+        source = utilfile.io.read( filepath )
+        source = fn( source , options , conf )
+        utilfile.io.write( filepath , source )
+
+
+_filters =
+
+    ".*\\.html$" : ( source , options , conf ) ->
+        env = utilself.getCurrentEnvironment( options )
+        return utilself.replaceEnvironmentConfig 'text' , source , @getEnvironmentConfig()[ env ]
+
+    ".*\\.htm$" : ( source , options ) ->
+        env = utilself.getCurrentEnvironment( options )
+        return utilself.replaceEnvironmentConfig 'text' , source , @getEnvironmentConfig()[ env ]
+
+    ".*\\.vm$" : ( source , options ) ->
+        env = utilself.getCurrentEnvironment( options )
+        return utilself.replaceEnvironmentConfig 'text' , source , @getEnvironmentConfig()[ env ]
+
 
 
 _runCode = ( path , ctx ) ->
@@ -849,3 +878,35 @@ exports.extend = () ->
 
 exports.version = utilfile.io.readJSON( syspath.join( __dirname , "../package.json" ) ).version
 
+
+exports.getCurrentEnvironment = ( options ) ->
+    type = 'prd'
+
+    # 如果命令行中存在 environment 参数，则优先使用该参数
+    if options.environment 
+        type = options.environment
+    else if process.env['FEKIT_ENVIRONMENT']
+        type = process.env['FEKIT_ENVIRONMENT']
+
+    type = type.toLowerCase()
+    switch type 
+        when 'prd' then return type
+        when 'beta' then return type
+        when 'dev' then return type
+        when 'local' then return type
+        else 
+            utillogger.error "获取当前 environment 配置出错(#{type}) , 值必须为`local`,`dev`,`beta`或`prd`其中之一"
+
+
+exports.replaceEnvironmentConfig = ( type , source , config ) ->
+    config = config or {}
+    reg = ///
+        /\*\[([^\]]+?)\]\*/
+    ///ig
+    return source.replace reg , ( $0 , $1 ) ->
+            if config[$1] isnt null and typeof config[$1] isnt 'undefined'
+                switch type
+                    when "js" then return util.inspect( config[$1] ) 
+                    else return config[$1]
+            else 
+                return ""

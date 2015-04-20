@@ -41,6 +41,10 @@ module.exports = ( options ) ->
 
             _render = ( path , ctx , macros , is_layout ) ->
                 content = utils.file.io.read( _get_path( path ) )
+
+                # 替换环境变量值
+                content = utils.replaceEnvironmentConfig 'text' , content , conf.getEnvironmentConfig()[ utils.getCurrentEnvironment( options ) ]
+
                 asts = Velocity.Parser.parse( content )
                 vmc = new Velocity.Compile( asts )
                 s = vmc.render( ctx , macros )

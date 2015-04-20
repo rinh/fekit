@@ -32,6 +32,9 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'm' , 'onlyMappingFile' 
     optimist.describe 'm' , '在 /ver 目录中只生成 mapping 文件'
 
+    optimist.alias 'e' , 'environment'
+    optimist.describe 'e' , '设置环境为`local`,`dev`,`beta`或`prd`'
+
 
 save_versions_mapping = ( mapping_file_path , mapping ) ->
 
@@ -80,7 +83,7 @@ exports.run = ( options ) ->
     done = () ->
         if vertype is 0 or vertype is 2
             save_versions_mapping( syspath.join( options.cwd , './ver/versions.mapping' ) , script_global.EXPORT_MAP )
-        conf.doRefs()
+        conf.doRefs( options )
         conf.doScript "postmin" , script_global 
         utils.logger.log("DONE.")
 

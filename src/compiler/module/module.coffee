@@ -81,17 +81,6 @@ class Module
     # override
     analyzed:()->
 
-
-    _doMacro:( source , config ) ->
-        config = config or {}
-        reg = ///
-            /\*\[([^\]]+?)\]\*/
-        ///ig
-        return source.replace reg , ( $0 , $1 ) ->
-                if config[$1] isnt null and typeof config[$1] isnt 'undefined'
-                    return util.inspect( config[$1] ) 
-                else 
-                    return ""
  
     _process:( path , cb ) ->
         #txt = new utils.file.reader().read( path )
@@ -102,9 +91,10 @@ class Module
             source = utils.removeBOM @source 
             # 处理宏
             try 
-                source = @_doMacro source , @config.config.getEnvironmentConfig()[ @options.environment ]
+                env = utils.getCurrentEnvironment( @options )
+                source = utils.replaceEnvironmentConfig 'text' , source , @config.config.getEnvironmentConfig()[ env ]
             catch err 
-                utils.logger.error "在 environment 配置中找不到 #{@options.environment} 项"
+                utils.logger.error "在 environment 配置中找不到 #{env}"
                 source = source
 
             plugin.process source , path , this , ( err , result ) ->

@@ -54,6 +54,6 @@ process.on 'message', (m) ->
 
         compiler.compile( srcpath , {
             dependencies_filepath_list : parents 
-            environment : 'prd'
+            environment : utils.getCurrentEnvironment(options) or 'prd'
         }, _done )
 

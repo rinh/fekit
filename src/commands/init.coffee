@@ -66,6 +66,9 @@ local:
 dev:
     DEBUG: true
 
+beta:
+    DEBUG: false
+
 prd:
     DEBUG: false
         """
