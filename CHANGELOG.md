@@ -1,3 +1,6 @@
+# 0.2.101
+* fixed: 升级 http-proxy 以修复其使用 eventemitter3 的错误
+
 # 0.2.100
 * fixed: 修正发布点
 
