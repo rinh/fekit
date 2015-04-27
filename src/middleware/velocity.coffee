@@ -48,7 +48,7 @@ module.exports = ( options ) ->
                 asts = Velocity.Parser.parse( content )
                 vmc = new Velocity.Compile( asts )
                 s = vmc.render( ctx , macros )
-                if ctx.layout and !is_layout
+                if ctx and ctx.layout and !is_layout
                     _layout_path = ctx.layout
                     ctx.layout = null
                     ctx.screen_content = s 
