@@ -1,3 +1,6 @@
+# 0.2.102
+* fixed: 修复 velocity 解析时的错误
+
 # 0.2.101
 * fixed: 升级 http-proxy 以修复其使用 eventemitter3 的错误
 
