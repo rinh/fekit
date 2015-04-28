@@ -7,3 +7,4 @@ testcase/**/dev/*
 testcase/**/ver/*
 .DS_Store
 .idea/
+*.diff

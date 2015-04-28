@@ -1,3 +1,6 @@
+# 0.2.103
+* fixed: 修复 velocity 引用变量没有成功的问题
+
 # 0.2.102
 * fixed: 修复 velocity 解析时的错误
 
