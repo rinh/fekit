@@ -1,4 +1,5 @@
 # 解析 velocity 模板
+fs = require "fs"
 vm = require "vm"
 urlrouter = require "urlrouter"
 Velocity = require "velocityjs"
@@ -30,11 +31,13 @@ module.exports = ( options ) ->
             vmc = null
 
             _get_path = ( path ) ->
-                return path if utils.path.is_absolute_path( path )
+                return path if utils.path.is_absolute_path( path ) and fs.existsSync(path)
                 root = conf?.root?.development?.velocity_root
                 if root
                     root = utils.path.join( conf.fekit_root_dirname , root )
                     _p = utils.path.join( root , path.replace(/^\//,'./') )
+                    if not fs.existsSync(_p)
+                        _p = utils.path.join(root, "../refs/vm", path.replace(/^\//, './'))
                 else 
                     _p = utils.path.join( utils.path.dirname(p) , path )
                 return _p
@@ -46,8 +49,13 @@ module.exports = ( options ) ->
                 content = utils.replaceEnvironmentConfig 'text' , content , conf.getEnvironmentConfig()[ utils.getCurrentEnvironment( options ) ]
 
                 asts = Velocity.Parser.parse( content )
-                vmc = new Velocity.Compile( asts )
-                s = vmc.render( ctx , macros )
+
+                unless vmc
+                    vmc = new Velocity.Compile( asts )
+                    s = vmc.render( ctx , macros )
+                else
+                    s = vmc._render( asts )
+
                 if ctx and ctx.layout and !is_layout
                     _layout_path = ctx.layout
                     ctx.layout = null
