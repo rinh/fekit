@@ -48,7 +48,8 @@ exports.process = (txt, path, module, cb) ->
     try 
         result = sass.renderSync {
                 data: txt,
-                includePaths: [dir]
+                includePaths: [dir],
+                outputStyle: "compressed"
             }
         succ( result.css.toString() )
     catch err
