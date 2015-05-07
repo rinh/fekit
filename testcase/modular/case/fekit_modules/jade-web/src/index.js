@@ -1,0 +1,1 @@
+this.jade = require('./runtime.js');

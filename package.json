@@ -46,6 +46,7 @@
         "stylus": "0.49.*",
         "nib": "1.0.*",
         "handlebars": "2.0.0-alpha.1",
+        "jade": "1.8.*",
         "velocityjs": "0.4.x",
         "tiny-lr": "0.0.7",
         "gaze": "0.5.1",
