@@ -1,3 +1,6 @@
+# 0.2.105
+* update: 升级 node-sass 到 3.0.0 稳定版
+
 # 0.2.103
 * fixed: 修复 velocity 引用变量没有成功的问题
 
