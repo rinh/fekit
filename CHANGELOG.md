@@ -1,3 +1,7 @@
+# 0.2.106
+* fixed: 修复 versions.mapping 版本号问题
+* add: 增加 .fekitignore 功能
+
 # 0.2.105
 * update: 升级 node-sass 到 3.0.0 稳定版
 
