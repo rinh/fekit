@@ -18,6 +18,7 @@ zlib = require 'zlib'
 sty = require 'sty'
 sysutil = require 'util'
 find = require 'find'
+ignore = require 'ignore'
 utilself = module.exports
 #----------------------------
 
@@ -816,6 +817,8 @@ exports.tar =
                     level : 6
                     memLevel : 6
 
+                ig = ignore().addIgnoreFile(syspath.join(source, '.fekitignore'))
+
                 reader = fstream.Reader
                     path : source
                     type : 'Directory'
@@ -823,6 +826,7 @@ exports.tar =
                     filter : (entry) ->
                         if this.basename.match(/^fekit_modules$/) then return false
                         if this.basename.match(/^\..+$/) then return false
+                        if ig.filter([this.basename]).length is 0 then return false
                         # Make sure readable directories have execute permission
                         if entry.props.type is "Directory" then entry.props.mode |= (entry.props.mode >>> 2) & 0o0111;
                         return true
