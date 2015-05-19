@@ -1,9 +1,7 @@
 compiler = require "../compiler/compiler"
 utils = require "../util"
-syspath = require "path"
 md5 = require "MD5"
 minCode = require("./_min_mincode").minCode
-get_dist_filename = require("./_min_mincode").get_dist_filename
 
 pid = process.pid
 
