@@ -1,3 +1,6 @@
+# 0.2.107
+* fixed: 回滚 uglify-js 到 1.3.x
+
 # 0.2.106
 * fixed: 修复 versions.mapping 版本号问题
 * add: 增加 .fekitignore 功能
