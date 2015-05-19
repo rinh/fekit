@@ -1,9 +1,6 @@
 syspath = require 'path'
-compiler = require "../compiler/compiler"
 utils = require "../util"
 md5 = require "MD5"
-uglifycss = require("uglifycss")
-ujs = require("uglify-js")
 computecluster = require('compute-cluster');
 cc = new computecluster({
   module: utils.path.join( __dirname , '_min_worker.js' )
