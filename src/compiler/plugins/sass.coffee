@@ -35,7 +35,7 @@ grep_import = ( txt , basedir )->
 exports.contentType = "css"
 
 exports.process = (txt, path, module, cb) ->
-    
+
     dir = syspath.dirname path
 
     #txt = grep_import( txt , dir )
@@ -50,7 +50,7 @@ exports.process = (txt, path, module, cb) ->
         sass.render {
             data: txt,
             includePaths: [dir],
-            outputStyle: "compressed",
+            outputStyle: "nested",
             importer: importOnce
         }, ( err, result ) ->
           if err
