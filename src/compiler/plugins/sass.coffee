@@ -50,7 +50,7 @@ exports.process = (txt, path, module, cb) ->
         sass.render {
             data: txt,
             includePaths: [dir],
-            outputStyle: "nested",
+            outputStyle: "expanded",
             importer: importOnce
         }, ( err, result ) ->
           if err
