@@ -39,7 +39,7 @@ exports.set_options = ( optimist ) ->
     optimist.describe 'o' , '是否启用代理服务器, 默认端口为13180'
 
     optimist.alias 'r' , 'reverse'
-    optimist.describe 'r' , '是否启用反向代理服务。格式为 -r domain(:address)[,domain(:address)]'
+    optimist.describe 'r' , '是否启用反向代理服务。'
 
     optimist.alias 'e' , 'environment'
     optimist.describe 'e' , '设置环境为`local`,`dev`,`beta`或`prd`'
