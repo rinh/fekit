@@ -52,6 +52,8 @@ exports.run = (options) ->
     partialWord = args[w]
     i = partialWord.length
     i -= 1 while partialWord.substr(0, i) isnt partialLine.substr(-1 * i) and i > 0
+    partialWord = partialWord.substr 0, i
+    partialWords.push partialWord
 
     opts =
         words        : words
@@ -67,5 +69,7 @@ exports.run = (options) ->
 
     console.error opts
 
-    result = fullList()
-    console.log result.join "\n"
+    if partialWords[1] is ''
+        result = fullList()
+        console.log result.join "\n"
+        return null
