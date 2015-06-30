@@ -1,3 +1,7 @@
+# 0.2.108
+* upgrade: node-sass 升级及去重优化
+* fixed: ignore 修复
+
 # 0.2.107
 * fixed: 回滚 uglify-js 到 1.3.x
 
