@@ -7,6 +7,14 @@ utils = require '../util'
 exports.usage = "TAB 自动补全"
 
 
+fullList = fs.readdirSync __dirname
+fullList = fullList.concat env.getExtensions()
+fullList = fullList.map (f) ->
+    return utils.path.fname f if typeof f is "string"
+    return f.name
+fullList = fullList.filter (f) ->
+    return not /^_/.test f
+
 dumpScript = () ->
     p = path.resolve __dirname, "../completion.sh"
     fs.readFile p, "utf8", (er, d) ->
@@ -17,20 +25,10 @@ dumpScript = () ->
         d = d.replace /^#!.*?\n/, ""
         console.log d
 
-fullList = () ->
-    list = fs.readdirSync __dirname
-    list = list.concat env.getExtensions()
-    list = list.map (f) ->
-        return utils.path.fname f if typeof f is "string"
-        return f.name
-    list = list.filter (f) ->
-        return not /^_/.test f
-
 
 exports.run = (options) ->
     if process.platform is "win32"
-        utils.logger.error "fekit completion 不支持 windows"
-        return null
+        return utils.logger.error "fekit completion 不支持 windows"
 
     # if the COMP_* isn't in the env, then just dump the script.
     if undefined in [process.env.COMP_CWORD, process.env.COMP_LINE, process.env.COMP_POINT]
@@ -69,7 +67,8 @@ exports.run = (options) ->
 
     console.error opts
 
-    if partialWords[1] is ''
-        result = fullList()
-        console.log result.join "\n"
-        return null
+    if partialWords.length is 2
+        result = fullList.filter (c) ->
+            return c.indexOf(opts.partialWord) is 0
+        console.error result
+        return console.log result.join "\n"
