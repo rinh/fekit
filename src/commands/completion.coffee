@@ -67,6 +67,5 @@ exports.run = (options) ->
 
     console.error opts
 
-    console.error fullList()
-    console.log "a"
-    console.log "b"
+    result = fullList()
+    console.log result.join "\n"
