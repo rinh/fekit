@@ -1,3 +1,4 @@
+#!/bin/bash
 # fekit command completion script
 #
 # Installation: fekit completion >> ~/.bashrc  (or ~/.zshrc)
