@@ -2,6 +2,7 @@ utils = require '../../util'
 css = require './css'
 syspath = require 'path'
 sass = require 'node-sass'
+importOnce = require 'node-sass-import-once'
 
 #=============================
 
@@ -34,7 +35,7 @@ grep_import = ( txt , basedir )->
 exports.contentType = "css"
 
 exports.process = (txt, path, module, cb) ->
-    
+
     dir = syspath.dirname path
 
     #txt = grep_import( txt , dir )
@@ -46,12 +47,16 @@ exports.process = (txt, path, module, cb) ->
         cb err
 
     try 
-        result = sass.renderSync {
-                data: txt,
-                includePaths: [dir],
-                outputStyle: "compressed"
-            }
-        succ( result.css.toString() )
+        sass.render {
+            data: txt,
+            includePaths: [dir],
+            outputStyle: "expanded",
+            importer: importOnce
+        }, ( err, result ) ->
+          if err
+              fail( err )
+          else
+              succ( result.css.toString() )
     catch err
         fail( err )
             
