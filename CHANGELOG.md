@@ -1,3 +1,6 @@
+# 0.2.109
+* add: 增加 fekit completion 命令
+
 # 0.2.108
 * upgrade: node-sass 升级及去重优化
 * fixed: ignore 修复
