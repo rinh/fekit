@@ -7,6 +7,14 @@ utils = require '../util'
 exports.usage = "TAB 自动补全"
 
 
+optimist =
+    keys: []
+    aliases: []
+    alias: (k, a) ->
+        @keys.push "-#{k}"
+        @aliases.push "--#{a}"
+    describe: () ->
+
 fullList = fs.readdirSync __dirname
 fullList = fullList.concat env.getExtensions()
 fullList = fullList.map (f) ->
@@ -70,3 +78,18 @@ exports.run = (options) ->
         result = fullList.filter (c) ->
             return c.indexOf(opts.partialWord) is 0
         return console.log result.join "\n"
+
+    if partialWords.length > 2
+        try
+            command = opts.partialWords[1]
+            command = require "./#{command}"
+            command.set_options optimist
+            optimist.alias 'h', 'help'
+
+            if /^--/.test opts.partialWord then result = optimist.aliases
+            else result = optimist.keys
+            result = result.filter (c) ->
+                return c.indexOf(opts.partialWord) is 0
+            console.log result.join "\n"
+        catch e
+            console.error e
