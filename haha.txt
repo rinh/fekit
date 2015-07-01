@@ -1,0 +1,2180 @@
+1
+npm list
+6
+----- i: 2
+{ words: [ 'npm', 'list' ],
+  w: 1,
+  word: 'list',
+  line: 'npm list',
+  lineLength: 8,
+  point: 6,
+  partialLine: 'npm li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', 'list' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm li
+6
+----- partialWord: li
+----- partialLine: npm li
+----- i: 2
+{ words: [ 'npm', 'li' ],
+  w: 1,
+  word: 'li',
+  line: 'npm li',
+  lineLength: 6,
+  point: 6,
+  partialLine: 'npm li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', 'li' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm li
+6
+----- partialWord: li
+----- partialLine: npm li
+----- i: 2
+{ words: [ 'npm', 'li' ],
+  w: 1,
+  word: 'li',
+  line: 'npm li',
+  lineLength: 6,
+  point: 6,
+  partialLine: 'npm li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', 'li' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm list
+6
+----- partialWord: list
+----- partialLine: npm li
+----- i: 2
+{ words: [ 'npm', 'list' ],
+  w: 1,
+  word: 'list',
+  line: 'npm list',
+  lineLength: 8,
+  point: 6,
+  partialLine: 'npm li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', 'list' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm list
+6
+----- partialWord: list
+----- partialLine: npm li
+----- i: 2
+{ words: [ 'npm', 'list' ],
+  w: 1,
+  word: 'list',
+  line: 'npm list',
+  lineLength: 8,
+  point: 6,
+  partialLine: 'npm li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', 'list' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm "lis"
+8
+----- partialWord: "lis"
+----- partialLine: npm "lis
+----- i: 4
+{ words: [ 'npm', 'lis' ],
+  w: 1,
+  word: 'lis',
+  line: 'npm "lis"',
+  lineLength: 9,
+  point: 8,
+  partialLine: 'npm "lis',
+  partialWords: [ 'npm', 'lis' ],
+  partialWord: 'lis',
+  raw: [ 'npm', '"lis"' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'list' ], 'lis' ]
+1
+npm "list"
+9
+----- partialWord: "list"
+----- partialLine: npm "list
+----- i: 5
+{ words: [ 'npm', 'list' ],
+  w: 1,
+  word: 'list',
+  line: 'npm "list"',
+  lineLength: 10,
+  point: 9,
+  partialLine: 'npm "list',
+  partialWords: [ 'npm', 'list' ],
+  partialWord: 'list',
+  raw: [ 'npm', '"list"' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'list' ], 'list' ]
+1
+npm "li"
+7
+----- partialWord: "li"
+----- partialLine: npm "li
+----- i: 3
+{ words: [ 'npm', 'li' ],
+  w: 1,
+  word: 'li',
+  line: 'npm "li"',
+  lineLength: 8,
+  point: 7,
+  partialLine: 'npm "li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', '"li"' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm "li"
+7
+----- partialWord: "li"
+----- partialLine: npm "li
+----- i: 3
+{ words: [ 'npm', 'li' ],
+  w: 1,
+  word: 'li',
+  line: 'npm "li"',
+  lineLength: 8,
+  point: 7,
+  partialLine: 'npm "li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', '"li"' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm "list"
+7
+----- partialWord: "list"
+----- partialLine: npm "li
+----- i: 3
+{ words: [ 'npm', 'list' ],
+  w: 1,
+  word: 'list',
+  line: 'npm "list"',
+  lineLength: 10,
+  point: 7,
+  partialLine: 'npm "li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', '"list"' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm "list"
+7
+----- partialWord: "list"
+----- partialLine: npm "li
+----- i: 3
+{ words: [ 'npm', 'list' ],
+  w: 1,
+  word: 'list',
+  line: 'npm "list"',
+  lineLength: 10,
+  point: 7,
+  partialLine: 'npm "li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', '"list"' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm li
+6
+{ words: [ 'npm', 'li' ],
+  w: 1,
+  word: 'li',
+  line: 'npm li',
+  lineLength: 6,
+  point: 6,
+  partialLine: 'npm li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', 'li' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm li
+6
+{ words: [ 'npm', 'li' ],
+  w: 1,
+  word: 'li',
+  line: 'npm li',
+  lineLength: 6,
+  point: 6,
+  partialLine: 'npm li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', 'li' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm list
+6
+{ words: [ 'npm', 'list' ],
+  w: 1,
+  word: 'list',
+  line: 'npm list',
+  lineLength: 8,
+  point: 6,
+  partialLine: 'npm li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', 'list' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm list
+6
+{ words: [ 'npm', 'list' ],
+  w: 1,
+  word: 'list',
+  line: 'npm list',
+  lineLength: 8,
+  point: 6,
+  partialLine: 'npm li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', 'list' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm "list
+7
+{ words: [ 'npm', 'list' ],
+  w: 1,
+  word: 'list',
+  line: 'npm "list',
+  lineLength: 9,
+  point: 7,
+  partialLine: 'npm "li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', '"list' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm "list
+7
+{ words: [ 'npm', 'list' ],
+  w: 1,
+  word: 'list',
+  line: 'npm "list',
+  lineLength: 9,
+  point: 7,
+  partialLine: 'npm "li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', '"list' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm "list
+7
+function errorHandler(er) {
+  // console.error("errorHandler", er)
+  if (!npm.config || !npm.config.loaded) {
+    // logging won't work unless we pretend that it's ready
+    er = er || new Error("Exit prior to config file resolving.")
+    console.error(er.stack || er.message)
+  }
+
+  if (cbCalled) {
+    er = er || new Error("Callback called more than once.")
+  }
+
+  cbCalled = true
+  if (!er) return exit(0)
+  if (typeof er === "string") {
+    log.error("", er)
+    return exit(1, true)
+  } else if (!(er instanceof Error)) {
+    log.error("weird error", er)
+    return exit(1, true)
+  }
+
+  var m = er.code || er.message.match(/^(?:Error: )?(E[A-Z]+)/)
+  if (m && !er.code) er.code = m
+
+  ; [ "type"
+    , "fstream_path"
+    , "fstream_unc_path"
+    , "fstream_type"
+    , "fstream_class"
+    , "fstream_finish_call"
+    , "fstream_linkpath"
+    , "stack"
+    , "fstream_stack"
+    , "statusCode"
+    , "pkgid"
+    ].forEach(function (k) {
+      var v = er[k]
+      if (!v) return
+      if (k === "fstream_stack") v = v.join("\n")
+      log.verbose(k, v)
+    })
+
+  log.verbose("cwd", process.cwd())
+
+  var os = require("os")
+  // log.error("System", os.type() + " " + os.release())
+  // log.error("command", process.argv.map(JSON.stringify).join(" "))
+  // log.error("node -v", process.version)
+  // log.error("npm -v", npm.version)
+  log.error("", os.type() + " " + os.release())
+  log.error("argv", process.argv.map(JSON.stringify).join(" "))
+  log.error("node", process.version)
+  log.error("npm ", "v" + npm.version)
+
+  ; [ "file"
+    , "path"
+    , "code"
+    , "errno"
+    , "syscall"
+    ].forEach(function (k) {
+      var v = er[k]
+      if (v) log.error(k, v)
+    })
+
+  // just a line break
+  if (log.levels[log.level] <= log.levels.error) console.error("")
+
+  switch (er.code) {
+  case "ECONNREFUSED":
+    log.error("", er)
+    log.error("", ["\nIf you are behind a proxy, please make sure that the"
+              ,"'proxy' config is set properly.  See: 'npm help config'"
+              ].join("\n"))
+    break
+
+  case "EACCES":
+  case "EPERM":
+    log.error("", er)
+    log.error("", ["\nPlease try running this command again as root/Administrator."
+              ].join("\n"))
+    break
+
+  case "ELIFECYCLE":
+    log.error("", er.message)
+    log.error("", ["","Failed at the "+er.pkgid+" "+er.stage+" script '"+er.script+"'."
+              ,"This is most likely a problem with the "+er.pkgname+" package,"
+              ,"not with npm itself."
+              ,"Tell the author that this fails on your system:"
+              ,"    "+er.script
+              ,"You can get their info via:"
+              ,"    npm owner ls "+er.pkgname
+              ,"There is likely additional logging output above."
+              ].join("\n"))
+    break
+
+  case "ENOGIT":
+    log.error("", er.message)
+    log.error("", ["","Failed using git."
+              ,"This is most likely not a problem with npm itself."
+              ,"Please check if you have git installed and in your PATH."
+              ].join("\n"))
+    break
+
+  case "EJSONPARSE":
+    log.error("", er.message)
+    log.error("", "File: "+er.file)
+    log.error("", ["Failed to parse package.json data."
+              ,"package.json must be actual JSON, not just JavaScript."
+              ,"","This is not a bug in npm."
+              ,"Tell the package author to fix their package.json file."
+              ].join("\n"), "JSON.parse")
+    break
+
+  // TODO(isaacs)
+  // Add a special case here for E401 and E403 explaining auth issues?
+
+  case "E404":
+    var msg = [er.message]
+    if (er.pkgid && er.pkgid !== "-") {
+      msg.push("", "'"+er.pkgid+"' is not in the npm registry."
+              ,"You should bug the author to publish it (or use the name yourself!)")
+      if (er.parent) {
+        msg.push("It was specified as a dependency of '"+er.parent+"'")
+      }
+      msg.push("\nNote that you can also install from a"
+              ,"tarball, folder, http url, or git url.")
+    }
+    // There's no need to have 404 in the message as well.
+    msg[0] = msg[0].replace(/^404\s+/, "")
+    log.error("404", msg.join("\n"))
+    break
+
+  case "EPUBLISHCONFLICT":
+    log.error("publish fail", ["Cannot publish over existing version."
+              ,"Update the 'version' field in package.json and try again."
+              ,""
+              ,"To automatically increment version numbers, see:"
+              ,"    npm help version"
+              ].join("\n"))
+    break
+
+  case "EISGIT":
+    log.error("git", [er.message
+              ,"    "+er.path
+              ,"Refusing to remove it. Update manually,"
+              ,"or move it out of the way first."
+              ].join("\n"))
+    break
+
+  case "ECYCLE":
+    log.error("cycle", [er.message
+              ,"While installing: "+er.pkgid
+              ,"Found a pathological dependency case that npm cannot solve."
+              ,"Please report this to the package author."
+              ].join("\n"))
+    break
+
+  case "EBADPLATFORM":
+    log.error("notsup", [er.message
+              ,"Not compatible with your operating system or architecture: "+er.pkgid
+              ,"Valid OS:    "+er.os.join(",")
+              ,"Valid Arch:  "+er.cpu.join(",")
+              ,"Actual OS:   "+process.platform
+              ,"Actual Arch: "+process.arch
+              ].join("\n"))
+    break
+
+  case "EEXIST":
+    log.error([er.message
+              ,"File exists: "+er.path
+              ,"Move it away, and try again."].join("\n"))
+    break
+
+  case "ENEEDAUTH":
+    log.error("need auth", [er.message
+              ,"You need to authorize this machine using `npm adduser`"
+              ].join("\n"))
+    break
+
+  case "EPEERINVALID":
+    var peerErrors = Object.keys(er.peersDepending).map(function (peer) {
+      return "Peer " + peer + " wants " + er.packageName + "@"
+        + er.peersDepending[peer]
+    })
+    log.error("peerinvalid", [er.message].concat(peerErrors).join("\n"))
+    break
+
+  case "ECONNRESET":
+  case "ENOTFOUND":
+  case "ETIMEDOUT":
+    log.error("network", [er.message
+              ,"This is most likely not a problem with npm itself"
+              ,"and is related to network connectivity."
+              ,"In most cases you are behind a proxy or have bad network settings."
+              ,"\nIf you are behind a proxy, please make sure that the"
+              ,"'proxy' config is set properly.  See: 'npm help config'"
+              ].join("\n"))
+    break
+
+  case "ENOPACKAGEJSON":
+    log.error("package.json", [er.message
+              ,"This is most likely not a problem with npm itself."
+              ,"npm can't find a package.json file in your current directory."
+              ].join("\n"))
+    break
+
+  case "ETARGET":
+    log.error("notarget", [er.message
+              ,"This is most likely not a problem with npm itself."
+              ,"In most cases you or one of your dependencies are requesting"
+              ,"a package version that doesn't exist."
+              ].join("\n"))
+    break
+
+  case "ENOTSUP":
+    if (er.required) {
+      log.error("notsup", [er.message
+                ,"Not compatible with your version of node/npm: "+er.pkgid
+                ,"Required: "+JSON.stringify(er.required)
+                ,"Actual:   "
+                +JSON.stringify({npm:npm.version
+                                ,node:npm.config.get("node-version")})
+                ].join("\n"))
+      break
+    } // else passthrough
+
+  case "ENOSPC":
+    log.error("nospc", [er.message
+              ,"This is most likely not a problem with npm itself"
+              ,"and is related to insufficient space on your system."
+              ].join("\n"))
+    break
+
+  case "EROFS":
+    log.error("rofs", [er.message
+              ,"This is most likely not a problem with npm itself"
+              ,"and is related to the file system being read-only."
+              ,"\nOften virtualized file systems, or other file systems"
+              ,"that don't support symlinks, give this error."
+              ].join("\n"))
+    break
+
+  case "ENOENT":
+    log.error("enoent", [er.message
+              ,"This is most likely not a problem with npm itself"
+              ,"and is related to npm not being able to find a file."
+              ,er.file?"\nCheck if the file '"+er.file+"' is present.":""
+              ].join("\n"))
+    break
+
+  default:
+    log.error("", er.message || er)
+    log.error("", ["", "If you need help, you may report this error at:"
+                  ,"    <http://github.com/npm/npm/issues>"
+                  ].join("\n"))
+    break
+  }
+
+  exit(typeof er.errno === "number" ? er.errno : 1)
+}
+{ words: [ 'npm', 'list' ],
+  w: 1,
+  word: 'list',
+  line: 'npm "list',
+  lineLength: 9,
+  point: 7,
+  partialLine: 'npm "li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', '"list' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm "list
+7
+function errorHandler(er) {
+  // console.error("errorHandler", er)
+  if (!npm.config || !npm.config.loaded) {
+    // logging won't work unless we pretend that it's ready
+    er = er || new Error("Exit prior to config file resolving.")
+    console.error(er.stack || er.message)
+  }
+
+  if (cbCalled) {
+    er = er || new Error("Callback called more than once.")
+  }
+
+  cbCalled = true
+  if (!er) return exit(0)
+  if (typeof er === "string") {
+    log.error("", er)
+    return exit(1, true)
+  } else if (!(er instanceof Error)) {
+    log.error("weird error", er)
+    return exit(1, true)
+  }
+
+  var m = er.code || er.message.match(/^(?:Error: )?(E[A-Z]+)/)
+  if (m && !er.code) er.code = m
+
+  ; [ "type"
+    , "fstream_path"
+    , "fstream_unc_path"
+    , "fstream_type"
+    , "fstream_class"
+    , "fstream_finish_call"
+    , "fstream_linkpath"
+    , "stack"
+    , "fstream_stack"
+    , "statusCode"
+    , "pkgid"
+    ].forEach(function (k) {
+      var v = er[k]
+      if (!v) return
+      if (k === "fstream_stack") v = v.join("\n")
+      log.verbose(k, v)
+    })
+
+  log.verbose("cwd", process.cwd())
+
+  var os = require("os")
+  // log.error("System", os.type() + " " + os.release())
+  // log.error("command", process.argv.map(JSON.stringify).join(" "))
+  // log.error("node -v", process.version)
+  // log.error("npm -v", npm.version)
+  log.error("", os.type() + " " + os.release())
+  log.error("argv", process.argv.map(JSON.stringify).join(" "))
+  log.error("node", process.version)
+  log.error("npm ", "v" + npm.version)
+
+  ; [ "file"
+    , "path"
+    , "code"
+    , "errno"
+    , "syscall"
+    ].forEach(function (k) {
+      var v = er[k]
+      if (v) log.error(k, v)
+    })
+
+  // just a line break
+  if (log.levels[log.level] <= log.levels.error) console.error("")
+
+  switch (er.code) {
+  case "ECONNREFUSED":
+    log.error("", er)
+    log.error("", ["\nIf you are behind a proxy, please make sure that the"
+              ,"'proxy' config is set properly.  See: 'npm help config'"
+              ].join("\n"))
+    break
+
+  case "EACCES":
+  case "EPERM":
+    log.error("", er)
+    log.error("", ["\nPlease try running this command again as root/Administrator."
+              ].join("\n"))
+    break
+
+  case "ELIFECYCLE":
+    log.error("", er.message)
+    log.error("", ["","Failed at the "+er.pkgid+" "+er.stage+" script '"+er.script+"'."
+              ,"This is most likely a problem with the "+er.pkgname+" package,"
+              ,"not with npm itself."
+              ,"Tell the author that this fails on your system:"
+              ,"    "+er.script
+              ,"You can get their info via:"
+              ,"    npm owner ls "+er.pkgname
+              ,"There is likely additional logging output above."
+              ].join("\n"))
+    break
+
+  case "ENOGIT":
+    log.error("", er.message)
+    log.error("", ["","Failed using git."
+              ,"This is most likely not a problem with npm itself."
+              ,"Please check if you have git installed and in your PATH."
+              ].join("\n"))
+    break
+
+  case "EJSONPARSE":
+    log.error("", er.message)
+    log.error("", "File: "+er.file)
+    log.error("", ["Failed to parse package.json data."
+              ,"package.json must be actual JSON, not just JavaScript."
+              ,"","This is not a bug in npm."
+              ,"Tell the package author to fix their package.json file."
+              ].join("\n"), "JSON.parse")
+    break
+
+  // TODO(isaacs)
+  // Add a special case here for E401 and E403 explaining auth issues?
+
+  case "E404":
+    var msg = [er.message]
+    if (er.pkgid && er.pkgid !== "-") {
+      msg.push("", "'"+er.pkgid+"' is not in the npm registry."
+              ,"You should bug the author to publish it (or use the name yourself!)")
+      if (er.parent) {
+        msg.push("It was specified as a dependency of '"+er.parent+"'")
+      }
+      msg.push("\nNote that you can also install from a"
+              ,"tarball, folder, http url, or git url.")
+    }
+    // There's no need to have 404 in the message as well.
+    msg[0] = msg[0].replace(/^404\s+/, "")
+    log.error("404", msg.join("\n"))
+    break
+
+  case "EPUBLISHCONFLICT":
+    log.error("publish fail", ["Cannot publish over existing version."
+              ,"Update the 'version' field in package.json and try again."
+              ,""
+              ,"To automatically increment version numbers, see:"
+              ,"    npm help version"
+              ].join("\n"))
+    break
+
+  case "EISGIT":
+    log.error("git", [er.message
+              ,"    "+er.path
+              ,"Refusing to remove it. Update manually,"
+              ,"or move it out of the way first."
+              ].join("\n"))
+    break
+
+  case "ECYCLE":
+    log.error("cycle", [er.message
+              ,"While installing: "+er.pkgid
+              ,"Found a pathological dependency case that npm cannot solve."
+              ,"Please report this to the package author."
+              ].join("\n"))
+    break
+
+  case "EBADPLATFORM":
+    log.error("notsup", [er.message
+              ,"Not compatible with your operating system or architecture: "+er.pkgid
+              ,"Valid OS:    "+er.os.join(",")
+              ,"Valid Arch:  "+er.cpu.join(",")
+              ,"Actual OS:   "+process.platform
+              ,"Actual Arch: "+process.arch
+              ].join("\n"))
+    break
+
+  case "EEXIST":
+    log.error([er.message
+              ,"File exists: "+er.path
+              ,"Move it away, and try again."].join("\n"))
+    break
+
+  case "ENEEDAUTH":
+    log.error("need auth", [er.message
+              ,"You need to authorize this machine using `npm adduser`"
+              ].join("\n"))
+    break
+
+  case "EPEERINVALID":
+    var peerErrors = Object.keys(er.peersDepending).map(function (peer) {
+      return "Peer " + peer + " wants " + er.packageName + "@"
+        + er.peersDepending[peer]
+    })
+    log.error("peerinvalid", [er.message].concat(peerErrors).join("\n"))
+    break
+
+  case "ECONNRESET":
+  case "ENOTFOUND":
+  case "ETIMEDOUT":
+    log.error("network", [er.message
+              ,"This is most likely not a problem with npm itself"
+              ,"and is related to network connectivity."
+              ,"In most cases you are behind a proxy or have bad network settings."
+              ,"\nIf you are behind a proxy, please make sure that the"
+              ,"'proxy' config is set properly.  See: 'npm help config'"
+              ].join("\n"))
+    break
+
+  case "ENOPACKAGEJSON":
+    log.error("package.json", [er.message
+              ,"This is most likely not a problem with npm itself."
+              ,"npm can't find a package.json file in your current directory."
+              ].join("\n"))
+    break
+
+  case "ETARGET":
+    log.error("notarget", [er.message
+              ,"This is most likely not a problem with npm itself."
+              ,"In most cases you or one of your dependencies are requesting"
+              ,"a package version that doesn't exist."
+              ].join("\n"))
+    break
+
+  case "ENOTSUP":
+    if (er.required) {
+      log.error("notsup", [er.message
+                ,"Not compatible with your version of node/npm: "+er.pkgid
+                ,"Required: "+JSON.stringify(er.required)
+                ,"Actual:   "
+                +JSON.stringify({npm:npm.version
+                                ,node:npm.config.get("node-version")})
+                ].join("\n"))
+      break
+    } // else passthrough
+
+  case "ENOSPC":
+    log.error("nospc", [er.message
+              ,"This is most likely not a problem with npm itself"
+              ,"and is related to insufficient space on your system."
+              ].join("\n"))
+    break
+
+  case "EROFS":
+    log.error("rofs", [er.message
+              ,"This is most likely not a problem with npm itself"
+              ,"and is related to the file system being read-only."
+              ,"\nOften virtualized file systems, or other file systems"
+              ,"that don't support symlinks, give this error."
+              ].join("\n"))
+    break
+
+  case "ENOENT":
+    log.error("enoent", [er.message
+              ,"This is most likely not a problem with npm itself"
+              ,"and is related to npm not being able to find a file."
+              ,er.file?"\nCheck if the file '"+er.file+"' is present.":""
+              ].join("\n"))
+    break
+
+  default:
+    log.error("", er.message || er)
+    log.error("", ["", "If you need help, you may report this error at:"
+                  ,"    <http://github.com/npm/npm/issues>"
+                  ].join("\n"))
+    break
+  }
+
+  exit(typeof er.errno === "number" ? er.errno : 1)
+}
+{ words: [ 'npm', 'list' ],
+  w: 1,
+  word: 'list',
+  line: 'npm "list',
+  lineLength: 9,
+  point: 7,
+  partialLine: 'npm "li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', '"list' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+2
+npm ls --
+9
+{ words: [ 'npm', 'ls', '--' ],
+  w: 2,
+  word: '--',
+  line: 'npm ls --',
+  lineLength: 9,
+  point: 9,
+  partialLine: 'npm ls --',
+  partialWords: [ 'npm', 'ls', '--' ],
+  partialWord: '--',
+  raw: [ 'npm', 'ls', '--' ] }
+[ 'always-auth',
+  'bin-links',
+  'description',
+  'dev',
+  'engine-strict',
+  'force',
+  'git-tag-version',
+  'global',
+  'ignore-scripts',
+  'json',
+  'link',
+  'long',
+  'npat',
+  'optional',
+  'parseable',
+  'production',
+  'proprietary-attribs',
+  'rebuild-bundle',
+  'rollback',
+  'save',
+  'save-bundle',
+  'save-dev',
+  'save-exact',
+  'save-optional',
+  'shrinkwrap',
+  'sign-git-tag',
+  'strict-ssl',
+  'unicode',
+  'unsafe-perm',
+  'usage',
+  'version',
+  'versions' ]
+[ null,
+  [ '--always-auth',
+    '--bin-links',
+    '--browser',
+    '--ca',
+    '--cafile',
+    '--cache',
+    '--cache-lock-stale',
+    '--cache-lock-retries',
+    '--cache-lock-wait',
+    '--cache-max',
+    '--cache-min',
+    '--cert',
+    '--color',
+    '--depth',
+    '--description',
+    '--dev',
+    '--editor',
+    '--engine-strict',
+    '--force',
+    '--fetch-retries',
+    '--fetch-retry-factor',
+    '--fetch-retry-mintimeout',
+    '--fetch-retry-maxtimeout',
+    '--git',
+    '--git-tag-version',
+    '--global',
+    '--globalconfig',
+    '--group',
+    '--https-proxy',
+    '--user-agent',
+    '--heading',
+    '--ignore-scripts',
+    '--init-module',
+    '--init-author-name',
+    '--init-author-email',
+    '--init-author-url',
+    '--init-license',
+    '--init-version',
+    '--json',
+    '--key',
+    '--link',
+    '--local-address',
+    '--loglevel',
+    '--logstream',
+    '--long',
+    '--message',
+    '--node-version',
+    '--npat',
+    '--onload-script',
+    '--optional',
+    '--parseable',
+    '--prefix',
+    '--production',
+    '--proprietary-attribs',
+    '--proxy',
+    '--rebuild-bundle',
+    '--registry',
+    '--rollback',
+    '--save',
+    '--save-bundle',
+    '--save-dev',
+    '--save-exact',
+    '--save-optional',
+    '--save-prefix',
+    '--scope',
+    '--searchopts',
+    '--searchexclude',
+    '--searchsort',
+    '--shell',
+    '--shrinkwrap',
+    '--sign-git-tag',
+    '--spin',
+    '--strict-ssl',
+    '--tag',
+    '--tmp',
+    '--unicode',
+    '--unsafe-perm',
+    '--usage',
+    '--user',
+    '--userconfig',
+    '--umask',
+    '--version',
+    '--versions',
+    '--viewer',
+    '--s',
+    '--d',
+    '--dd',
+    '--ddd',
+    '--noreg',
+    '--N',
+    '--reg',
+    '--no-reg',
+    '--silent',
+    '--verbose',
+    '--quiet',
+    '--q',
+    '--h',
+    '--H',
+    '--?',
+    '--help',
+    '--v',
+    '--f',
+    '--gangster',
+    '--gangsta',
+    '--desc',
+    '--no-desc',
+    '--local',
+    '--l',
+    '--m',
+    '--p',
+    '--porcelain',
+    '--g',
+    '--S',
+    '--D',
+    '--E',
+    '--O',
+    '--y',
+    '--n',
+    '--B',
+    '--C',
+    '--no-always-auth',
+    '--no-bin-links',
+    '--no-description',
+    '--no-dev',
+    '--no-engine-strict',
+    '--no-force',
+    '--no-git-tag-version',
+    '--no-global',
+    '--no-ignore-scripts',
+    '--no-json',
+    '--no-link',
+    '--no-long',
+    '--no-npat',
+    '--no-optional',
+    '--no-parseable',
+    '--no-production',
+    '--no-proprietary-attribs',
+    '--no-rebuild-bundle',
+    '--no-rollback',
+    '--no-save',
+    '--no-save-bundle',
+    '--no-save-dev',
+    '--no-save-exact',
+    '--no-save-optional',
+    '--no-shrinkwrap',
+    '--no-sign-git-tag',
+    '--no-strict-ssl',
+    '--no-unicode',
+    '--no-unsafe-perm',
+    '--no-usage',
+    '--no-version',
+    '--no-versions' ],
+  '--' ]
+2
+npm ls --
+9
+{ words: [ 'npm', 'ls', '--' ],
+  w: 2,
+  word: '--',
+  line: 'npm ls --',
+  lineLength: 9,
+  point: 9,
+  partialLine: 'npm ls --',
+  partialWords: [ 'npm', 'ls', '--' ],
+  partialWord: '--',
+  raw: [ 'npm', 'ls', '--' ] }
+[ 'always-auth',
+  'bin-links',
+  'description',
+  'dev',
+  'engine-strict',
+  'force',
+  'git-tag-version',
+  'global',
+  'ignore-scripts',
+  'json',
+  'link',
+  'long',
+  'npat',
+  'optional',
+  'parseable',
+  'production',
+  'proprietary-attribs',
+  'rebuild-bundle',
+  'rollback',
+  'save',
+  'save-bundle',
+  'save-dev',
+  'save-exact',
+  'save-optional',
+  'shrinkwrap',
+  'sign-git-tag',
+  'strict-ssl',
+  'unicode',
+  'unsafe-perm',
+  'usage',
+  'version',
+  'versions' ]
+[ null,
+  [ '--always-auth',
+    '--bin-links',
+    '--browser',
+    '--ca',
+    '--cafile',
+    '--cache',
+    '--cache-lock-stale',
+    '--cache-lock-retries',
+    '--cache-lock-wait',
+    '--cache-max',
+    '--cache-min',
+    '--cert',
+    '--color',
+    '--depth',
+    '--description',
+    '--dev',
+    '--editor',
+    '--engine-strict',
+    '--force',
+    '--fetch-retries',
+    '--fetch-retry-factor',
+    '--fetch-retry-mintimeout',
+    '--fetch-retry-maxtimeout',
+    '--git',
+    '--git-tag-version',
+    '--global',
+    '--globalconfig',
+    '--group',
+    '--https-proxy',
+    '--user-agent',
+    '--heading',
+    '--ignore-scripts',
+    '--init-module',
+    '--init-author-name',
+    '--init-author-email',
+    '--init-author-url',
+    '--init-license',
+    '--init-version',
+    '--json',
+    '--key',
+    '--link',
+    '--local-address',
+    '--loglevel',
+    '--logstream',
+    '--long',
+    '--message',
+    '--node-version',
+    '--npat',
+    '--onload-script',
+    '--optional',
+    '--parseable',
+    '--prefix',
+    '--production',
+    '--proprietary-attribs',
+    '--proxy',
+    '--rebuild-bundle',
+    '--registry',
+    '--rollback',
+    '--save',
+    '--save-bundle',
+    '--save-dev',
+    '--save-exact',
+    '--save-optional',
+    '--save-prefix',
+    '--scope',
+    '--searchopts',
+    '--searchexclude',
+    '--searchsort',
+    '--shell',
+    '--shrinkwrap',
+    '--sign-git-tag',
+    '--spin',
+    '--strict-ssl',
+    '--tag',
+    '--tmp',
+    '--unicode',
+    '--unsafe-perm',
+    '--usage',
+    '--user',
+    '--userconfig',
+    '--umask',
+    '--version',
+    '--versions',
+    '--viewer',
+    '--s',
+    '--d',
+    '--dd',
+    '--ddd',
+    '--noreg',
+    '--N',
+    '--reg',
+    '--no-reg',
+    '--silent',
+    '--verbose',
+    '--quiet',
+    '--q',
+    '--h',
+    '--H',
+    '--?',
+    '--help',
+    '--v',
+    '--f',
+    '--gangster',
+    '--gangsta',
+    '--desc',
+    '--no-desc',
+    '--local',
+    '--l',
+    '--m',
+    '--p',
+    '--porcelain',
+    '--g',
+    '--S',
+    '--D',
+    '--E',
+    '--O',
+    '--y',
+    '--n',
+    '--B',
+    '--C',
+    '--no-always-auth',
+    '--no-bin-links',
+    '--no-description',
+    '--no-dev',
+    '--no-engine-strict',
+    '--no-force',
+    '--no-git-tag-version',
+    '--no-global',
+    '--no-ignore-scripts',
+    '--no-json',
+    '--no-link',
+    '--no-long',
+    '--no-npat',
+    '--no-optional',
+    '--no-parseable',
+    '--no-production',
+    '--no-proprietary-attribs',
+    '--no-rebuild-bundle',
+    '--no-rollback',
+    '--no-save',
+    '--no-save-bundle',
+    '--no-save-dev',
+    '--no-save-exact',
+    '--no-save-optional',
+    '--no-shrinkwrap',
+    '--no-sign-git-tag',
+    '--no-strict-ssl',
+    '--no-unicode',
+    '--no-unsafe-perm',
+    '--no-usage',
+    '--no-version',
+    '--no-versions' ],
+  '--' ]
+2
+npm list --unsafe-
+18
+{ words: [ 'npm', 'list', '--unsafe-' ],
+  w: 2,
+  word: '--unsafe-',
+  line: 'npm list --unsafe-',
+  lineLength: 18,
+  point: 18,
+  partialLine: 'npm list --unsafe-',
+  partialWords: [ 'npm', 'list', '--unsafe-' ],
+  partialWord: '--unsafe-',
+  raw: [ 'npm', 'list', '--unsafe-' ] }
+[ 'always-auth',
+  'bin-links',
+  'description',
+  'dev',
+  'engine-strict',
+  'force',
+  'git-tag-version',
+  'global',
+  'ignore-scripts',
+  'json',
+  'link',
+  'long',
+  'npat',
+  'optional',
+  'parseable',
+  'production',
+  'proprietary-attribs',
+  'rebuild-bundle',
+  'rollback',
+  'save',
+  'save-bundle',
+  'save-dev',
+  'save-exact',
+  'save-optional',
+  'shrinkwrap',
+  'sign-git-tag',
+  'strict-ssl',
+  'unicode',
+  'unsafe-perm',
+  'usage',
+  'version',
+  'versions' ]
+[ null, [ '--unsafe-perm' ], '--unsafe-' ]
+3
+npm list --unsafe-perm 
+23
+{ words: [ 'npm', 'list', '--unsafe-perm', '' ],
+  w: 3,
+  word: '',
+  line: 'npm list --unsafe-perm ',
+  lineLength: 23,
+  point: 23,
+  partialLine: 'npm list --unsafe-perm ',
+  partialWords: [ 'npm', 'list', '--unsafe-perm', '' ],
+  partialWord: '',
+  raw: [ 'npm', 'list', '--unsafe-perm', '' ] }
+{ 'unsafe-perm': true,
+  argv: 
+   { remain: [ 'npm', 'list' ],
+     cooked: [ 'npm', 'list', '--unsafe-perm' ],
+     original: [ 'npm', 'list', '--unsafe-perm' ] } }
+[ null,
+  [ 'MD5',
+    'charenc',
+    'crypt',
+    'astral',
+    'clone',
+    'astral-angular-annotate',
+    'astral-pass',
+    'async',
+    'block-stream',
+    'inherits',
+    'chai',
+    'cjson',
+    'coffee-script',
+    'compute-cluster',
+    'vows',
+    'eyes',
+    'connect',
+    'qs',
+    'formidable',
+    'cookie-signature',
+    'buffer-crc32',
+    'cookie',
+    'send',
+    'debug',
+    'ms',
+    'mime',
+    'fresh',
+    'range-parser',
+    'bytes',
+    'pause',
+    'connect-url-rewrite',
+    'escodegen',
+    'esprima',
+    'estraverse',
+    'source-map',
+    'amdefine',
+    'find',
+    'traverse-chain',
+    'fs-extra',
+    'ncp',
+    'mkdirp',
+    'minimist',
+    'jsonfile',
+    'rimraf',
+    'glob',
+    'inflight',
+    'once',
+    'wrappy',
+    'minimatch',
+    'brace-expansion',
+    'balanced-match',
+    'concat-map',
+    'fstream',
+    'graceful-fs',
+    'gaze',
+    'globule',
+    'lodash',
+    'handlebars',
+    'optimist',
+    'wordwrap',
+    'uglify-js',
+    'http-proxy',
+    'eventemitter3',
+    'requires-port',
+    'ignore',
+    'js-yaml',
+    'argparse',
+    'underscore',
+    'underscore.string',
+    'mocha',
+    'commander',
+    'growl',
+    'jade',
+    'diff',
+    'nib',
+    'stylus',
+    'css-parse',
+    'sax',
+    'node-sass',
+    'async-foreach',
+    'chalk',
+    'ansi-styles',
+    'escape-string-regexp',
+    'has-ansi',
+    'ansi-regex',
+    'get-stdin',
+    'strip-ansi',
+    'supports-color',
+    'meow',
+    'camelcase-keys',
+    'camelcase',
+    'map-obj',
+    'indent-string',
+    'repeating',
+    'is-finite',
+    'number-is-nan',
+    'object-assign',
+    'nan',
+    'npmconf',
+    'config-chain',
+    'proto-list',
+    'ini',
+    'nopt',
+    'abbrev',
+    'osenv',
+    'os-homedir',
+    'os-tmpdir',
+    'semver',
+    'uid-number',
+    'pangyp',
+    'npmlog',
+    'ansi',
+    'are-we-there-yet',
+    'delegates',
+    'readable-stream',
+    'core-util-is',
+    'isarray',
+    'string_decoder',
+    'gauge',
+    'has-unicode',
+    'request',
+    'bl',
+    'caseless',
+    'forever-agent',
+    'form-data',
+    'combined-stream',
+    'delayed-stream',
+    'mime-types',
+    'mime-db',
+    'json-stringify-safe',
+    'node-uuid',
+    'tunnel-agent',
+    'tough-cookie',
+    'http-signature',
+    'assert-plus',
+    'asn1',
+    'ctype',
+    'oauth-sign',
+    'hawk',
+    'hoek',
+    'boom',
+    'cryptiles',
+    'sntp',
+    'aws-sign2',
+    'stringstream',
+    'tar',
+    'which',
+    'sass-graph',
+    'yargs',
+    'cliui',
+    'center-align',
+    'align-text',
+    'kind-of',
+    'longest',
+    'repeat-string',
+    'right-align',
+    'decamelize',
+    'window-size',
+    'node-sass-import-once',
+    'prompt',
+    'pkginfo',
+    'read',
+    'mute-stream',
+    'revalidator',
+    'utile',
+    'deep-equal',
+    'i',
+    'winston',
+    'colors',
+    'cycle',
+    'isstream',
+    'stack-trace',
+    'qless',
+    'clean-css',
+    'rinh-node-tar',
+    'sty',
+    'temp',
+    'tiny-lr',
+    'faye-websocket',
+    'noptify',
+    'uglifycss',
+    'urlrouter',
+    'velocityjs' ],
+  '' ]
+2
+npm list --unsafe-per
+21
+{ words: [ 'npm', 'list', '--unsafe-per' ],
+  w: 2,
+  word: '--unsafe-per',
+  line: 'npm list --unsafe-per',
+  lineLength: 21,
+  point: 21,
+  partialLine: 'npm list --unsafe-per',
+  partialWords: [ 'npm', 'list', '--unsafe-per' ],
+  partialWord: '--unsafe-per',
+  raw: [ 'npm', 'list', '--unsafe-per' ] }
+[ 'always-auth',
+  'bin-links',
+  'description',
+  'dev',
+  'engine-strict',
+  'force',
+  'git-tag-version',
+  'global',
+  'ignore-scripts',
+  'json',
+  'link',
+  'long',
+  'npat',
+  'optional',
+  'parseable',
+  'production',
+  'proprietary-attribs',
+  'rebuild-bundle',
+  'rollback',
+  'save',
+  'save-bundle',
+  'save-dev',
+  'save-exact',
+  'save-optional',
+  'shrinkwrap',
+  'sign-git-tag',
+  'strict-ssl',
+  'unicode',
+  'unsafe-perm',
+  'usage',
+  'version',
+  'versions' ]
+[ null, [ '--unsafe-perm' ], '--unsafe-per' ]
+3
+npm list --unsafe-perm 
+23
+{ words: [ 'npm', 'list', '--unsafe-perm', '' ],
+  w: 3,
+  word: '',
+  line: 'npm list --unsafe-perm ',
+  lineLength: 23,
+  point: 23,
+  partialLine: 'npm list --unsafe-perm ',
+  partialWords: [ 'npm', 'list', '--unsafe-perm', '' ],
+  partialWord: '',
+  raw: [ 'npm', 'list', '--unsafe-perm', '' ] }
+{ 'unsafe-perm': true,
+  argv: 
+   { remain: [ 'npm', 'list' ],
+     cooked: [ 'npm', 'list', '--unsafe-perm' ],
+     original: [ 'npm', 'list', '--unsafe-perm' ] } }
+[ null,
+  [ 'MD5',
+    'charenc',
+    'crypt',
+    'astral',
+    'clone',
+    'astral-angular-annotate',
+    'astral-pass',
+    'async',
+    'block-stream',
+    'inherits',
+    'chai',
+    'cjson',
+    'coffee-script',
+    'compute-cluster',
+    'vows',
+    'eyes',
+    'connect',
+    'qs',
+    'formidable',
+    'cookie-signature',
+    'buffer-crc32',
+    'cookie',
+    'send',
+    'debug',
+    'ms',
+    'mime',
+    'fresh',
+    'range-parser',
+    'bytes',
+    'pause',
+    'connect-url-rewrite',
+    'escodegen',
+    'esprima',
+    'estraverse',
+    'source-map',
+    'amdefine',
+    'find',
+    'traverse-chain',
+    'fs-extra',
+    'ncp',
+    'mkdirp',
+    'minimist',
+    'jsonfile',
+    'rimraf',
+    'glob',
+    'inflight',
+    'once',
+    'wrappy',
+    'minimatch',
+    'brace-expansion',
+    'balanced-match',
+    'concat-map',
+    'fstream',
+    'graceful-fs',
+    'gaze',
+    'globule',
+    'lodash',
+    'handlebars',
+    'optimist',
+    'wordwrap',
+    'uglify-js',
+    'http-proxy',
+    'eventemitter3',
+    'requires-port',
+    'ignore',
+    'js-yaml',
+    'argparse',
+    'underscore',
+    'underscore.string',
+    'mocha',
+    'commander',
+    'growl',
+    'jade',
+    'diff',
+    'nib',
+    'stylus',
+    'css-parse',
+    'sax',
+    'node-sass',
+    'async-foreach',
+    'chalk',
+    'ansi-styles',
+    'escape-string-regexp',
+    'has-ansi',
+    'ansi-regex',
+    'get-stdin',
+    'strip-ansi',
+    'supports-color',
+    'meow',
+    'camelcase-keys',
+    'camelcase',
+    'map-obj',
+    'indent-string',
+    'repeating',
+    'is-finite',
+    'number-is-nan',
+    'object-assign',
+    'nan',
+    'npmconf',
+    'config-chain',
+    'proto-list',
+    'ini',
+    'nopt',
+    'abbrev',
+    'osenv',
+    'os-homedir',
+    'os-tmpdir',
+    'semver',
+    'uid-number',
+    'pangyp',
+    'npmlog',
+    'ansi',
+    'are-we-there-yet',
+    'delegates',
+    'readable-stream',
+    'core-util-is',
+    'isarray',
+    'string_decoder',
+    'gauge',
+    'has-unicode',
+    'request',
+    'bl',
+    'caseless',
+    'forever-agent',
+    'form-data',
+    'combined-stream',
+    'delayed-stream',
+    'mime-types',
+    'mime-db',
+    'json-stringify-safe',
+    'node-uuid',
+    'tunnel-agent',
+    'tough-cookie',
+    'http-signature',
+    'assert-plus',
+    'asn1',
+    'ctype',
+    'oauth-sign',
+    'hawk',
+    'hoek',
+    'boom',
+    'cryptiles',
+    'sntp',
+    'aws-sign2',
+    'stringstream',
+    'tar',
+    'which',
+    'sass-graph',
+    'yargs',
+    'cliui',
+    'center-align',
+    'align-text',
+    'kind-of',
+    'longest',
+    'repeat-string',
+    'right-align',
+    'decamelize',
+    'window-size',
+    'node-sass-import-once',
+    'prompt',
+    'pkginfo',
+    'read',
+    'mute-stream',
+    'revalidator',
+    'utile',
+    'deep-equal',
+    'i',
+    'winston',
+    'colors',
+    'cycle',
+    'isstream',
+    'stack-trace',
+    'qless',
+    'clean-css',
+    'rinh-node-tar',
+    'sty',
+    'temp',
+    'tiny-lr',
+    'faye-websocket',
+    'noptify',
+    'uglifycss',
+    'urlrouter',
+    'velocityjs' ],
+  '' ]
+1
+npm li
+6
+{ words: [ 'npm', 'li' ],
+  w: 1,
+  word: 'li',
+  line: 'npm li',
+  lineLength: 6,
+  point: 6,
+  partialLine: 'npm li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', 'li' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm li
+6
+{ words: [ 'npm', 'li' ],
+  w: 1,
+  word: 'li',
+  line: 'npm li',
+  lineLength: 6,
+  point: 6,
+  partialLine: 'npm li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', 'li' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm li
+6
+{ words: [ 'npm', 'li' ],
+  w: 1,
+  word: 'li',
+  line: 'npm li',
+  lineLength: 6,
+  point: 6,
+  partialLine: 'npm li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', 'li' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm li
+6
+{ words: [ 'npm', 'li' ],
+  w: 1,
+  word: 'li',
+  line: 'npm li',
+  lineLength: 6,
+  point: 6,
+  partialLine: 'npm li',
+  partialWords: [ 'npm', 'li' ],
+  partialWord: 'li',
+  raw: [ 'npm', 'li' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null, [ 'link', 'list' ], 'li' ]
+1
+npm 
+4
+{ words: [ 'npm', '' ],
+  w: 1,
+  word: '',
+  line: 'npm ',
+  lineLength: 4,
+  point: 4,
+  partialLine: 'npm ',
+  partialWords: [ 'npm', '' ],
+  partialWord: '',
+  raw: [ 'npm', '' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null,
+  [ 'install',
+    'uninstall',
+    'cache',
+    'config',
+    'set',
+    'get',
+    'update',
+    'outdated',
+    'prune',
+    'pack',
+    'dedupe',
+    'rebuild',
+    'link',
+    'publish',
+    'star',
+    'stars',
+    'tag',
+    'adduser',
+    'unpublish',
+    'owner',
+    'deprecate',
+    'shrinkwrap',
+    'help',
+    'help-search',
+    'ls',
+    'search',
+    'view',
+    'init',
+    'version',
+    'edit',
+    'explore',
+    'docs',
+    'repo',
+    'bugs',
+    'faq',
+    'root',
+    'prefix',
+    'bin',
+    'whoami',
+    'test',
+    'stop',
+    'start',
+    'restart',
+    'run-script',
+    'completion',
+    'rm',
+    'r',
+    'un',
+    'unlink',
+    'remove',
+    'rb',
+    'list',
+    'la',
+    'll',
+    'ln',
+    'i',
+    'up',
+    'c',
+    'info',
+    'show',
+    'find',
+    's',
+    'se',
+    'author',
+    'home',
+    'issues',
+    'unstar',
+    'apihelp',
+    'login',
+    'add-user',
+    'tst',
+    't',
+    'find-dupes',
+    'ddp',
+    'v',
+    'verison' ],
+  '' ]
+1
+npm 
+4
+{ words: [ 'npm', '' ],
+  w: 1,
+  word: '',
+  line: 'npm ',
+  lineLength: 4,
+  point: 4,
+  partialLine: 'npm ',
+  partialWords: [ 'npm', '' ],
+  partialWord: '',
+  raw: [ 'npm', '' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null,
+  [ 'install',
+    'uninstall',
+    'cache',
+    'config',
+    'set',
+    'get',
+    'update',
+    'outdated',
+    'prune',
+    'pack',
+    'dedupe',
+    'rebuild',
+    'link',
+    'publish',
+    'star',
+    'stars',
+    'tag',
+    'adduser',
+    'unpublish',
+    'owner',
+    'deprecate',
+    'shrinkwrap',
+    'help',
+    'help-search',
+    'ls',
+    'search',
+    'view',
+    'init',
+    'version',
+    'edit',
+    'explore',
+    'docs',
+    'repo',
+    'bugs',
+    'faq',
+    'root',
+    'prefix',
+    'bin',
+    'whoami',
+    'test',
+    'stop',
+    'start',
+    'restart',
+    'run-script',
+    'completion',
+    'rm',
+    'r',
+    'un',
+    'unlink',
+    'remove',
+    'rb',
+    'list',
+    'la',
+    'll',
+    'ln',
+    'i',
+    'up',
+    'c',
+    'info',
+    'show',
+    'find',
+    's',
+    'se',
+    'author',
+    'home',
+    'issues',
+    'unstar',
+    'apihelp',
+    'login',
+    'add-user',
+    'tst',
+    't',
+    'find-dupes',
+    'ddp',
+    'v',
+    'verison' ],
+  '' ]
+1
+npm 
+4
+{ words: [ 'npm', '' ],
+  w: 1,
+  word: '',
+  line: 'npm ',
+  lineLength: 4,
+  point: 4,
+  partialLine: 'npm ',
+  partialWords: [ 'npm', '' ],
+  partialWord: '',
+  raw: [ 'npm', '' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null,
+  [ 'install',
+    'uninstall',
+    'cache',
+    'config',
+    'set',
+    'get',
+    'update',
+    'outdated',
+    'prune',
+    'pack',
+    'dedupe',
+    'rebuild',
+    'link',
+    'publish',
+    'star',
+    'stars',
+    'tag',
+    'adduser',
+    'unpublish',
+    'owner',
+    'deprecate',
+    'shrinkwrap',
+    'help',
+    'help-search',
+    'ls',
+    'search',
+    'view',
+    'init',
+    'version',
+    'edit',
+    'explore',
+    'docs',
+    'repo',
+    'bugs',
+    'faq',
+    'root',
+    'prefix',
+    'bin',
+    'whoami',
+    'test',
+    'stop',
+    'start',
+    'restart',
+    'run-script',
+    'completion',
+    'rm',
+    'r',
+    'un',
+    'unlink',
+    'remove',
+    'rb',
+    'list',
+    'la',
+    'll',
+    'ln',
+    'i',
+    'up',
+    'c',
+    'info',
+    'show',
+    'find',
+    's',
+    'se',
+    'author',
+    'home',
+    'issues',
+    'unstar',
+    'apihelp',
+    'login',
+    'add-user',
+    'tst',
+    't',
+    'find-dupes',
+    'ddp',
+    'v',
+    'verison' ],
+  '' ]
+1
+npm 
+4
+{ words: [ 'npm', '' ],
+  w: 1,
+  word: '',
+  line: 'npm ',
+  lineLength: 4,
+  point: 4,
+  partialLine: 'npm ',
+  partialWords: [ 'npm', '' ],
+  partialWord: '',
+  raw: [ 'npm', '' ] }
+{ argv: { remain: [ 'npm' ], cooked: [ 'npm' ], original: [ 'npm' ] } }
+[ null,
+  [ 'install',
+    'uninstall',
+    'cache',
+    'config',
+    'set',
+    'get',
+    'update',
+    'outdated',
+    'prune',
+    'pack',
+    'dedupe',
+    'rebuild',
+    'link',
+    'publish',
+    'star',
+    'stars',
+    'tag',
+    'adduser',
+    'unpublish',
+    'owner',
+    'deprecate',
+    'shrinkwrap',
+    'help',
+    'help-search',
+    'ls',
+    'search',
+    'view',
+    'init',
+    'version',
+    'edit',
+    'explore',
+    'docs',
+    'repo',
+    'bugs',
+    'faq',
+    'root',
+    'prefix',
+    'bin',
+    'whoami',
+    'test',
+    'stop',
+    'start',
+    'restart',
+    'run-script',
+    'completion',
+    'rm',
+    'r',
+    'un',
+    'unlink',
+    'remove',
+    'rb',
+    'list',
+    'la',
+    'll',
+    'ln',
+    'i',
+    'up',
+    'c',
+    'info',
+    'show',
+    'find',
+    's',
+    'se',
+    'author',
+    'home',
+    'issues',
+    'unstar',
+    'apihelp',
+    'login',
+    'add-user',
+    'tst',
+    't',
+    'find-dupes',
+    'ddp',
+    'v',
+    'verison' ],
+  '' ]
+2
+npm help comple
+15
+{ words: [ 'npm', 'help', 'comple' ],
+  w: 2,
+  word: 'comple',
+  line: 'npm help comple',
+  lineLength: 15,
+  point: 15,
+  partialLine: 'npm help comple',
+  partialWords: [ 'npm', 'help', 'comple' ],
+  partialWord: 'comple',
+  raw: [ 'npm', 'help', 'comple' ] }
+{ argv: 
+   { remain: [ 'npm', 'help' ],
+     cooked: [ 'npm', 'help' ],
+     original: [ 'npm', 'help' ] } }
+[ null, [ 'completion' ], 'comple' ]
