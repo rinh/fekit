@@ -30,7 +30,6 @@ exports.run = (options) ->
     if process.platform is "win32"
         return utils.logger.error "fekit completion 不支持 windows"
 
-    # if the COMP_* isn't in the env, then just dump the script.
     if undefined in [process.env.COMP_CWORD, process.env.COMP_LINE, process.env.COMP_POINT]
         return dumpScript()
 
@@ -40,7 +39,7 @@ exports.run = (options) ->
 
     args         = options._.slice 1
     w            = +process.env.COMP_CWORD
-    words        = args.map unescape
+    words        = args
     word         = words[w]
     line         = process.env.COMP_LINE
     point        = +process.env.COMP_POINT
@@ -70,5 +69,4 @@ exports.run = (options) ->
     if partialWords.length is 2
         result = fullList.filter (c) ->
             return c.indexOf(opts.partialWord) is 0
-        console.error result
         return console.log result.join "\n"
