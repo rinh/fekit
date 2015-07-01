@@ -1,3 +1,6 @@
+# 0.2.110
+* removed: 删除误添加进来的 haha.txt
+
 # 0.2.109
 * add: 增加 fekit completion 命令
 
