@@ -1,3 +1,6 @@
+# 0.2.111
+* 优化 completion 命令
+
 # 0.2.110
 * removed: 删除误添加进来的 haha.txt
 
