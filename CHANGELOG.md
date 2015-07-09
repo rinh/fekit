@@ -1,3 +1,16 @@
+# 0.2.111
+* 优化 completion 命令
+
+# 0.2.110
+* removed: 删除误添加进来的 haha.txt
+
+# 0.2.109
+* add: 增加 fekit completion 命令
+
+# 0.2.108
+* upgrade: node-sass 升级及去重优化
+* fixed: ignore 修复
+
 # 0.2.107
 * fixed: 回滚 uglify-js 到 1.3.x
 

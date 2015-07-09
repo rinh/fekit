@@ -21,6 +21,7 @@ FEKIT
 
 #### 安装
     
+    export SASS_BINARY_SITE="http://ued.qunar.com/node-sass/release" # 解决 node-sass 编译困难
     npm install fekit -g
 
     npm config set user 0
