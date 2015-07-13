@@ -1,8 +1,8 @@
 utils = require '../../util'
 css = require './css'
+fs = require 'fs'
 syspath = require 'path'
 sass = require 'node-sass'
-importOnce = require 'node-sass-import-once'
 
 #=============================
 
@@ -10,7 +10,7 @@ MAP = {}
 
 convertRegexp = ( str , flag ) ->
     str = str.replace(/\s/g,'').replace('{space}',' ')
-    return new RegExp str , flag 
+    return new RegExp str , flag
 
 regstr = convertRegexp("""
 (
@@ -22,13 +22,33 @@ regstr = convertRegexp("""
 
 grep_import = ( txt , basedir )->
     return txt.replace regstr , ( $0 , $1 , $2 )->
-        p = utils.path.join basedir , $1 or $2 
+        p = utils.path.join basedir , $1 or $2
         if MAP[p]
             return ""
         else
             MAP[p] = true
             return $0
 
+
+extNames = ['sass', 'scss', 'css'];
+
+fixFilePath = (filePath) ->
+  if !syspath.extname(filePath)
+    for extName in extNames
+      if fs.existsSync (filePath + '.' + extName)
+        return filePath + '.' + extName;
+  return filePath
+
+getWholeScssFile = (filePath, imports) ->
+  imports = imports or {}
+  filePath = fixFilePath filePath
+  if fs.existsSync( filePath ) and imports[filePath] isnt true
+    imports[filePath] = true
+    data = new utils.file.reader().read filePath
+    return data.replace /@import.*"(.+)".*/g, (a, b) ->
+      return getWholeScssFile(syspath.join(syspath.dirname(filePath), b), imports) + '\n'
+  else
+    return ''
 
 #=============================
 
@@ -40,21 +60,22 @@ exports.process = (txt, path, module, cb) ->
 
     #txt = grep_import( txt , dir )
 
-    succ = (code) -> 
+    txt = getWholeScssFile path
+
+    succ = (code) ->
         cb null, (css.ddns code, module)
 
     fail = (err) ->
         cb err
 
-    try 
+    try
         sass.render {
             data: txt,
             includePaths: [dir],
-            outputStyle: "expanded",
-            importer: importOnce
+            outputStyle: "expanded"
         }, ( err, result ) ->
           if err
-              fail( err )
+              fail( err)
           else
               succ( result.css.toString() )
     catch err
