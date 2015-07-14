@@ -37,6 +37,7 @@ save_versions_mapping = ( mapping_file_path , mapping ) ->
     str = []
 
     for k , v of mapping
+        k = k.replace /\.[^.\/\\]+$/, syspath.extname(v.minpath)
         str.push( k.replace(/\\/g,"/") + '#' + v.ver )
 
     utils.file.io.write( mapping_file_path , str.join('\n') )
