@@ -1,3 +1,7 @@
+# 0.2.112
+* fixed: Scss Import Once 问题修复
+* fixed: versions.mapping 扩展名不一致的问题
+
 # 0.2.111
 * 优化 completion 命令
 
