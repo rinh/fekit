@@ -44,7 +44,10 @@ getWholeScssFile = (filePath, imports) ->
   filePath = fixFilePath filePath
   if fs.existsSync( filePath ) and imports[filePath] isnt true
     imports[filePath] = true
-    data = new utils.file.reader().read filePath
+    data = '\n' + new utils.file.reader().read filePath
+    # 删除注释
+    if data
+      data = data.replace /\/\*.+?\*\/|\n\s*\/\/.*(?=[\n\r])/gm, ''
     return data.replace /@import.*"(.+)".*/g, (a, b) ->
       return getWholeScssFile(syspath.join(syspath.dirname(filePath), b), imports) + '\n'
   else
@@ -75,7 +78,7 @@ exports.process = (txt, path, module, cb) ->
             outputStyle: "expanded"
         }, ( err, result ) ->
           if err
-              fail( err)
+              fail( err.file + ' at line ' + err.line + ' column ' + err.column + '\n' + err.message )
           else
               succ( result.css.toString() )
     catch err
