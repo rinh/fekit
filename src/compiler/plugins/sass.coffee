@@ -2,7 +2,7 @@ utils = require '../../util'
 css = require './css'
 fs = require 'fs'
 syspath = require 'path'
-sass = require './vendors/node-sass'
+sass = require '../../../vendors/node-sass'
 
 #=============================
 
