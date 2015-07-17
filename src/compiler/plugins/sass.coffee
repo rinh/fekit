@@ -2,7 +2,10 @@ utils = require '../../util'
 css = require './css'
 fs = require 'fs'
 syspath = require 'path'
-sass = require '../../../vendors/node-sass'
+try
+    sass = require '../../../vendors/node-sass'
+catch err
+    sass = require 'node-sass'
 
 #=============================
 
@@ -83,7 +86,7 @@ exports.process = (txt, path, module, cb) ->
               succ( result.css.toString() )
     catch err
         fail( err )
-            
+
 
 
 
