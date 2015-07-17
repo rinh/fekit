@@ -1,3 +1,6 @@
+# 0.2.113
+* 解决 node-sass 安装困难的问题
+
 # 0.2.112
 * fixed: Scss Import Once 问题修复
 * fixed: versions.mapping 扩展名不一致的问题
