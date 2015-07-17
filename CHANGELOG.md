@@ -1,3 +1,6 @@
+# 0.2.114
+* fixed: npmrc 设置了 prefix 的安装问题
+
 # 0.2.113
 * 解决 node-sass 安装困难的问题
 
