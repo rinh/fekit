@@ -1,3 +1,6 @@
+# 0.2.115
+* fixed: sass import 私有文件的问题
+
 # 0.2.114
 * fixed: npmrc 设置了 prefix 的安装问题
 
