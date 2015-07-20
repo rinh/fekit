@@ -36,22 +36,36 @@ grep_import = ( txt , basedir )->
 extNames = ['sass', 'scss', 'css'];
 
 fixFilePath = (filePath) ->
-  if !syspath.extname(filePath)
-    for extName in extNames
-      if fs.existsSync (filePath + '.' + extName)
-        return filePath + '.' + extName;
-  return filePath
+  extName = syspath.extname filePath
+  baseName = syspath.basename filePath
+  dirName = syspath.dirname filePath
+  if extName && fs.existsSync filePath
+    return filePath
+
+  if !extName
+    for eName in extNames
+      if fs.existsSync filePath + '.' + eName
+        return filePath + '.' + eName;
+      privatePath = syspath.join dirName, '_' + baseName + '.' + eName
+      if fs.existsSync privatePath
+        return privatePath
+  else
+    privatePath = syspath.join dirName, '_' + baseName
+    if fs.existsSync privatePath
+      return privatePath
+
+  throw new Error '找不到import文件: ' + filePath
 
 getWholeScssFile = (filePath, imports) ->
   imports = imports or {}
   filePath = fixFilePath filePath
-  if fs.existsSync( filePath ) and imports[filePath] isnt true
+  if imports[filePath] isnt true
     imports[filePath] = true
     data = '\n' + new utils.file.reader().read filePath
     # 删除注释
     if data
       data = data.replace /\/\*.+?\*\/|\n\s*\/\/.*(?=[\n\r])/gm, ''
-    return data.replace /@import.*"(.+)".*/g, (a, b) ->
+    return data.replace /@import.*[\'\"](.+)[\'\"].*/g, (a, b) ->
       return getWholeScssFile(syspath.join(syspath.dirname(filePath), b), imports) + '\n'
   else
     return ''
@@ -66,8 +80,6 @@ exports.process = (txt, path, module, cb) ->
 
     #txt = grep_import( txt , dir )
 
-    txt = getWholeScssFile path
-
     succ = (code) ->
         cb null, (css.ddns code, module)
 
@@ -75,6 +87,9 @@ exports.process = (txt, path, module, cb) ->
         cb err
 
     try
+
+        txt = getWholeScssFile path
+
         sass.render {
             data: txt,
             includePaths: [dir],
