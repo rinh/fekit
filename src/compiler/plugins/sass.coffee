@@ -100,7 +100,7 @@ getWholeScssFile = (filePath, dir, imports) ->
           ret += "@import \"#{$6}\";\n";
         else
           importPath = fixFilePath syspath.join syspath.dirname(filePath), $6
-          # 如果是 sass 和 scss 则先编译，再将内容拼接
+          # 如果是 sass 和 scss 直接将内容拼接
           if syspath.extname(importPath) in extNames
             ret += getWholeScssFile(importPath, dir, imports) + '\n'
           else
