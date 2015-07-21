@@ -4,7 +4,8 @@ md5 = require "MD5"
 computecluster = require('compute-cluster');
 cc = new computecluster({
   module: utils.path.join( __dirname , '_min_worker.js' )
-  max_backlog: -1
+  max_backlog: -1,
+  max_processes: 2
 });
 
 
