@@ -1,3 +1,7 @@
+# 0.2.116
+* update sass 支持更多形式的import;修复css中require失败的问题;支持打印错误信息的上下文
+* 对 compute-cluster 做最大进程数限制
+
 # 0.2.115
 * fixed: sass import 私有文件的问题
 
