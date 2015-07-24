@@ -1,3 +1,6 @@
+# 0.2.117
+* 去除第三方 MD5 模块，转用内置模块 crypto
+
 # 0.2.116
 * update sass 支持更多形式的import;修复css中require失败的问题;支持打印错误信息的上下文
 * 对 compute-cluster 做最大进程数限制
@@ -84,7 +87,7 @@
 
 # 0.2.89
 * add: vm 支持 include
-* add: vmjs 中可以使用 request , response 
+* add: vmjs 中可以使用 request , response
 * fix: 开发时 require 区分大小写
 * fix: fekit test 命令找不到测试用例时的提示不够友好且无法找到命令 Fixes #57
 * add: fekit vm 添加 layout Fixes #64
@@ -227,7 +230,7 @@
 * fix: fekit min 单文件模式下报错输出不正确的问题
 * change: less 解析使用 [qless.js](https://github.com/rinh/qless.js)
 
-# 0.2.45 
+# 0.2.45
 * change: 不再使用 vendor 中提供的 tar
 
 # 0.2.44 #
@@ -287,7 +290,7 @@
 # 0.2.26 #
 * change: fekit publish 时，过滤.git , .svn
 * fix: fekit server 刷新 cache 时消除 deps 的内容
-* change: fekit min 支持只生成 ver 或 mapping 
+* change: fekit min 支持只生成 ver 或 mapping
 
 # 0.2.25 #
 * change: fekit server -r aaa:bbb，进行路由功能时，不自动添加前后斜线 https://github.com/rinh/fekit/issues/25
@@ -331,7 +334,7 @@
 * add: 兼容 0.1.x 的源码格式
 
 # 0.2.15  #
-* fix: server transfer 没有正确处理非 -t 的情况 
+* fix: server transfer 没有正确处理非 -t 的情况
 * add: 导出 minCode 功能
 
 # 0.2.14 #
@@ -380,4 +383,4 @@
 
 # 0.0.1 #
 
-* initial 
+* initial
