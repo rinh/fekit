@@ -54,6 +54,11 @@ fixFilePath = (filePath) ->
 
   throw new Error '找不到import文件: ' + filePath
 
+# 修复 window 上 path 的 seq
+fixPathSeq = if process.platform is "win32" then (path) ->
+  return path.replace /\\/g, '/'
+else () ->
+
 # 获得文件拼接后的内容
 getWholeScssFile = (filePath, dir, imports) ->
   imports = imports or {}
@@ -89,7 +94,7 @@ getWholeScssFile = (filePath, dir, imports) ->
               throw new Error "文件 #{filePath} 编译错误: at line #{err.line}  column #{err.column}: #{err.message}\n#{displayErrorContext txt, err.line }"
            else
             # 其他 例如 .css 转换相对路径后，由 node-sass 解析
-            relativePath = syspath.relative dir, importPath
+            relativePath = fixPathSeq syspath.relative dir, importPath
             ret += "@import url(\"#{relativePath}\");\n";
         return ''
 
@@ -100,12 +105,12 @@ getWholeScssFile = (filePath, dir, imports) ->
           ret += "@import \"#{$6}\";\n";
         else
           importPath = fixFilePath syspath.join syspath.dirname(filePath), $6
-          # 如果是 sass 和 scss 则先编译，再将内容拼接
+          # 如果是 sass 和 scss 直接将内容拼接
           if syspath.extname(importPath) in extNames
             ret += getWholeScssFile(importPath, dir, imports) + '\n'
           else
             # 其他 例如 .css 转换相对路径后，由 node-sass 解析
-            relativePath = syspath.relative dir, importPath
+            relativePath = fixPathSeq syspath.relative dir, importPath
             ret += "@import \"#{relativePath}\";\n";
       return ret;
 
