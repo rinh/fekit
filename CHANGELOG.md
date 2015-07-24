@@ -1,3 +1,6 @@
+# 0.2.118
+* fixed: window下import css文件路径编译错误的问题
+
 # 0.2.117
 * 去除第三方 MD5 模块，转用内置模块 crypto
 
