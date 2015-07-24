@@ -1,7 +1,6 @@
 compiler       = require "../compiler/compiler"
 dns            = require "dns"
 helper_reverse = require "./helper_reverse"
-md5            = require "MD5"
 qs             = require "querystring"
 sysfs          = require "fs"
 syspath        = require "path"
@@ -20,7 +19,7 @@ charset = ";charset=UTF-8"
 PARAM_CACHE = {}
 
 toMD5 = ( str ) ->
-    m = md5(str).toString().slice(9).slice(0,16)
+    m = utils.md5(str).toString().slice(9).slice(0,16)
     PARAM_CACHE[m] = str
     return m
 
