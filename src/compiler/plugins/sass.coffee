@@ -57,7 +57,8 @@ fixFilePath = (filePath) ->
 # 修复 window 上 path 的 seq
 fixPathSeq = if process.platform is "win32" then (path) ->
   return path.replace /\\/g, '/'
-else () ->
+else (path) ->
+  return path
 
 # 获得文件拼接后的内容
 getWholeScssFile = (filePath, dir, imports) ->
