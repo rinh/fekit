@@ -1,3 +1,8 @@
+# 0.2.119
+* fixed: 修改 sass 编译模块上一版本的疏忽
+* fixed: 编译报错时，result[0] 取不到问题
+* removed: 去除不可用的 liveload 支持
+
 # 0.2.118
 * fixed: window下import css文件路径编译错误的问题
 
