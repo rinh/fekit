@@ -1,6 +1,5 @@
 compiler = require "../compiler/compiler"
 utils = require "../util"
-md5 = require "MD5"
 minCode = require("./_min_mincode").minCode
 
 pid = process.pid
@@ -32,7 +31,7 @@ process.on 'message', (m) ->
 
             if final_code isnt null
 
-                md5code = md5(final_code)
+                md5code = utils.md5 final_code
                 dest = urlconvert.to_prd( md5code )
 
                 # 生成真正的压缩后的文件

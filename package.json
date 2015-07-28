@@ -2,14 +2,13 @@
     "author": "hao.lin <hao.lin@qunar.com>",
     "name": "fekit",
     "description": "FE Toolkit",
-    "version": "0.2.116",
+    "version": "0.2.118",
     "bin": "./bin/fekit",
     "repository": {
         "type": "git",
         "url": "git://github.com/rinh/fekit.git"
     },
     "dependencies": {
-        "MD5": "1.0.x",
         "astral": "0.1.0",
         "astral-angular-annotate": "0.0.2",
         "async": "0.2.x",
@@ -22,7 +21,6 @@
         "find": "0.1.7",
         "fs-extra": "0.12.0",
         "fstream": "*",
-        "gaze": "0.5.1",
         "graceful-fs": "1.1.x",
         "handlebars": "2.0.0-alpha.1",
         "http-proxy": "1.11.x",
@@ -41,7 +39,6 @@
         "sty": "0.6.x",
         "stylus": "0.49.*",
         "temp": "0.5.0",
-        "tiny-lr": "0.0.7",
         "uglify-js": "1.3.x",
         "uglifycss": "0.0.5",
         "underscore": "1.4.x",

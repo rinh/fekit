@@ -1,6 +1,5 @@
 syspath = require 'path'
 utils = require '../../util'
-md5 = require "MD5"
 parser = require '../parser'
 _ = require 'underscore'
 util = require 'util'
@@ -14,8 +13,8 @@ ModuleConfig = require('./config').ModuleConfig
 
 MODULE_COMPILE_TYPE = ModuleConfig.MODULE_COMPILE_TYPE
 
-MODULE_CONTENT_TYPE = 
-    JAVASCRIPT : "javascript" 
+MODULE_CONTENT_TYPE =
+    JAVASCRIPT : "javascript"
     CSS : "css"
 
 
@@ -23,7 +22,7 @@ MODULE_CONTENT_TYPE =
     模块即为单一文件
 ###
 class Module
-    
+
     # @uri 模块真实物理路径
     constructor:( uri , @options ) ->
         @path = new ModulePath(uri)
@@ -33,7 +32,7 @@ class Module
         @ast = null
         Module.booster.init_cached( @path.uri ) if Module.booster
         checksum = Module.booster && Module.booster.get_checksum_cache( @path.uri )
-        @guid = checksum or md5( @source )
+        @guid = checksum or utils.md5( @source )
         @root_module = null
         @parent = null
 
@@ -67,13 +66,13 @@ class Module
         @_process @path.getFullPath() , ( err , source ) ->
             self.ast = parser.parseAST( source )
             self.ast.find 'REQUIRE' , ( node ) ->
-                try 
+                try
                     module = Module.parse( node.value , self.options , self , self.root_module )
                     module.parent_module = module
                     node.module = module
                     self.depends.push( module )
                     self.analyzed()
-                catch err 
+                catch err
                     is_err = true
                     doneCallback.call( self , err )
             unless is_err then doneCallback.call( self , err )
@@ -81,26 +80,26 @@ class Module
     # override
     analyzed:()->
 
- 
+
     _process:( path , cb ) ->
         #txt = new utils.file.reader().read( path )
         ext = syspath.extname( path )
         plugin = ModulePath.getPlugin(ext)
         if plugin
             # 去除 BOM 头
-            source = utils.removeBOM @source 
+            source = utils.removeBOM @source
             # 处理宏
-            try 
+            try
                 env = utils.getCurrentEnvironment( @options )
                 source = utils.replaceEnvironmentConfig 'text' , source , @config.config.getEnvironmentConfig()[ env ]
-            catch err 
+            catch err
                 utils.logger.error "在 environment 配置中找不到 #{env}"
                 source = source
 
             plugin.process source , path , this , ( err , result ) ->
-                if err 
-                    cb( "文件编译错误 #{path} , #{err.toString()}" , "" ) 
-                else 
+                if err
+                    cb( "文件编译错误 #{path} , #{err.toString()}" , "" )
+                else
                     cb( err , result )
         else
             cb( "找不到对应后缀名(#{ext})的编译方案 #{path}" )
@@ -118,11 +117,11 @@ class Module
         @analyze ( err ) ->
             return cb( err ) if err
             uris = parent_uris or {}
-            utils.async.series @depends , ( m , done ) -> 
+            utils.async.series @depends , ( m , done ) ->
                     uris[ m.guid ] = 1
                     m.getDependenciesURI ( err , _uris ) ->
-                        return done( err ) if err 
-                        _.extend uris , _uris 
+                        return done( err ) if err
+                        _.extend uris , _uris
                         done()
                      , uris
                 , ( err ) ->
@@ -147,7 +146,7 @@ Module.parse = ( path , options , parentModule , rootModule ) ->
 
     m.root_module = rootModule if rootModule
     m.parent = parentModule
-    m.options = options 
+    m.options = options
     return m
 
 
@@ -160,7 +159,7 @@ Module.getContentType = ( extName ) ->
 # 使用 booster 进行加速
 Module.booster = null
 
-Module.path = ModulePath 
+Module.path = ModulePath
 
 #--------------------
 
@@ -178,7 +177,7 @@ class JSModule extends Module
             when MODULE_COMPILE_TYPE.MODULAR
                 @ast.defineType 'REQUIRE' , ( node ) ->
                     return "__context.____MODULES['#{node.module.guid}']" + ( if node.is_line_end then ";" else "" )
-            else 
+            else
                 throw "找不到正确的编译方式, 请修改fekit.config中的 compiler [目前值:#{@config.compileType()}]"
 
 
@@ -187,7 +186,7 @@ class JSModule extends Module
 
             ;(function(__context){
                 var module = {
-                    id : "#{@guid}" , 
+                    id : "#{@guid}" ,
                     filename : "#{syspath.basename(@path.getFullPath())}" ,
                     exports : {}
                 };

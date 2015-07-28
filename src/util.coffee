@@ -1,24 +1,26 @@
-request = require 'request'
-rimraf = require 'rimraf'
-async = require 'async'
+_             = require 'underscore'
+async         = require 'async'
 child_process = require 'child_process'
-syspath = require 'path'
-fs = require 'fs'
-fse = require 'fs-extra'
-mkdirp = require 'mkdirp'
-yaml = require 'js-yaml'
-cjson = require 'cjson'
-_ = require 'underscore'
-vm = require 'vm'
-coffee = require 'coffee-script'
-ncp = require('ncp').ncp
-tar = require 'rinh-node-tar'
-fstream = require 'fstream'
-zlib = require 'zlib'
-sty = require 'sty'
-sysutil = require 'util'
-find = require 'find'
-ignore = require 'ignore'
+cjson         = require 'cjson'
+coffee        = require 'coffee-script'
+crypto        = require 'crypto'
+find          = require 'find'
+fs            = require 'fs'
+fse           = require 'fs-extra'
+fstream       = require 'fstream'
+ignore        = require 'ignore'
+mkdirp        = require 'mkdirp'
+ncp           = require('ncp').ncp
+request       = require 'request'
+rimraf        = require 'rimraf'
+sty           = require 'sty'
+syspath       = require 'path'
+sysutil       = require 'util'
+tar           = require 'rinh-node-tar'
+vm            = require 'vm'
+yaml          = require 'js-yaml'
+zlib          = require 'zlib'
+
 utilself = module.exports
 #----------------------------
 
@@ -360,9 +362,9 @@ class FekitConfig
             opts.partial_path = file
 
         return {
-            path : path 
-            parents : parents 
-            opts : opts 
+            path : path
+            parents : parents
+            opts : opts
         }
 
 
@@ -475,7 +477,7 @@ class FekitConfig
         for k , fn of _filters
             reg = new RegExp(k,"i")
             files = find.fileSync( reg , @refs_path )
-            for file in files 
+            for file in files
                 @_do_filter( fn.bind( @ ) , file , options , @ )
 
     getEnvironmentConfig : () ->
@@ -887,18 +889,18 @@ exports.getCurrentEnvironment = ( options ) ->
     type = 'prd'
 
     # 如果命令行中存在 environment 参数，则优先使用该参数
-    if options.environment 
+    if options.environment
         type = options.environment
     else if process.env['FEKIT_ENVIRONMENT']
         type = process.env['FEKIT_ENVIRONMENT']
 
     type = type.toLowerCase()
-    switch type 
+    switch type
         when 'prd' then return type
         when 'beta' then return type
         when 'dev' then return type
         when 'local' then return type
-        else 
+        else
             utillogger.error "获取当前 environment 配置出错(#{type}) , 值必须为`local`,`dev`,`beta`或`prd`其中之一"
 
 
@@ -910,7 +912,14 @@ exports.replaceEnvironmentConfig = ( type , source , config ) ->
     return source.replace reg , ( $0 , $1 ) ->
             if config[$1] isnt null and typeof config[$1] isnt 'undefined'
                 switch type
-                    when "js" then return util.inspect( config[$1] ) 
+                    when "js" then return util.inspect( config[$1] )
                     else return config[$1]
-            else 
+            else
                 return ""
+
+
+exports.md5 = (data) ->
+    data = new Buffer data
+    hash = crypto.createHash 'md5'
+    hash.update data
+    hash.digest 'hex'

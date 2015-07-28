@@ -1,5 +1,4 @@
 utils = require '../../util'
-md5 = require 'MD5'
 fs = require 'fs'
 
 MODULES = {}
@@ -7,13 +6,13 @@ COMPILED_CACHED = {}
 COMPILED_CACHED_DEPEND = {}
 
 
-# 监控模块所对应的文件 
+# 监控模块所对应的文件
 # 如果文件发生变化则触发 change
 watch = exports.watch = ( module ) ->
 
     filepath = module.path.uri
 
-    key = module.path.uri + "__" + module.root_module.path.uri 
+    key = module.path.uri + "__" + module.root_module.path.uri
 
     return if MODULES[key]
     MODULES[ key ] = module
@@ -46,7 +45,7 @@ exports.set_compiled_cache = ( filename , source , is_deps ) ->
     utils.logger.trace "增加缓存 #{filename}"
     if is_deps
         COMPILED_CACHED_DEPEND[filename] = source
-    else 
+    else
         COMPILED_CACHED[filename] = source
 
 
@@ -54,7 +53,7 @@ CHECKSUM_CACHED = exports.CHECKSUM_CACHED = {}
 
 cached = (filename) ->
     try
-        CHECKSUM_CACHED[filename] = md5( utils.file.io.read( filename ) )
+        CHECKSUM_CACHED[filename] = utils.md5( utils.file.io.read( filename ) )
     catch err
 
 exports.get_checksum_cache = ( filename ) ->

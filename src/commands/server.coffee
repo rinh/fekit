@@ -3,7 +3,6 @@ fs = require "fs"
 connect = require "connect"
 http = require "http"
 https = require "https"
-tinylr = require "tiny-lr"
 compiler = require "../compiler/compiler"
 http_proxy = require "./_server_http_proxy"
 host_rule = require "./_server_host_rule"
@@ -31,9 +30,6 @@ exports.set_options = ( optimist ) ->
 
     optimist.alias 'm' , 'mock'
     optimist.describe 'm' , '指定mock配置文件'
-
-    optimist.alias 'l' , 'livereload'
-    optimist.describe 'l' , '是否启用livereload'
 
     optimist.alias 'o' , 'proxy'
     optimist.describe 'o' , '是否启用代理服务器, 默认端口为13180'
@@ -78,22 +74,6 @@ setupServer = ( options ) ->
         listenPort( http.createServer( app ) , options.port || 80 )
 
 
-setupLivereload = ( options ) ->
-
-    return unless options.livereload
-
-    lrsrv = tinylr()
-    lrsrv.listen 35729, () ->
-        console.log('[LOG]: LiveReload Server Listening ...')
-
-    extlist = compiler.path.EXTLIST.map (ext) ->
-                return "**/*#{ext}"
-
-    require("gaze") extlist , ( err , watcher ) ->
-        @on 'all', (event, filepath) ->
-            lrsrv.changed({ body:{  files:[filepath]  }})
-
-
 
 listenPort = ( server, port ) ->
     # TODO 貌似不能捕获error, 直接抛出异常
@@ -114,8 +94,6 @@ exports.run = ( options ) ->
 
     if options.proxy or options.reverse
         options.rule = host_rule.load( if typeof options.proxy is 'string' then options.proxy else options.reverse )
-
-    setupLivereload( options )
 
     setupServer( options )
 

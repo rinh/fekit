@@ -94,13 +94,13 @@ exports.run = ( options ) ->
                 file : i
                 vertype : vertype
             } , (err, result ) ->
-                md5code = result[0]
-                dest = result[1]
-
                 if err
                     utils.logger.error err
                     cc.exit()
                     utils.exit(1)
+
+                md5code = result[0]
+                dest = result[1]
 
                 conf = utils.config.parse( options.cwd )
                 o = conf.get_export_info i
