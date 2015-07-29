@@ -8,7 +8,7 @@ cc = new computecluster({
   module: utils.path.join( __dirname , '_min_worker.js' )
   max_backlog: -1,
   max_processes: max
-});
+})
 
 
 exports.usage = "压缩/混淆项目文件"
