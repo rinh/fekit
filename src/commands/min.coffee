@@ -2,7 +2,7 @@ syspath = require 'path'
 utils = require "../util"
 computecluster = require('compute-cluster');
 
-max = Math.ceil(require('os').cpus().length * 1.25);
+max = Math.ceil(require('os').cpus().length * 1.25)
 max = 5 if max > 5
 cc = new computecluster({
   module: utils.path.join( __dirname , '_min_worker.js' )
