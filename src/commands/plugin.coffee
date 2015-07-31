@@ -28,7 +28,7 @@ exports.run = ( options ) ->
             utils.exit
 
     if options.uninstall
-        utils.proc.spawn npm , [ 'uninstall', 'fekit-extension-' + options.install , '-g' ] , () ->
+        utils.proc.spawn npm , [ 'uninstall', 'fekit-extension-' + options.uninstall , '-g' ] , () ->
             utils.logger.log '删除完成.'
             utils.exit
 
