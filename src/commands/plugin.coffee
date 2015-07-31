@@ -1,6 +1,4 @@
-async = require 'async'
 utils = require '../util'
-env = require '../env'
 
 
 exports.usage = "安装或删除插件"
