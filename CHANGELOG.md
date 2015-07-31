@@ -1,3 +1,6 @@
+# 0.2.120
+* fixed: plugin 命令在 windows 上无法安装的问题
+
 # 0.2.119
 * fixed: 修改 sass 编译模块上一版本的疏忽
 * fixed: 编译报错时，result[0] 取不到问题
