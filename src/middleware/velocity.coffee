@@ -39,7 +39,6 @@ module.exports = (options) ->
 
             ctx["velocity.fekit.loader.path"] = _get_loader_path(conf) || syspath.dirname(p)
             ctx["velocity.fekit.filename"] = syspath.relative ctx["velocity.fekit.loader.path"], p
-            console.log ctx["velocity.fekit.loader.path"], ctx["velocity.fekit.filename"]
             ctx = JSON.stringify ctx
 
             res.writeHead 200, contentType
