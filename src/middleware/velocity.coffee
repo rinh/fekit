@@ -44,8 +44,16 @@ module.exports = (options) ->
 
             res.writeHead 200, contentType
             java = spawn "java", ["-jar", jar, ctx]
-            java.stdout.pipe res
-            java.stderr.pipe res
+            java.stdout.on "data", (buf) ->
+                res.write buf
+            java.stderr.on "data", (buf) ->
+                res.write buf
+
+            java.on "close", (code) ->
+                res.end()
+                console.log 'java process exited with code ', code
+
+
 
 
 _get_loader_path = (conf) ->
