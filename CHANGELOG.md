@@ -1,3 +1,7 @@
+# 0.2.121
+* fixed: test 命令错误
+* added: java 实现 velocity 中间件，http://gitlab.corp.qunar.com/fed/velocity-for-fekit/
+
 # 0.2.120
 * fixed: plugin 命令在 windows 上无法安装的问题
 
