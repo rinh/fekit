@@ -12,7 +12,7 @@ contentType =
     'Content-Type': "text/html;charset=UTF-8"
 
 existsJava = false
-exec "java -ersion", (error, stdout, stderr) ->
+exec "java -version", (error, stdout, stderr) ->
     unless error
         existsJava = true
     else
