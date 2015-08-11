@@ -1,3 +1,4 @@
+exec = require("child_process").exec
 fs = require "fs"
 spawn = require("child_process").spawn
 syspath = require "path"
@@ -9,12 +10,20 @@ utils = require '../util'
 contentType =
     'Content-Type': "text/html;charset=UTF-8"
 
+existsJava = false
+exec "java -version", (error, stdout, stderr) ->
+    unless error
+        existsJava = true
+
 module.exports = (options) ->
 
     ROOT = options.cwd
 
     return urlrouter (app) ->
         app.get /\.(vm|vmhtml)\b/ , (req, res, next) ->
+            if existsJava is false
+                return res.end()
+
             url         = sysurl.parse req.url
             p           = syspath.join ROOT, url.pathname
             vmjs_path   = p.replace '.vm', '.vmjs'
