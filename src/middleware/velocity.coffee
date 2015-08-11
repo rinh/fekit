@@ -1,19 +1,23 @@
-exec = require("child_process").exec
-fs = require "fs"
-spawn = require("child_process").spawn
-syspath = require "path"
-sysurl = require "url"
+exec      = require("child_process").exec
+fs        = require "fs"
+obsolete  = require "./velocity.obsolete"
+spawn     = require("child_process").spawn
+syspath   = require "path"
+sysurl    = require "url"
 urlrouter = require "urlrouter"
-utils = require '../util'
+utils     = require '../util'
 
 
 contentType =
     'Content-Type': "text/html;charset=UTF-8"
 
 existsJava = false
-exec "java -version", (error, stdout, stderr) ->
+exec "java -ersion", (error, stdout, stderr) ->
     unless error
         existsJava = true
+    else
+        utils.logger.error "使用原生 velocity，全面支持 velocity 特性，前往下方地址，下载并安装 jre "
+        utils.logger.error "http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html"
 
 module.exports = (options) ->
 
@@ -22,6 +26,7 @@ module.exports = (options) ->
     return urlrouter (app) ->
         app.get /\.(vm|vmhtml)\b/ , (req, res, next) ->
             if existsJava is false
+                obsolete req, res, next, options
                 return res.end()
 
             url         = sysurl.parse req.url
