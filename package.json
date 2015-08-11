@@ -27,6 +27,7 @@
         "ignore": "^2.2.15",
         "js-yaml": "3.0.2",
         "mkdirp": "0.3.x",
+        "mocha": "1.7.x",
         "ncp": "0.4.x",
         "nib": "1.0.*",
         "optimist": "0.3.x",
