@@ -1,11 +1,9 @@
-Velocity = require "velocityjs"
 fs = require "fs"
 spawn = require("child_process").spawn
 syspath = require "path"
 sysurl = require "url"
 urlrouter = require "urlrouter"
 utils = require '../util'
-vm = require "vm"
 
 
 contentType =
@@ -48,11 +46,10 @@ module.exports = (options) ->
             java.stderr.on "data", (buf) ->
                 res.write buf
 
+            java.on "error", (err) ->
+                utils.logger.error err.stack
             java.on "close", (code) ->
                 res.end()
-                console.log 'java process exited with code ', code
-
-
 
 
 _get_loader_path = (conf) ->
