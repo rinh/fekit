@@ -11,15 +11,15 @@ utils     = require '../util'
 contentType =
     'Content-Type': "text/html;charset=UTF-8"
 
-existsJava = false
-exec "java -version", (error, stdout, stderr) ->
-    unless error
-        existsJava = true
-    else
-        utils.logger.error "使用原生 velocity，全面支持 velocity 特性，前往下方地址，下载并安装 jre "
-        utils.logger.error "http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html"
 
 module.exports = (options) ->
+    existsJava = false
+    exec "java -version", (error, stdout, stderr) ->
+        unless error
+            existsJava = true
+        else
+            utils.logger.error "使用原生 velocity，全面支持 velocity 特性，前往下方地址，下载并安装 jre "
+            utils.logger.error "http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html"
 
     ROOT = options.cwd
 
