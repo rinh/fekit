@@ -55,7 +55,7 @@ module.exports = (options) ->
             if util.isRegExp rule.pattern
                 result = url.match rule.pattern
             else
-                result = url is rule.pattern
+                result = url.indexOf(rule.pattern) is 0
             return do_actions(result, rule, req, res, options) if result
 
         next()
