@@ -1,3 +1,6 @@
+# 0.2.122
+* fixed: 防止 mac 弹提示
+
 # 0.2.121
 * fixed: test 命令错误
 * added: java 实现 velocity 中间件，http://gitlab.corp.qunar.com/fed/velocity-for-fekit/
