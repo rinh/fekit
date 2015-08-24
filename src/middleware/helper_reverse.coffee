@@ -27,12 +27,13 @@ module.exports = {
                     address: address
                 }
             else
-                dns.resolve4 domain , ( err , addresses ) ->
-                    if !err
-                        domains[domain] = {
-                            custom: false,
-                            address: addresses[0]
-                        }
+                closure = (domain) ->
+                    dns.resolve4 domain, (err, addresses) ->
+                        if !err
+                            domains[domain] =
+                                custom: false,
+                                address: addresses[0]
+                closure(domain)
 
     exists: ( domain ) ->
         return !!domains[domain]
