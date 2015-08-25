@@ -45,7 +45,7 @@
     "underscore": "1.4.x",
     "underscore.string": "2.3.3",
     "urlrouter": "0.2.x",
-    "velocity.java": "^1.1.3",
+    "velocity.java": "^1.2.0",
     "velocityjs": "0.4.x"
   },
   "devDependencies": {

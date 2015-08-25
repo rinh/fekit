@@ -15,7 +15,7 @@ contentType =
 module.exports = (options) ->
     ROOT = options.cwd
 
-    existsJava = false
+    existsJava = true
     projects = fs.readdirSync ROOT
     projects = projects.filter (el) ->
         fs.existsSync(path.join el, "fekit.config")
@@ -25,13 +25,15 @@ module.exports = (options) ->
         el isnt null
     roots.push "."
 
-    try
-        velocity.startServer roots
-        existsJava = true
-    catch error
+    velocity.startServer {
+        root: roots,
+        callback: (n) ->
+            existsJava = not n
+    }
 
     return urlrouter (app) ->
         app.get /\.(vm|vmhtml)\b/ , (req, res, next) ->
+            utils.logger.log "existsJava is", existsJava
             if existsJava is false
                 obsolete req, res, next, options
                 return res.end()
