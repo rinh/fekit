@@ -1,11 +1,11 @@
-exec      = require("child_process").exec
 fs        = require "fs"
 obsolete  = require "./velocity.obsolete"
 spawn     = require("child_process").spawn
-syspath   = require "path"
+path      = require "path"
 sysurl    = require "url"
 urlrouter = require "urlrouter"
 utils     = require '../util'
+velocity  = require "velocity.java"
 
 
 contentType =
@@ -13,15 +13,22 @@ contentType =
 
 
 module.exports = (options) ->
-    existsJava = false
-    exec "java -version", (error, stdout, stderr) ->
-        unless error
-            existsJava = true
-        else
-            utils.logger.error "使用原生 velocity，全面支持 velocity 特性，前往下方地址，下载并安装 jre "
-            utils.logger.error "http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html"
-
     ROOT = options.cwd
+
+    existsJava = false
+    projects = fs.readdirSync ROOT
+    projects = projects.filter (el) ->
+        fs.existsSync(path.join el, "fekit.config")
+    roots = projects.map (el) ->
+        _get_loader_path(utils.config.parse(path.join(ROOT, el)))
+    roots = roots.filter (el) ->
+        el isnt null
+    roots.push "."
+
+    try
+        velocity.startServer roots
+        existsJava = true
+    catch error
 
     return urlrouter (app) ->
         app.get /\.(vm|vmhtml)\b/ , (req, res, next) ->
@@ -30,10 +37,9 @@ module.exports = (options) ->
                 return res.end()
 
             url         = sysurl.parse req.url
-            p           = syspath.join ROOT, url.pathname
+            p           = path.join ROOT, url.pathname
             vmjs_path   = p.replace '.vm', '.vmjs'
             vmjson_path = p.replace '.vm', '.json'
-            jar         = syspath.join __dirname, "../..", "bin/velocity-for-fekit.jar"
             conf        = utils.config.parse p
 
             if utils.path.exists vmjs_path
@@ -48,21 +54,20 @@ module.exports = (options) ->
             else
                 ctx = {}
 
+            root = _get_loader_path conf
+            if root
+                filename = path.relative root, p
+            else
+                filename = path.relative ".", p
 
-            ctx["velocity.fekit.loader.path"] = _get_loader_path(conf) || syspath.dirname(p)
-            ctx["velocity.fekit.filename"] = syspath.relative ctx["velocity.fekit.loader.path"], p
-            ctx = JSON.stringify ctx
+            velocity.render filename, ctx, (err, data) ->
+                if err
+                    res.writeHead 500, contentType
+                    res.write "<pre>" + err + "</pre>"
+                else
+                    res.writeHead 200, contentType
+                    res.write data
 
-            res.writeHead 200, contentType
-            java = spawn "java", ["-jar", jar, ctx]
-            java.stdout.on "data", (buf) ->
-                res.write buf
-            java.stderr.on "data", (buf) ->
-                res.write buf
-
-            java.on "error", (err) ->
-                utils.logger.error err.stack
-            java.on "close", (code) ->
                 res.end()
 
 
