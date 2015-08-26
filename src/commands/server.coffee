@@ -40,6 +40,9 @@ exports.set_options = ( optimist ) ->
     optimist.alias 'e' , 'environment'
     optimist.describe 'e' , '设置环境为`local`,`dev`,`beta`或`prd`'
 
+    optimist.alias 'w', 'without-java'
+    optimist.describe 'w', '不使用 java 编译 velocity'
+
 setupProxyServer = ( options ) ->
 
     http_proxy.run( options )

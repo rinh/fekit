@@ -15,21 +15,24 @@ contentType =
 module.exports = (options) ->
     ROOT = options.cwd
 
-    existsJava = true
-    projects = fs.readdirSync ROOT
-    projects = projects.filter (el) ->
-        fs.existsSync(path.join el, "fekit.config")
-    roots = projects.map (el) ->
-        _get_loader_path(utils.config.parse(path.join(ROOT, el)))
-    roots = roots.filter (el) ->
-        el isnt null
-    roots.push "."
+    if options["without-java"]
+        existsJava = false
+    else
+        existsJava = true
+        projects = fs.readdirSync ROOT
+        projects = projects.filter (el) ->
+            fs.existsSync(path.join el, "fekit.config")
+        roots = projects.map (el) ->
+            _get_loader_path(utils.config.parse(path.join(ROOT, el)))
+        roots = roots.filter (el) ->
+            el isnt null
+        roots.push "."
 
-    velocity.startServer {
-        root: roots,
-        callback: (n) ->
-            existsJava = not n
-    }
+        velocity.startServer {
+            root: roots,
+            callback: (n) ->
+                existsJava = not n
+        }
 
     return urlrouter (app) ->
         app.get /\.(vm|vmhtml)\b/ , (req, res, next) ->
