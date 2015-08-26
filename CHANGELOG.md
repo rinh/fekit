@@ -1,3 +1,9 @@
+# 0.2.124
+* fixed: 修复 helper\_reverse 一枚 bug
+* 替换 submodule git 协议为 https
+* 去除 jar 包，引入 velocity.java 模块
+* server 指令增加 --without-java 参数
+
 # 0.2.123
 * 改进了一下 node-sass 的安装
 
