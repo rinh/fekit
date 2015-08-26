@@ -9,8 +9,6 @@
         "url": "git://github.com/rinh/fekit.git"
     },
     "dependencies": {
-        "astral": "0.1.0",
-        "astral-angular-annotate": "0.0.2",
         "async": "0.2.x",
         "cjson": "0.2.x",
         "coffee-script": "1.4.x",
