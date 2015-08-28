@@ -14,8 +14,6 @@
         "coffee-script": "1.4.x",
         "compute-cluster": "*",
         "connect": "2.7.x",
-        "escodegen": "0.0.26",
-        "esprima": "1.0.3",
         "find": "0.1.7",
         "fs-extra": "0.12.0",
         "fstream": "*",
