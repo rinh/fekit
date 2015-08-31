@@ -71,6 +71,10 @@ module.exports = (options) ->
                     res.write "<pre>" + err + "</pre>"
                 else
                     res.writeHead 200, contentType
+
+                    envs = conf.getEnvironmentConfig()
+                    curr = utils.getCurrentEnvironment options
+                    data = utils.replaceEnvironmentConfig "text", data.toString(), envs[curr]
                     res.write data
 
                 res.end()
