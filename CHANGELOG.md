@@ -1,3 +1,7 @@
+# 0.2.125
+* removed: 去除对 .ng、.ngc、.styl 文件编译支持
+* added: 增加新 velocity 模块环境变量支持
+
 # 0.2.124
 * fixed: 修复 helper\_reverse 一枚 bug
 * 替换 submodule git 协议为 https
