@@ -1,3 +1,6 @@
+# 0.2.126
+* upgrade: 升级 node-tar
+
 # 0.2.125
 * removed: 去除对 .ng、.ngc、.styl 文件编译支持
 * added: 增加新 velocity 模块环境变量支持
