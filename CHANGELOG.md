@@ -1,3 +1,6 @@
+# 0.2.128
+* fixed: server --proxy 的 bug
+
 # 0.2.127
 * added: 添加 json 模块引用支持
 
