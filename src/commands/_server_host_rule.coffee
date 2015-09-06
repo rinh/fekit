@@ -51,6 +51,8 @@ class Rule
                 _m.to = _u.protocol + "//" + _u.host
                 break
 
+        return null if not m and not @ip_hosts[uri.host]
+
         return _m
 
 
