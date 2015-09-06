@@ -1,3 +1,6 @@
+# 0.2.127
+* added: 添加 json 模块引用支持
+
 # 0.2.126
 * upgrade: 升级 node-tar
 
