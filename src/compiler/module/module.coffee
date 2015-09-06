@@ -85,6 +85,10 @@ class Module
         #txt = new utils.file.reader().read( path )
         ext = syspath.extname( path )
         plugin = ModulePath.getPlugin(ext)
+
+        if ext is ".json" and @getCompileType() is MODULE_COMPILE_TYPE.NORMAL
+            utils.logger.error "#{path} 只支持模块化模式编译"
+
         if plugin
             # 去除 BOM 头
             source = utils.removeBOM @source
