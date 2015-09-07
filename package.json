@@ -30,7 +30,6 @@
         "qless": "1.5.x",
         "request": "2.16.x",
         "rimraf": "2.1.4",
-        "rinh-node-tar": "*",
         "semver": "1.1.x",
         "sty": "0.6.x",
         "tar": "^2.2.0",
