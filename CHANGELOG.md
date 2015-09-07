@@ -1,3 +1,6 @@
+# 0.2.129
+* fixed: windows 平台 velocity 加载路径问题
+
 # 0.2.128
 * fixed: server --proxy 的 bug
 
