@@ -86,6 +86,7 @@ _get_loader_path = (conf) ->
         root = utils.path.join conf.fekit_root_dirname, root
 
         root = utils.path.join root, "../refs/vm" if not fs.existsSync root
+        root = root.replace /\\$/, ""
         if not fs.existsSync root then return null
         else return root
     else
