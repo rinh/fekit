@@ -1,3 +1,6 @@
+# 0.2.130
+* updated: 升级 node-sass 3.3.2
+
 # 0.2.129
 * fixed: windows 平台 velocity 加载路径问题
 
