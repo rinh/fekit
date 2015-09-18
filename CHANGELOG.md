@@ -1,3 +1,6 @@
+# 0.2.131
+* fixed: velocity.java 多 root 加载问题
+
 # 0.2.130
 * updated: 升级 node-sass 3.3.2
 
