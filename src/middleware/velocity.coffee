@@ -19,20 +19,8 @@ module.exports = (options) ->
         existsJava = false
     else
         existsJava = true
-        projects = fs.readdirSync ROOT
-        projects = projects.filter (el) ->
-            fs.existsSync(path.join el, "fekit.config")
-        roots = projects.map (el) ->
-            _get_loader_path(utils.config.parse(path.join(ROOT, el)))
-        roots = roots.filter (el) ->
-            el isnt null
-        roots.push "."
-
-        velocity.startServer {
-            root: roots,
-            callback: (n) ->
-                existsJava = not n
-        }
+        velocity.startServer (exists) ->
+            existsJava = exists
 
     return urlrouter (app) ->
         app.get /\.(vm|vmhtml)\b/ , (req, res, next) ->
@@ -65,14 +53,18 @@ module.exports = (options) ->
             else
                 filename = path.relative ".", p
 
-            velocity.render filename, ctx, (err, data) ->
+            velocity.render filename, ctx, root, (err, data) ->
                 if err
                     res.writeHead 500, contentType
                     res.write "<pre>" + err + "</pre>"
                 else
                     res.writeHead 200, contentType
 
-                    envs = conf.getEnvironmentConfig()
+                    try
+                        envs = conf.getEnvironmentConfig()
+                    catch error
+                        envs = {}
+
                     curr = utils.getCurrentEnvironment options
                     data = utils.replaceEnvironmentConfig "text", data.toString(), envs[curr]
                     res.write data
