@@ -14,10 +14,8 @@ FEKIT
 #### 安装前提
 
 ##### nodejs & npm
-* 版本需大于 0.6
-* windows: [http://nodejs.org/dist/v0.8.15/node-v0.8.15-x86.msi](http://nodejs.org/dist/v0.8.15/node-v0.8.15-x86.msi)
-* mac: [http://nodejs.org/dist/v0.8.15/node-v0.8.15.pkg](http://nodejs.org/dist/v0.8.15/node-v0.8.15.pkg)
-* linux: 自行使用 apt-get(ubuntu) 或 yum(centos) 安装
+
+[https://nodejs.org/en/download/](https://nodejs.org/en/download/ "nodejs")
 
 #### 安装
 
