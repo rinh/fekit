@@ -14,7 +14,7 @@ exports.path = Module.path
     插件系统
 ###
 
-# 返回插件后缀所代表的 contentType 
+# 返回插件后缀所代表的 contentType
 exports.getContentType = ( url ) ->
     Module.getContentType( syspath.extname( url ) )
 
@@ -33,7 +33,7 @@ utils.path.each_directory pluginsDir , ( filepath ) =>
     extname = syspath.extname( filepath )
     type = "." + syspath.basename( filepath , extname )
     addPlugin( type , require( filepath ) )
- 
+
 
 ### -----------------------
     export
@@ -45,29 +45,29 @@ MAX_LOOP_COUNT = 70
 
 # 递归处理所有模块
 getSource = ( module , options , callback ) ->
-    
+
     module.analyze ( err )->
 
-        if err 
+        if err
             callback( err )
             return
 
         arr = []
         USED_MODULES = options.use_modules
 
-        if options.render_dependencies 
+        if options.render_dependencies
             module.getSourceWithoutDependencies = options.render_dependencies
-     
+
         deps = []
 
         if options.no_dependencies isnt true
             for sub_module in module.depends
-                _tmp = (sub_module) -> 
+                _tmp = (sub_module) ->
                     ( seriesCallback ) =>
                         LOOPS[sub_module.guid] = ( LOOPS[sub_module.guid] || 0 ) + 1
-                        if LOOPS[sub_module.guid] > MAX_LOOP_COUNT 
-                            seriesCallback "出现循环调用，请检查 #{sub_module.path.uri} 的引用" 
-                        #console.info USED_MODULES[ sub_module.guid ] , sub_module.guid , sub_module.path.uri 
+                        if LOOPS[sub_module.guid] > MAX_LOOP_COUNT
+                            seriesCallback "出现循环调用，请检查 #{sub_module.path.uri} 的引用"
+                        #console.info USED_MODULES[ sub_module.guid ] , sub_module.guid , sub_module.path.uri
                         if USED_MODULES[ sub_module.guid ]
                             utils.proc.setImmediate seriesCallback
                             return
@@ -78,7 +78,7 @@ getSource = ( module , options , callback ) ->
                 deps.push _tmp(sub_module)
 
         async.series deps , ( err ) ->
-            if err 
+            if err
                 callback( err )
                 return
 
@@ -93,9 +93,9 @@ getSource = ( module , options , callback ) ->
     // 依赖的文件列表(fullpath)
     dependencies_filepath_list : []
     // 使用非依赖模式
-    no_dependencies : false , 
+    no_dependencies : false ,
     // 非依赖模式的生成方案
-    render_dependencies : function , 
+    render_dependencies : function ,
     // 根模块文件路径(可有可无,如果没有则默认当前处理文件为root_module)
     root_module_path : ""
     // 开发环境
@@ -104,7 +104,7 @@ getSource = ( module , options , callback ) ->
 ###
 exports.compile = ( filepath , options , doneCallback ) ->
     LOOPS = {}
-    if arguments.length is 3 
+    if arguments.length is 3
         options = options or {}
         doneCallback = doneCallback
     else if arguments.length is 2
@@ -119,22 +119,22 @@ exports.compile = ( filepath , options , doneCallback ) ->
     _iter = ( dep_path , seriesCallback ) ->
             parent_module = new Module( dep_path , options )
             parent_module.getDependenciesURI ( err , module_guids ) ->
-                _.extend( use_modules , module_guids ) unless err 
+                _.extend( use_modules , module_guids ) unless err
                 utils.proc.setImmediate ()->
                     seriesCallback( err )
 
     _done = ( err ) ->
-            if err 
+            if err
                 doneCallback( err )
                 return
 
             getSource( module , {
-                use_modules : use_modules 
+                use_modules : use_modules
                 no_dependencies : !!options.no_dependencies
                 render_dependencies : options.render_dependencies
             } , ( err , result ) ->
                 doneCallback( err , result , module )
-            ) 
+            )
 
     utils.async.series _list , _iter , _done
 

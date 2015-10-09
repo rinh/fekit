@@ -219,6 +219,7 @@ class JSModule extends Module
 class CSSModule extends Module
     constructor:( uri ) ->
         super(uri)
+        @iscss = true
 
     analyzed:() ->
         @ast.defineType 'REQUIRE' , ( node ) ->
