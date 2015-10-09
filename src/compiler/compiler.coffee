@@ -137,10 +137,11 @@ exports.compile = ( filepath , options , doneCallback ) ->
                 no_dependencies     : !!options.no_dependencies
                 render_dependencies : options.render_dependencies
             }, (err, result) ->
-                if _.isObject module.config.autoprefixer
-                    plugin = autoprefixer module.config.autoprefixer
+                c = module.config.config?.root?.autoprefixer
+                if _.isObject c
+                    plugin = autoprefixer c
                     return postcss([plugin]).process(result).then((out) ->
-                        doneCallback err, out, module)
+                        doneCallback err, out.css, module)
 
                 doneCallback(err, result, module))
 
