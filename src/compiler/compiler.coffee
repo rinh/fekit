@@ -1,8 +1,12 @@
-async = require 'async'
-syspath = require 'path'
-fs = require 'fs'
-utils = require '../util'
-_ = require 'underscore'
+_            = require 'underscore'
+async        = require 'async'
+autoprefixer = require 'autoprefixer'
+fs           = require 'fs'
+postcss      = require 'postcss'
+syspath      = require 'path'
+utils        = require '../util'
+
+
 exports.booster = booster = require './module/booster'
 
 Module = require("./module/module").Module
@@ -128,13 +132,17 @@ exports.compile = ( filepath , options , doneCallback ) ->
                 doneCallback( err )
                 return
 
-            getSource( module , {
-                use_modules : use_modules
-                no_dependencies : !!options.no_dependencies
+            getSource(module, {
+                use_modules         : use_modules
+                no_dependencies     : !!options.no_dependencies
                 render_dependencies : options.render_dependencies
-            } , ( err , result ) ->
-                doneCallback( err , result , module )
-            )
+            }, (err, result) ->
+                if _.isObject module.config.autoprefixer
+                    plugin = autoprefixer module.config.autoprefixer
+                    return postcss([plugin]).process(result).then((out) ->
+                        doneCallback err, out, module)
+
+                doneCallback(err, result, module))
 
     utils.async.series _list , _iter , _done
 
