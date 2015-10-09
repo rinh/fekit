@@ -1,3 +1,6 @@
+# 0.2.132
+* added: 新增 autoprefixer 支持
+
 # 0.2.131
 * fixed: velocity.java 多 root 加载问题
 
