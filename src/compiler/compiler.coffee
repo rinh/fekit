@@ -138,7 +138,7 @@ exports.compile = ( filepath , options , doneCallback ) ->
                 render_dependencies : options.render_dependencies
             }, (err, result) ->
                 c = module.config.config?.root?.autoprefixer
-                if _.isObject c
+                if _.isObject(c) and module.iscss
                     plugin = autoprefixer c
                     return postcss([plugin]).process(result).then((out) ->
                         doneCallback err, out.css, module)
