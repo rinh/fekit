@@ -96,7 +96,7 @@ getSource = ( module , options , callback ) ->
 
                     callback(null ,arr.join(utils.file.NEWLINE))
                 )['catch']((out) ->
-                    console.error '\n%s%s',
+                    console.error '\n%s %s',
                         syspath.relative(process.cwd(),
                         module.path.uri), out.message
                     process.exit 1)
