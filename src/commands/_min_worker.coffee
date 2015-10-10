@@ -1,6 +1,7 @@
 compiler = require "../compiler/compiler"
 utils = require "../util"
 minCode = require("./_min_mincode").minCode
+path = require 'path'
 
 pid = process.pid
 
@@ -13,10 +14,11 @@ process.on 'message', (m) ->
         parents = o.parents
         opts = o.opts
         vertype = m.vertype
+        dispath = path.relative process.cwd(), srcpath
 
 
         start = new Date()
-        utils.logger.log( "<#{pid}> 正在处理 #{srcpath}" )
+        utils.logger.log( "<#{pid}> 正在处理 #{dispath}" )
         urlconvert = new utils.UrlConvert( srcpath , options.cwd )
         urlconvert.set_no_version() if opts.no_version
         urlconvert.set_extname_type( compiler.getContentType( srcpath ) )
@@ -33,6 +35,7 @@ process.on 'message', (m) ->
 
                 md5code = utils.md5 final_code
                 dest = urlconvert.to_prd( md5code )
+                disdest = path.relative process.cwd(), dest
 
                 # 生成真正的压缩后的文件
                 writer.write( dest , final_code )
@@ -40,7 +43,7 @@ process.on 'message', (m) ->
                 if vertype is 0 or vertype is 1
                     writer.write( urlconvert.to_ver() , if opts.no_version then "" else md5code )
 
-                utils.logger.log( "<#{pid}> 已经处理 [#{new Date().getTime()-start.getTime()}ms] #{srcpath}  ==> #{dest}" )
+                utils.logger.log( "<#{pid}> 已经处理 [#{new Date().getTime()-start.getTime()}ms] #{dispath}\n\t==> #{disdest}" )
 
                 process.send( [ md5code , dest ] )
 
