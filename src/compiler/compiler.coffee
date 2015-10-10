@@ -81,15 +81,28 @@ getSource = ( module , options , callback ) ->
                                 seriesCallback( e )
                 deps.push _tmp(sub_module)
 
-        async.series deps , ( err ) ->
+        async.series deps, (err) ->
             if err
-                callback( err )
-                return
+                callback err
+                return null
 
-            arr.push( module.getSourceWithoutDependencies() )
-            USED_MODULES[ module.guid ] = 1
+            source = module.getSourceWithoutDependencies()
+            c = module.config.config?.root?.autoprefixer
+            if _.isObject(c) and module.iscss
+                plugin = autoprefixer c
+                return postcss([plugin]).process(source).then((out) ->
+                    arr.push out.css
+                    USED_MODULES[module.guid] = 1
 
-            callback( null , arr.join( utils.file.NEWLINE ) )
+                    callback(null ,arr.join(utils.file.NEWLINE))
+                )['catch']((out) ->
+                    console.error syspath.relative(process.cwd(), module.path.uri), out.message
+                    process.exit 1)
+
+            arr.push source
+            USED_MODULES[module.guid] = 1
+
+            callback(null ,arr.join(utils.file.NEWLINE))
 
 
 ###
@@ -137,12 +150,6 @@ exports.compile = ( filepath , options , doneCallback ) ->
                 no_dependencies     : !!options.no_dependencies
                 render_dependencies : options.render_dependencies
             }, (err, result) ->
-                c = module.config.config?.root?.autoprefixer
-                if _.isObject(c) and module.iscss
-                    plugin = autoprefixer c
-                    return postcss([plugin]).process(result).then((out) ->
-                        doneCallback err, out.css, module)
-
                 doneCallback(err, result, module))
 
     utils.async.series _list , _iter , _done
