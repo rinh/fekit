@@ -1,3 +1,6 @@
+# 0.2.133
+* fixed: 增加 autoprefixer 出错处理方式
+
 # 0.2.132
 * added: 新增 autoprefixer 支持
 
