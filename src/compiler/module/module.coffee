@@ -32,7 +32,7 @@ class Module
         @ast = null
         Module.booster.init_cached( @path.uri ) if Module.booster
         checksum = Module.booster && Module.booster.get_checksum_cache( @path.uri )
-        @guid = checksum or utils.md5( @source )
+        @guid = checksum or utils.md5(@source + syspath.relative(process.cwd(), @path.uri))
         @root_module = null
         @parent = null
 
