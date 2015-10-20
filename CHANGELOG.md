@@ -1,3 +1,6 @@
+# 0.2.134
+* modified: 修改模块 guid 为 md5(source + path)
+
 # 0.2.133
 * fixed: 增加 autoprefixer 出错处理方式
 
