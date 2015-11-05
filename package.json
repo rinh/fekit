@@ -2,7 +2,7 @@
     "author": "hao.lin <hao.lin@qunar.com>",
     "name": "fekit",
     "description": "FE Toolkit",
-    "version": "0.2.135",
+    "version": "0.2.136",
     "bin": "./bin/fekit",
     "repository": {
         "type": "git",
@@ -54,7 +54,6 @@
     },
     "license": "MIT",
     "scripts": {
-        "prepublish": "cake build",
-        "postinstall": "node scripts/postinstall.js"
+        "prepublish": "cake build"
     }
 }
