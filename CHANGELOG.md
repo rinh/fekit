@@ -1,3 +1,6 @@
+# 0.2.135
+* modified: 使用 node-sass-china 替代之前方案
+
 # 0.2.134
 * modified: 修改模块 guid 为 md5(source + path)
 
