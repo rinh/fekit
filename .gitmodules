@@ -1,3 +1,0 @@
-[submodule "vendors/node-sass"]
-	path = vendors/node-sass
-	url = https://github.com/yashiro1899/node-sass.git

@@ -3,10 +3,7 @@ css = require './css'
 fs = require 'fs'
 syspath = require 'path'
 
-try
-    sass = require '../../../vendors/node-sass'
-catch err
-    sass = require 'node-sass'
+sass = require 'node-sass-china'
 
 #=============================
 
