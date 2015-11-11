@@ -1,5 +1,4 @@
 fs    = require 'fs'
-path  = require 'path'
 utils = require '../../util'
 
 MODULES = {}
@@ -54,7 +53,7 @@ CHECKSUM_CACHED = exports.CHECKSUM_CACHED = {}
 
 cached = (filename) ->
     try
-        CHECKSUM_CACHED[filename] = utils.md5(utils.file.io.read(filename) + path.relative(process.cwd(), filename))
+        CHECKSUM_CACHED[filename] = utils.md5( utils.file.io.read( filename ) )
     catch err
 
 exports.get_checksum_cache = ( filename ) ->
