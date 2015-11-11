@@ -1,3 +1,6 @@
+# 0.2.137
+* rollback: 回滚模块 guid 为 md5(source)
+
 # 0.2.136
 * modified: 使用 node-sass-china 替代之前方案
 
