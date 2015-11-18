@@ -422,6 +422,9 @@ class FekitConfig
     doScript : ( type , context ) ->
         ctx = context || {}
         ctx.path = utilpath
+        ctx.file = utilfile
+        ctx.cwd = @baseUri
+        ctx.refs_path = @refs_path
         ctx.io =
             reader : new Reader()
             writer : new Writer()
