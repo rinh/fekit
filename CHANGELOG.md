@@ -1,3 +1,6 @@
+# 0.2.138
+* 给doScript 运行的脚本增加几个全局变量，file、cwd、refs_path, https://github.com/rinh/fekit/pull/110
+
 # 0.2.137
 * rollback: 回滚模块 guid 为 md5(source)
 
