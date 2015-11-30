@@ -56,8 +56,9 @@ setupServer = ( options ) ->
             .use( connect.bodyParser() )
             .use( middleware.mock( options ) )
             .use( middleware.velocity(options) )
+            .use( middleware.html(options) )
             .use( middleware.fekit(options) )
-            .use( connect.static( options.cwd , { hidden: true, redirect: true })  )
+            .use( connect.static( options.cwd , { hidden: true, redirect: true, index: 'null' })  )
             .use( connect.directory( options.cwd ) )
     # TODO: <meta name="viewport" content="initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no" />
     # TODO: padding: 80px 20px;
