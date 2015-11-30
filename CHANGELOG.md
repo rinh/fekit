@@ -1,3 +1,6 @@
+# 0.2.139
+* 加了一个处理html的中间件，可以把html文件中的环境变量替换掉
+
 # 0.2.138
 * 给doScript 运行的脚本增加几个全局变量，file、cwd、refs_path, https://github.com/rinh/fekit/pull/110
 
