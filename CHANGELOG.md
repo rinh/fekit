@@ -1,3 +1,6 @@
+# 0.2.140
+* 用 exists-case 模块替换 fileExistsWithCaseSync, 解决耗时问题
+
 # 0.2.139
 * 加了一个处理html的中间件，可以把html文件中的环境变量替换掉
 
