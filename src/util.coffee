@@ -86,6 +86,7 @@ _fileExistsWithCaseSync = (filepath) ->
     if filenames.indexOf(syspath.basename(filepath)) is -1
         return false
     return _fileExistsWithCaseSync(dir)
+casexists = require 'exists-case'
 
 
 exports.path = utilpath =
@@ -119,7 +120,7 @@ exports.path = utilpath =
             return syspath.sep is path
 
     exists: ( path ) ->
-        return _fileExistsWithCaseSync( path )
+        return casexists.sync(path)
 
 
     # 分割路径为数组
