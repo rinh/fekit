@@ -1,3 +1,6 @@
+# 0.2.141
+* 默认不使用 exists-case
+
 # 0.2.140
 * 用 exists-case 模块替换 fileExistsWithCaseSync, 解决耗时问题
 
