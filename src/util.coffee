@@ -119,8 +119,11 @@ exports.path = utilpath =
         else
             return syspath.sep is path
 
-    exists: ( path ) ->
-        return casexists.sync(path)
+    exists: (path, sensitive) ->
+        if sensitive
+            return casexists.sync(path)
+        else
+            return fs.existsSync(path)
 
 
     # 分割路径为数组
