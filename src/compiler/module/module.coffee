@@ -4,6 +4,7 @@ parser = require '../parser'
 _ = require 'underscore'
 util = require 'util'
 events = require('events')
+linter = require("eslint").linter
 
 ModulePath = require('./path').ModulePath
 ModuleConfig = require('./config').ModuleConfig
@@ -96,6 +97,35 @@ class Module
             try
                 env = utils.getCurrentEnvironment( @options )
                 source = utils.replaceEnvironmentConfig 'text' , source , @config.config.getEnvironmentConfig()[ env ]
+
+                if ext is ".js"
+                    messages = linter.verify(source, {
+                        env: {
+                            browser: true,
+                            commonjs: true,
+                            node: false
+                        },
+                        extends: "eslint:recommended",
+                        rules: {
+                            "no-unused-vars": 0
+                        }
+                    }, {
+                        filename: path,
+                        saveState: true
+                    })
+
+                    if messages.length > 0
+                        rname = syspath.relative(process.cwd(), path)
+                        fatal = undefined
+                        messages.forEach (i) ->
+                            if fatal is undefined and i.fatal is true
+                                fatal = true
+                            console.error("#{rname}:#{i.line}:#{i.column} #{i.message}")
+
+
+                        if fatal is true
+                            utils.logger.error( "eslint 出现致命错误 #{rname}" )
+                            return utils.exit(1)
             catch err
                 utils.logger.error "在 environment 配置中找不到 #{env}"
                 source = source
