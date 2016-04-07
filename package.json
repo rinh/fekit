@@ -15,6 +15,7 @@
         "coffee-script": "1.4.x",
         "compute-cluster": "*",
         "connect": "2.7.x",
+        "eslint": "^2.7.0",
         "exists-case": "^0.1.0",
         "find": "0.1.7",
         "fs-extra": "0.12.0",
