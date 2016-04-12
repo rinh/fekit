@@ -148,6 +148,9 @@ Module.parse = ( path , options , parentModule , rootModule ) ->
         when MODULE_CONTENT_TYPE.CSS
             m = new CSSModule( uri )
 
+    console.log('module jump---- ' + uri)
+    console.log(m)
+
     m.root_module = rootModule if rootModule
     m.parent = parentModule
     m.options = options
