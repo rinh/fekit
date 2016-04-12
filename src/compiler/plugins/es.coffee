@@ -14,7 +14,6 @@ exports.contentType = "javascript"
 
 exports.process = (txt, path, module, cb) ->
     try
-        console.log('here ....');
         name = syspath.basename path, '.es'
 
         cwd = process.cwd()
@@ -30,7 +29,7 @@ exports.process = (txt, path, module, cb) ->
         babelConfig = getBabelConfig babel_config_path
 
         babelConfig = {presets: [es2015, react]} unless babelConfig
-        console.log(babelConfig);
+
         txt = (babel.transform txt, babelConfig).code
 
         cb null, txt
