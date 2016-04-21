@@ -43,7 +43,9 @@ rsync = (opts) ->
 
     if utils.sys.isWindows then process.env['HOME'] = process.env.USERPROFILE
     utils.logger.log "[调用] rsync #{args}"
-    child_process.exec "rsync #{args}", (err, stdout, stderr) ->
+    child_process.exec "rsync #{args}", {
+        maxBuffer: 200 * 1024 * 1024
+    }, (err, stdout, stderr) ->
         if err
             utils.logger.log "[提示] 如遇问题参见 http://wiki.corp.qunar.com/display/fe/8+Trouble+shooting"
             throw err
