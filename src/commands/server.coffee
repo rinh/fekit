@@ -1,9 +1,11 @@
 utils = require "../util"
 fs = require "fs"
+syspath = require 'path'
 connect = require "connect"
 http = require "http"
 https = require "https"
 compiler = require "../compiler/compiler"
+ModulePath = require('../compiler/module/path').ModulePath
 http_proxy = require "./_server_http_proxy"
 host_rule = require "./_server_host_rule"
 
@@ -94,12 +96,19 @@ listenPort = ( server, port ) ->
 
     server.listen( port )
 
-
+getProjectCompile = () ->
+    cwd = process.cwd()
+    fs.readdirSync(cwd).forEach((folder) ->
+        ModulePath.getCompile(cwd, folder)
+    )
 
 exports.run = ( options ) ->
 
     if options.proxy or options.reverse
         options.rule = host_rule.load( if typeof options.proxy is 'string' then options.proxy else options.reverse )
+
+    #  本地启动之前遍历项目，获取每个项目的自定义编译方法
+    getProjectCompile()
 
     setupServer( options )
 

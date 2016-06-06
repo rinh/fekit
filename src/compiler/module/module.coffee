@@ -80,11 +80,10 @@ class Module
     # override
     analyzed:()->
 
-
     _process:( path , cb ) ->
         #txt = new utils.file.reader().read( path )
         ext = syspath.extname( path )
-        plugin = ModulePath.getPlugin(ext)
+        plugin = ModulePath.getPlugin(ext, @config.config.fekit_root_dirname)
 
         if ext is ".json" and @getCompileType() is MODULE_COMPILE_TYPE.NORMAL
             utils.logger.error "#{path} 只支持模块化模式编译"

@@ -12,6 +12,8 @@ exports.booster = booster = require './module/booster'
 Module = require("./module/module").Module
 Module.booster = booster
 
+ModulePath = require('./module/path').ModulePath
+
 exports.path = Module.path
 
 ### ---------------------------
@@ -38,6 +40,8 @@ utils.path.each_directory pluginsDir , ( filepath ) =>
     type = "." + syspath.basename( filepath , extname )
     addPlugin( type , require( filepath ) )
 
+# 加载项目插件
+ModulePath.getCompile(process.cwd(), './')
 
 ### -----------------------
     export
@@ -136,23 +140,23 @@ exports.compile = ( filepath , options , doneCallback ) ->
     _list = ( options.dependencies_filepath_list or [] )
 
     _iter = ( dep_path , seriesCallback ) ->
-            parent_module = new Module( dep_path , options )
-            parent_module.getDependenciesURI ( err , module_guids ) ->
-                _.extend( use_modules , module_guids ) unless err
-                utils.proc.setImmediate ()->
-                    seriesCallback( err )
+        parent_module = new Module( dep_path , options )
+        parent_module.getDependenciesURI ( err , module_guids ) ->
+            _.extend( use_modules , module_guids ) unless err
+            utils.proc.setImmediate ()->
+                seriesCallback( err )
 
     _done = ( err ) ->
-            if err
-                doneCallback( err )
-                return
+        if err
+            doneCallback( err )
+            return
 
-            getSource(module, {
-                use_modules         : use_modules
-                no_dependencies     : !!options.no_dependencies
-                render_dependencies : options.render_dependencies
-            }, (err, result) ->
-                doneCallback(err, result, module))
+        getSource(module, {
+            use_modules         : use_modules
+            no_dependencies     : !!options.no_dependencies
+            render_dependencies : options.render_dependencies
+        }, (err, result) ->
+            doneCallback(err, result, module))
 
     utils.async.series _list , _iter , _done
 

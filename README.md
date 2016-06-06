@@ -138,6 +138,13 @@ FEKIT
             // 全局对象可以使用
             // path , file , cwd , refs_path
             "sh" : "./auto.js"
+        },
+
+        // 项目自定义build方案
+        "build": {
+            ".jsx": { // 后缀名
+                "path": "./build" // 编译文件所在路径，配置目录则为该目录下的index.js，该路径相遇于当前fekit.config文件，推荐项目中新建build目录
+            }
         }
     }
 
@@ -186,4 +193,24 @@ fekit所有源码全部使用coffeescript开发
     # @callback( err , result ) 处理完成的回调
     # 返回结果应该编译结果
     exports.process = ( source , path , callback ) ->
+
+#### 如何增加一个项目自定义的编译处理类型 ####
+
+1. 请在项目中增加编译模块，可以是一个文件，也可以是一个目录，目录的话默认入口文件位该目录下的index.js
+2. 在项目fekit.confg中增加build配置，配置内容见上面fekit.config说明
+
+其中入口文件必须存在的方法是
+
+    # 决定该编译方式是用于哪类处理
+    exports.contentType = "javascript 或 css"
+
+    # 处理方法
+    # @source 待处理文件的内容
+    # @path 待处理文件的路径
+    # @module 当前正在处理的模块
+    # @callback( err , result ) 处理完成的回调
+    # 返回结果应该编译结果
+    exports.process = function(source, path, module, callback) {
+        // do something
+    }
 
