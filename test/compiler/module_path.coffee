@@ -6,15 +6,15 @@ describe '#parsePath1', ->
 
         ModulePath.EXTLIST = ['.js','.css']
 
-        fakeParent = 
-            config : 
+        fakeParent =
+            config :
                 getPackage : ( name ) ->
-                    return null;
+                    return null
                 isUseAlias : ( name ) ->
 
                 parseAlias : ( name ) ->
 
-            path : 
+            path :
                 dirname : () ->
                     '/home/test/'
 
@@ -32,18 +32,18 @@ describe '#parsePath2', ->
 
         ModulePath.EXTLIST = ['.js','.css']
 
-        fakeParent = 
-            config : 
+        fakeParent =
+            config :
                 getPackage : ( name ) ->
                     if name is 'core' or name is 'base-js'
                         return "/home/packages/#{name}/index"
-                    else 
+                    else
                         return null
                 isUseAlias : ( name ) ->
 
                 parseAlias : ( name ) ->
 
-            path : 
+            path :
                 dirname : () ->
                     '/home/test/'
 
@@ -59,15 +59,15 @@ describe '#parsePath3', ->
 
         ModulePath.EXTLIST = ['.js','.css']
 
-        fakeParent = 
-            config : 
+        fakeParent =
+            config :
                 getPackage : ( name ) ->
                     return null
                 isUseAlias : ( name ) ->
                     name is "core"
                 parseAlias : ( name ) ->
                     return "/home/lib/#{name}-base/"
-            path : 
+            path :
                 dirname : () ->
                     '/home/test/'
 
