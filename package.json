@@ -27,7 +27,7 @@
         "mkdirp": "0.3.x",
         "mocha": "1.7.x",
         "ncp": "0.4.x",
-        "node-sass-china": "^3.4.1",
+        "node-sass-china": "3.4.2",
         "optimist": "0.3.x",
         "postcss": "^5.0.9",
         "prompt": "0.2.x",
