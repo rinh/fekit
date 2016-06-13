@@ -134,7 +134,11 @@ ModulePath.getCompile = (cwd, folder) ->
     fekitconfig = syspath.join(cwd, folder, 'fekit.config')
     projectFolder = syspath.join(cwd, folder)
     if fs.existsSync(fekitconfig)
-        config = JSON.parse(fs.readFileSync(fekitconfig, 'utf-8'))
+        try
+            config = utils.file.io.readJSON(fekitconfig)
+        catch e
+            return
+
         build = config.build
         if build
             for extName, plugin of build
