@@ -136,7 +136,6 @@ Module.prototype.__proto__ = events.EventEmitter.prototype
 # 通过模块引用字符串, 跟据parentModule解析出子模块的真实路径 , 并返回正确的模块
 # 从一行代码中解析出模块引用的路径
 Module.parse = ( path , options , parentModule , rootModule ) ->
-
     if parentModule
         uri = ModulePath.resolvePath( path , parentModule )
     else

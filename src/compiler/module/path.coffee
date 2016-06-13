@@ -149,6 +149,10 @@ ModulePath.getCompile = (cwd, folder) ->
                 buildName = syspath.join(projectFolder, extName)
                 ModulePath.addExtensionPlugin(buildName, require(buildPath))
 
+                # 如果是没有内置的编译扩展，默认将第一个匹配的自定义编译作为默认编译
+                if !ModulePath.getContentType(extName)
+                    ModulePath.addExtensionPlugin(extName, require(buildPath))
+
 # 后缀列表
 ModulePath.EXTLIST = []
 ModulePath.EXTTABLE = {}

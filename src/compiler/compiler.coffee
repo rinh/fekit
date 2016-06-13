@@ -136,7 +136,6 @@ exports.compile = ( filepath , options , doneCallback ) ->
 
     use_modules = {}
     module = Module.parse( filepath , options , null , Module.parse( options.root_module_path or filepath ) )
-
     _list = ( options.dependencies_filepath_list or [] )
 
     _iter = ( dep_path , seriesCallback ) ->
