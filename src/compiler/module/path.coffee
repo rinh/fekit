@@ -1,6 +1,7 @@
 syspath = require 'path'
 fs = require 'fs'
 utils = require '../../util'
+cjson = require 'cjson'
 
 ### ---------------------------
     模块路径
@@ -134,7 +135,10 @@ ModulePath.getCompile = (cwd, folder) ->
     fekitconfig = syspath.join(cwd, folder, 'fekit.config')
     projectFolder = syspath.join(cwd, folder)
     if fs.existsSync(fekitconfig)
-        config = JSON.parse(fs.readFileSync(fekitconfig, 'utf-8'))
+        try
+            config = cjson.load(fekitconfig)
+        catch err
+            utils.logger.error("解析 #{fekitconfig} 时出现错误, 请检查该文件, 该文件必须是标准JSON格式" )
         build = config.build
         if build
             for extName, plugin of build
