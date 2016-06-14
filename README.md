@@ -201,16 +201,17 @@ fekit所有源码全部使用coffeescript开发
 
 其中入口文件必须存在的方法是
 
-    # 决定该编译方式是用于哪类处理
+    // 决定该编译方式是用于哪类处理
     exports.contentType = "javascript 或 css"
 
-    # 处理方法
-    # @source 待处理文件的内容
-    # @path 待处理文件的路径
-    # @module 当前正在处理的模块
-    # @callback( err , result ) 处理完成的回调
-    # 返回结果应该编译结果
+    // 处理方法
+    // @source 待处理文件的内容
+    // @path 待处理文件的路径
+    // @module 当前正在处理的模块
+    // @callback( err , result ) 处理完成的回调
+    // 返回结果应该编译结果
     exports.process = function(source, path, module, callback) {
         // do something
+        callback(err, result)
     }
 
