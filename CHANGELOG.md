@@ -1,5 +1,5 @@
-# 0.2.147
-* 升级coffee-script到0.10.0
+# 0.2.148
+* 升级coffee-script到1.10.0
 
 # 0.2.146
 * 升级node-sass-china到3.8.0
